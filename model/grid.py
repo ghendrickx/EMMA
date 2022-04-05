@@ -43,6 +43,7 @@ class _CellVariables:
 
 
 class Cell:
+    """Grid cell."""
     _cells = dict()
 
     def __new__(cls, x, y, **kwargs):
