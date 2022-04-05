@@ -31,7 +31,7 @@ class _CellVariables:
         self.capacity = 1 if capacity is None else capacity
         self.water_depth = water_depth
         self.flow_velocity = velocity
-        [setattr(self, key, value) for key, value in kwargs]
+        [setattr(self, key, value) for key, value in kwargs.items()]
 
     def __repr__(self):
         """Object-representation."""
