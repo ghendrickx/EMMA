@@ -4,6 +4,7 @@ Ecotope-definitions
 Author: Gijs G. Hendrickx
 """
 import sys
+import abc
 
 
 class Ecotope:
@@ -29,9 +30,17 @@ class Ecotope:
 # Below, I will experiment a bit with the "complicated" set-up for defining ecotopes.
 
 
-class _Ecotope:
+class _Ecotope(abc.ABC):
     """Parent ecotope-object."""
-    _cells = set()
+    _cells: set = NotImplemented
+
+    def __new__(cls, *args, **kwargs):
+        """Prevent initiation of this parent ecotope-object."""
+        if cls is _Ecotope:
+            msg = f'Only children of \"{cls.__name__}\" may be initiated.'
+            raise TypeError(msg)
+
+        return super().__new__(cls)
 
     def __init__(self, cell):
         """
@@ -41,6 +50,14 @@ class _Ecotope:
         self._cell = cell
         self._add_cell(cell)
         cell.ecotope = self
+
+    def __init_subclass__(cls, **kwargs):
+        """Ensure that _Ecotope's children are correctly implemented."""
+        super().__init_subclass__(**kwargs)
+
+        if cls._cells is NotImplemented:
+            msg = f'Please, implement the `_cells` class attribute.'
+            raise NotImplementedError(msg)
 
     def __len__(self):
         """Length (or size) of an ecotope is defined by the number of cells that are labelled as the ecotope.
@@ -57,6 +74,10 @@ class _Ecotope:
         :rtype: str
         """
         return f'{self.__class__.__name__}(cell={self.cell})'
+
+    @abc.abstractmethod
+    def __str__(self):
+        """String-representation: <ecotope>."""
 
     @property
     def is_ecotope(self):
@@ -85,6 +106,7 @@ class _Ecotope:
         cls._cells.add(cell)
 
     @classmethod
+    @abc.abstractmethod
     def criteria(cls, cell):
         """Test if the criteria of the ecotope are met by the cell's characteristics. To be overwritten by children,
         i.e. ecotopes.
@@ -108,7 +130,7 @@ class _Ecotope:
         :rtype: _Ecotope
         """
         if cls.criteria(cell):
-            return cls(cell)
+            return cls.__call__(cell)
 
     @classmethod
     def get_cells(cls):
@@ -194,7 +216,7 @@ def ecotope_searcher(cell):
 
 
 def set_ecotopes(grid):
-    """Set ecotopes on all grid cells.
+    """Set ecotopes of all grid cells.
 
     :param grid: grid
     :type grid: Grid
@@ -203,9 +225,9 @@ def set_ecotopes(grid):
 
 
 if __name__ == '__main__':
-    from model.grid import Grid
+    from model.grid import Grid, Cell
 
-    Grid.add_square(xy_range=[-10, 10], spacing=5)
+    Grid.add_square(xy_range=[-10, 10], spacing=10)
     set_ecotopes(Grid())
 
     print(f'Ecotope1\t:\t{Ecotope1.get_cells()}')
