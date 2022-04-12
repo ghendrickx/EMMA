@@ -15,12 +15,22 @@ class Ecotope:
         self.__type = self.ecotope_type(**kwargs)
 
     @staticmethod
-    def ecotope_type(**kwargs):
+    def salinity(**kwargs):
         args = list(kwargs.values())
-        if args[0] < 1:
-            return 'ecotope-1'
-        elif args[1] < 1:
-            return 'ecotope-2'
+        if args[0] >18:
+            return 'Brackish Ecotope:'
+        elif args[0] > 5.4 args[0] < 18:
+            return 'Marine Ecotope:'
+
+    @staticmethod
+    def littoralzone(**kwargs):
+        args = list(kwargs.values())
+        if args[0] = 1:
+            return 'in the sublittoral zone'
+        elif args[0] = 0:
+            return 'in the supralittoral zone'
+        else:
+            return 'in the littoral zone'
 
     @property
     def type(self):

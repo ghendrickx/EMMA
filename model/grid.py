@@ -396,5 +396,6 @@ if __name__ == '__main__':
     # classes by, e.g., removing redundant methods and properties.
     grid = Grid()
     grid.add_rectangle(x_range=[0, 10], y_range=[0, 20], spacing=5)
+    #grid.add_square(xy_range=[0,2], spacing=1)
     print(f'Number of cells in grid\t:\t{grid.size}')
     print(f'Cells in grid:\n{grid.cells}')
