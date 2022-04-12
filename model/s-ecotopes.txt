@@ -122,33 +122,33 @@ print(cell1)
 #     return 'B2_11'
 # print(B2_11(cell1))
 #
-def B2_11s(data):
-    if not data['salinity'] == 'brakish':
-        return False
-    if not data['depth1'] == 'sub-littoral':
-        return False
-    if not data['hydrodynamics'] == 'high energy':
-        return False
-    if not data['depth2'] == nan:
-        return False
-    if not data['substratum2'] == 'rich in silt':
-        return False
-    return 'B2_11s'
-print(B2_11s(cell1))
+# def B2_11s(data):
+#     if not data['salinity'] == 'brakish':
+#         return False
+#     if not data['depth1'] == 'sub-littoral':
+#         return False
+#     if not data['hydrodynamics'] == 'high energy':
+#         return False
+#     if not data['depth2'] == nan:
+#         return False
+#     if not data['substratum2'] == 'rich in silt':
+#         return False
+#     return 'B2_11s'
+# print(B2_11s(cell1))
 
-def B2_122s(data):
-    if not data['salinity'] == 'brakish':
-        return False
-    if not data['depth1'] == 'sub-littoral':
-        return False
-    if not data['hydrodynamics'] == 'low energy':
-        return False
-    if not data['depth2'] == 'deep':
-        return False
-    if not data['substratum2'] == 'rich in silt':
-        return False
-    return 'B2_122s'
-print(B2_122s(cell1))
+# def B2_122s(data):
+#     if not data['salinity'] == 'brakish':
+#         return False
+#     if not data['depth1'] == 'sub-littoral':
+#         return False
+#     if not data['hydrodynamics'] == 'low energy':
+#         return False
+#     if not data['depth2'] == 'deep':
+#         return False
+#     if not data['substratum2'] == 'rich in silt':
+#         return False
+#     return 'B2_122s'
+# print(B2_122s(cell1))
 
 def B2_122f(data):
     if not data['salinity'] == 'brakish':

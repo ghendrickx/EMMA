@@ -1,27 +1,20 @@
 import time
 start_time = time.time()
-import numpy as np
+eco = {'B2_112s': {'salinity': 'brakish', 'depth1': 'sub-littoral', 'hydrodynamics' : 'low energy' ,'depth2' : 'deep' , 'substratum2' : 'rich in silt'},
+       'B2_122f': {'salinity': 'brakish', 'depth1': 'sub-littoral', 'hydrodynamics' : 'low energy', 'depth2' : 'deep', 'substratum2' : 'fine sands'}}
 
-# Input data
-# B2_11s error for np.nan
-#cell1 = dict([('salinity', 6), ('depth1', 1), ('hydrodynamics', [1, 0.9]), ('depth2', [np.nan, np.nan, np.nan ]), ('substratum2', [200, 30])])
-#B2_122f
-#cell1 = dict([('salinity', 6), ('depth1', 1), ('hydrodynamics', [0.3, 0.9]), ('depth2', [7, 5, 300]), ('substratum2', [200, 10])])
-#B2_122s
+#eco = dict([('B2_112s', dict([('salinity', 'brakish'), ('depth1', 'sub-littoral'), ('hydrodynamics','low energy'), ('depth2', 'deep'), ('substratum2', 'rich in silt')]))],
+#            [('B2_122f', ['brakish', 'sub-littoral', 'low energy', 'deep', 'fine sands']))])
+
 cell1 = dict([('salinity', 6), ('depth1', 1), ('hydrodynamics', [0.3, 0.9]), ('depth2', [7, 5, 300]), ('substratum2', [200, 30])])
 
-
-# hydrodynamics [linear current velocity, orbital velocity]
-# depth2 : [depth [m], duration of flooding [%], frequency of flooding (300-5)[ x /year]]
-# substratum2: [median grain size [micro-m], silt percentage [%]]
-print(cell1)
 # Salinity: should later check for salinity fluctuation as well: (4*std/mean)*100%
 if (cell1['salinity'] >= 5.4) & (cell1['salinity'] <= 18):
     cell1['salinity'] = 'brakish'
 elif cell1['salinity'] > 18:
     cell1['salinity'] = 'marine'
 elif cell1['salinity'] < 5.4:
-    cell1['salinity'] = 'fresh'
+    cell1['salinity']
 
 # Zone : frequency flooding:
 # 0: supra-littoral
@@ -104,66 +97,11 @@ elif cell1['substratum2'][0] > 2000:
 else:
     cell1['substratum2'] = np.nan
 
-print(cell1)
+#print(eco)
+#print(cell1)
 
-# ECOTOPES
+#print(eco['B2_112s'] == cell1)
 
-# def B2_11(data):
-#     if not data['salinity'] == 'brakish':
-#         return False
-#     if not data['depth1'] == 'sub-littoral':
-#         return False
-#     if not data['hydrodynamics'] == 'high energy':
-#         return False
-#     if not data['depth2'] == np.nan:
-#         return False
-#     if not data['substratum2'] == np.nan:
-#         return False
-#     return 'B2_11'
-# print(B2_11(cell1))
-#
-def B2_11s(data):
-    if not data['salinity'] == 'brakish':
-        return False
-    if not data['depth1'] == 'sub-littoral':
-        return False
-    if not data['hydrodynamics'] == 'high energy':
-        return False
-    if not data['depth2'] == nan:
-        return False
-    if not data['substratum2'] == 'rich in silt':
-        return False
-    return 'B2_11s'
-print(B2_11s(cell1))
-
-def B2_122s(data):
-    if not data['salinity'] == 'brakish':
-        return False
-    if not data['depth1'] == 'sub-littoral':
-        return False
-    if not data['hydrodynamics'] == 'low energy':
-        return False
-    if not data['depth2'] == 'deep':
-        return False
-    if not data['substratum2'] == 'rich in silt':
-        return False
-    return 'B2_122s'
-print(B2_122s(cell1))
-
-def B2_122f(data):
-    if not data['salinity'] == 'brakish':
-        return False
-    if not data['depth1'] == 'sub-littoral':
-        return False
-    if not data['hydrodynamics'] == 'low energy':
-        return False
-    if not data['depth2'] == 'deep':
-        return False
-    if not data['substratum2'] == 'fine sands':
-        return False
-    return 'B2_122f'
-print(B2_122f(cell1))
-
-print(print(B2_122f(cell1)))
+print(eco['B2_122f'] == cell1)
 end_time = time.time()
 print((end_time-start_time)*10000)
