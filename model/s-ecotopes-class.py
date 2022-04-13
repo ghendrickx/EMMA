@@ -8,13 +8,34 @@ class Cell:
 
         self.salinity_label = None
 
+
+# def label_salinity(salinity):
+#     if (salinity >= 5.4) & (salinity <= 18):
+#         return 'brackish'
+#     elif salinity > 18:
+#         return 'marine'
+#     elif salinity < 5.4:
+#         return 'fresh'
+
+# The method below is similar to the above, but less error-prone: Have a look a the if-statements.
+# This is just a small detail, though!
+
 def label_salinity(salinity):
-    if (salinity >= 5.4) & (salinity <= 18):
-        return 'brackish'
-    elif salinity > 18:
+    """Determine the label of the salinity-attribute according to the
+
+    :param salinity: salinity [ppm]
+    :type salinity: float
+
+    :return: salinity ecotope-label
+    :rtype: str
+    """
+    if salinity > 18:
         return 'marine'
     elif salinity < 5.4:
         return 'fresh'
+    else:
+        return 'brackish'
+
 
 cell1 = Cell(salinity = 6, depth1 = 1, hydrodynamics = [0.3, 0.9], depth2 = [7, 5, 300], substratum2 = [200, 30])
 cell2 = Cell(salinity = 20, depth1 = 1, hydrodynamics = [0.3, 0.9], depth2 = [7, 5, 300], substratum2 = [200, 30])
