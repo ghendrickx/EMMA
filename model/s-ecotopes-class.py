@@ -88,5 +88,13 @@ print(cell1.salinity_label, cell2.salinity_label)
 print(cell1.ecotope, cell2.ecotope)
 # >>> undefined undefined
 
-# def eco_return(salinity, depth1, hydrodynamics, depth2, substratum2):
-#     return cell[]
+# The method below will do something similar to the above, but than all grouped in a method. However, you will loose the
+# Cell-object, which is deleted once the method has been completed. There are many ways to keep the Cell-object though:
+# 1. return the Cell-object instead of its ecotope-property [easy-fix];
+# 2. store every newly created Cell-object, which is to be coded within the Cell-object (see grid.py > Cell) [advanced].
+
+def eco_return(salinity, depth1, hydrodynamics, depth2, substratum2):
+    cell = Cell(salinity=salinity, depth1=depth1, hydrodynamics=hydrodynamics, depth2=depth2, substratum2=substratum2)
+    cell.salinity_label = label_salinity(cell.salinity)
+    # etc.
+    return cell.ecotope
