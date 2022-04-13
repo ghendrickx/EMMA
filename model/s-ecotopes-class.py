@@ -1,11 +1,7 @@
 from model._ecotopes_overview import ECOTOPES
 
 
-class Cell:
-    # As the grid also uses Cell-objects, you may want to rename this object;
-    # e.g. to Ecotope, or CellEcotope, or CellVariables, or ...?
-    # Then, this object can be coupled to the Cell-object in grid.py.
-
+class CellData:
     def __init__(self, salinity, depth1, hydrodynamics, depth2, substratum2):
         self.salinity = salinity
         self.depth1 = depth1
@@ -46,25 +42,13 @@ class Cell:
 
         return self._ecotope
 
-
-# def label_salinity(salinity):
-#     if (salinity >= 5.4) & (salinity <= 18):
-#         return 'brackish'
-#     elif salinity > 18:
-#         return 'marine'
-#     elif salinity < 5.4:
-#         return 'fresh'
-
-# The method below is similar to the above, but less error-prone: Have a look a the if-statements.
-# This is just a small detail, though!
-
 def label_salinity(salinity):
     """Determine the label of the salinity-attribute according to the
 
     :param salinity: salinity [ppm]
     :type salinity: float
 
-    :return: salinity ecotope-label
+    :return: salinity label
     :rtype: str
     """
     if salinity > 18:
@@ -74,17 +58,125 @@ def label_salinity(salinity):
     else:
         return 'brackish'
 
+def label_depth1(depth1):
+    """Determine the label of the salinity-attribute according to the
 
-cell1 = Cell(salinity = 6, depth1 = 1, hydrodynamics = [0.3, 0.9], depth2 = [7, 5, 300], substratum2 = [200, 30])
-cell2 = Cell(salinity = 20, depth1 = 1, hydrodynamics = [0.3, 0.9], depth2 = [7, 5, 300], substratum2 = [200, 30])
+    :param depth1: frequency of flooding
+        0 = supra-littoral
+        0.1 - 0.99 = littoral
+        1 = sub-littoral
 
-cells = [cell1, cell2]
+    :type depth1: float
+
+    :return: depth1 label
+    :rtype: str
+    """
+    if depth1 == 0:
+        return 'supra-littoral'
+    elif depth1 == 1:
+        return 'sub-littoral'
+    else:
+        return 'littoral'
+
+def label_hydrodynamics(hydrodynamics):
+    """Determine the label of the hydrodynamics-attribute
+
+    :param hydrodynamics: [linear current velocity, orbital velocity]
+    :type hydrodynamics: list
+
+    :return: hydrodynamics label
+    :rtype: str
+    """
+    if hydrodynamics[0] == 0 and hydrodynamics[1] == 0:
+        return 'stagnant'
+
+    elif c.depth1_label == 'sub-littoral':
+        if hydrodynamics[0] >= 0.8:
+            return 'high energy'
+        elif hydrodynamics[0] <= 0.8:
+            return 'low energy'
+
+    elif c.depth1_label == 'supra-littoral' or c.depth1_label == 'littoral':
+        if hydrodynamics[1] >= 0.2:
+            return 'high energy'
+        elif hydrodynamics[1] <= 0.2:
+            return 'low energy'
+
+def label_depth2(depth2): # Should c.depth1_label be input?
+    """Determine the label of the depth2-attribute
+
+    :param depth2: [depth [m], duration of flooding [%], frequency of flooding (300-5)[ x /year]]
+    :type depth2: list
+
+    Note: Should depend on location in the Netherlands, should depend on MLWS and MHWN
+
+
+    :return: hydrodynamics label
+    :rtype: str
+    """
+    if c.depth1_label == 'sub-littoral':
+        if depth2[0] >= 10:
+            return 'very deep'
+        elif depth2[0] < 5:
+            return 'shallow'
+        else:
+            return 'deep'
+
+    elif c.depth1_label == 'littoral':
+        if depth2[1] < 25:
+            return 'high littoral'
+        if depth2[1] > 75:
+            return 'low littoral'
+        else:
+            return 'middle high littoral'
+
+    else:
+        if depth2[2] > 300:
+            return 'potential pioneer zone'
+        elif depth2[2] <= 300 and depth2[2] > 150:
+            return 'low salt marsh'
+        elif depth2[2] <= 150 and depth2[2] > 50:
+            return 'middle salt marsh'
+        else:
+            return 'high salt marsh'
+
+def label_substratum2(substratum2):
+    """Determine the label of the substratum2-attribute according to the
+
+    :param substratum2: [median grainsize (micro-m), silt percentage (%)]
+    :type salinity: list
+
+    :return: substratum2 label
+    :rtype: str
+    """
+    if substratum2[1] >= 25:
+        return 'rich in silt'
+    elif substratum2[0] <= 250:
+        return 'fine sands'
+    elif substratum2[0] > 2000:
+        return 'gravel'
+    else:
+        return 'coarse sands'
+
+
+cell1 = CellData(salinity = 6, depth1 = 0, hydrodynamics = [0, 0.5], depth2 = [7, 5, 300], substratum2 = [200, 30])
+cell2 = CellData(salinity = 20, depth1 = 0.8, hydrodynamics = [0, 0], depth2 = [7, 5, 300], substratum2 = [200, 30])
+cell3 = CellData(salinity = 5, depth1 = 1, hydrodynamics = [0.3, 0.9], depth2 = [7, 5, 300], substratum2 = [200, 30])
+
+cells = [cell1, cell2, cell3]
 
 for c in cells:
     c.salinity_label = label_salinity(c.salinity)
+    c.depth1_label = label_depth1(c.depth1)
+    c.hydrodynamics_label = label_hydrodynamics(c.hydrodynamics)
+    c.depth2_label = label_depth2(c.depth2)
+    c.substratum2_label = label_substratum2(c.substratum2)
 
-print(cell1.salinity_label, cell2.salinity_label)
+print('cell1:', cell1.salinity_label, cell1.depth1_label, cell1.hydrodynamics_label, cell1.depth2_label, cell1.substratum2_label)
 # >>> brackish marine
+print('cell2:', cell2.salinity_label, cell2.depth1_label, cell1.hydrodynamics_label, cell1.depth2_label, cell1.substratum2_label)
+print('cell3:', cell3.salinity_label, cell3.depth1_label, cell3.hydrodynamics_label, cell3.depth2_label, cell3.substratum2_label)
+
 print(cell1.ecotope, cell2.ecotope)
 # >>> undefined undefined
 
@@ -93,8 +185,8 @@ print(cell1.ecotope, cell2.ecotope)
 # 1. return the Cell-object instead of its ecotope-property [easy-fix];
 # 2. store every newly created Cell-object, which is to be coded within the Cell-object (see grid.py > Cell) [advanced].
 
-def eco_return(salinity, depth1, hydrodynamics, depth2, substratum2):
-    cell = Cell(salinity=salinity, depth1=depth1, hydrodynamics=hydrodynamics, depth2=depth2, substratum2=substratum2)
-    cell.salinity_label = label_salinity(cell.salinity)
+#def eco_return(salinity, depth1, hydrodynamics, depth2, substratum2):
+#    cell = Cell(salinity=salinity, depth1=depth1, hydrodynamics=hydrodynamics, depth2=depth2, substratum2=substratum2)
+#    cell.salinity_label = label_salinity(cell.salinity)
     # etc.
-    return cell.ecotope
+#    return cell.ecotope
