@@ -83,7 +83,10 @@ cells = [cell1, cell2]
 for c in cells:
     c.salinity_label = label_salinity(c.salinity)
 
-print(cell1.salinity_label)
+print(cell1.salinity_label, cell2.salinity_label)
+# >>> brackish marine
+print(cell1.ecotope, cell2.ecotope)
+# >>> undefined undefined
 
-def eco_return(salinity, depth1, hydrodynamics, depth2, substratum2):
-    return cell[]
+# def eco_return(salinity, depth1, hydrodynamics, depth2, substratum2):
+#     return cell[]
