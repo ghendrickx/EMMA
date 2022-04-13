@@ -25,6 +25,7 @@ for c in cells:
     c.salinity_label = label_salinity(c.salinity)
 
 print(cell1.salinity_label)
+print(cell2.salinity_label)
 
-def eco_return(salinity, depth1, hydrodynamics, depth2, substratum2):
-    return cell[]
+#def eco_return(salinity, depth1, hydrodynamics, depth2, substratum2):
+#    return cell[]
