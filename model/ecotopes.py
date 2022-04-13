@@ -7,34 +7,34 @@ import sys
 import abc
 
 
-class Ecotope:
-
-    def __init__(self, **kwargs):
-        [setattr(self, key, value) for key, value in kwargs.items()]
-
-        self.__type = self.ecotope_type(**kwargs)
-
-    @staticmethod
-    def salinity(**kwargs):
-        args = list(kwargs.values())
-        if args[0] >18:
-            return 'Brackish Ecotope:'
-        elif args[0] > 5.4 args[0] < 18:
-            return 'Marine Ecotope:'
-
-    @staticmethod
-    def littoralzone(**kwargs):
-        args = list(kwargs.values())
-        if args[0] = 1:
-            return 'in the sublittoral zone'
-        elif args[0] = 0:
-            return 'in the supralittoral zone'
-        else:
-            return 'in the littoral zone'
-
-    @property
-    def type(self):
-        return self.__type
+# class Ecotope:
+#
+#     def __init__(self, **kwargs):
+#         [setattr(self, key, value) for key, value in kwargs.items()]
+#
+#         self.__type = self.ecotope_type(**kwargs)
+#
+#     @staticmethod
+#     def salinity(**kwargs):
+#         args = list(kwargs.values())
+#         if args[0] >18:
+#             return 'Brackish Ecotope:'
+#         elif args[0] > 5.4 args[0] < 18:
+#             return 'Marine Ecotope:'
+#
+#     @staticmethod
+#     def littoralzone(**kwargs):
+#         args = list(kwargs.values())
+#         if args[0] = 1:
+#             return 'in the sublittoral zone'
+#         elif args[0] = 0:
+#             return 'in the supralittoral zone'
+#         else:
+#             return 'in the littoral zone'
+#
+#     @property
+#     def type(self):
+#         return self.__type
 
 
 # Below, I will experiment a bit with the "complicated" set-up for defining ecotopes.
