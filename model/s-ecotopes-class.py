@@ -1,6 +1,5 @@
 from model._ecotopes_overview import ECOTOPES
 
-
 class CellData:
     def __init__(self, salinity, depth1, hydrodynamics, depth2, substratum2):
         self.salinity = salinity
@@ -43,6 +42,7 @@ class CellData:
         return self._ecotope
 
 def label_salinity(salinity):
+    #Should add the variability
     """Determine the label of the salinity-attribute according to the
 
     :param salinity: salinity [ppm]
@@ -51,7 +51,9 @@ def label_salinity(salinity):
     :return: salinity label
     :rtype: str
     """
-    if salinity > 18:
+    if salinity is None:
+        return None
+    elif salinity > 18:
         return 'marine'
     elif salinity < 5.4:
         return 'fresh'
@@ -71,7 +73,9 @@ def label_depth1(depth1):
     :return: depth1 label
     :rtype: str
     """
-    if depth1 == 0:
+    if depth1 is None:
+        return None
+    elif depth1 == 0:
         return 'supra-littoral'
     elif depth1 == 1:
         return 'sub-littoral'
@@ -87,7 +91,11 @@ def label_hydrodynamics(hydrodynamics):
     :return: hydrodynamics label
     :rtype: str
     """
-    if hydrodynamics[0] == 0 and hydrodynamics[1] == 0:
+    if hydrodynamics[0] is None:
+        return None
+    elif hydrodynamics[1] is None:
+        return None
+    elif hydrodynamics[0] == 0 and hydrodynamics[1] == 0:
         return 'stagnant'
 
     elif c.depth1_label == 'sub-littoral':
@@ -114,6 +122,12 @@ def label_depth2(depth2): # Should c.depth1_label be input?
     :return: hydrodynamics label
     :rtype: str
     """
+    if c.depth1_label is None:
+        return None
+    elif depth2[0] is None:
+        return None
+    elif depth2[1] is None:
+        return None
     if c.depth1_label == 'sub-littoral':
         if depth2[0] >= 10:
             return 'very deep'
@@ -149,7 +163,11 @@ def label_substratum2(substratum2):
     :return: substratum2 label
     :rtype: str
     """
-    if substratum2[1] >= 25:
+    if substratum2[0] is None:
+        return None
+    elif substratum2[1] is None:
+        return None
+    elif substratum2[1] >= 25:
         return 'rich in silt'
     elif substratum2[0] <= 250:
         return 'fine sands'
@@ -159,34 +177,53 @@ def label_substratum2(substratum2):
         return 'coarse sands'
 
 
-cell1 = CellData(salinity = 6, depth1 = 0, hydrodynamics = [0, 0.5], depth2 = [7, 5, 300], substratum2 = [200, 30])
+cell1 = CellData(salinity = 6, depth1 = 0, hydrodynamics = [0, 0.5], depth2 = [7, 5, 300], substratum2 = [200, 10])
 cell2 = CellData(salinity = 20, depth1 = 0.8, hydrodynamics = [0, 0], depth2 = [7, 5, 300], substratum2 = [200, 30])
 cell3 = CellData(salinity = 5, depth1 = 1, hydrodynamics = [0.3, 0.9], depth2 = [7, 5, 300], substratum2 = [200, 30])
 
 cells = [cell1, cell2, cell3]
-
+#
 for c in cells:
     c.salinity_label = label_salinity(c.salinity)
     c.depth1_label = label_depth1(c.depth1)
     c.hydrodynamics_label = label_hydrodynamics(c.hydrodynamics)
     c.depth2_label = label_depth2(c.depth2)
     c.substratum2_label = label_substratum2(c.substratum2)
+# #
+# print('cell1:', cell1.salinity_label, cell1.depth1_label, cell1.hydrodynamics_label, cell1.depth2_label, cell1.substratum2_label)
+# cell1 = (cell1.salinity_label, cell1.depth1_label, cell1.hydrodynamics_label, cell1.depth2_label, cell1.substratum2_label)
+# # >>> brackish marine
+# print('cell2:', cell2.salinity_label, cell2.depth1_label, cell1.hydrodynamics_label, cell1.depth2_label, cell1.substratum2_label)
+# print('cell3:', cell3.salinity_label, cell3.depth1_label, cell3.hydrodynamics_label, cell3.depth2_label, cell3.substratum2_label)
 
-print('cell1:', cell1.salinity_label, cell1.depth1_label, cell1.hydrodynamics_label, cell1.depth2_label, cell1.substratum2_label)
-# >>> brackish marine
-print('cell2:', cell2.salinity_label, cell2.depth1_label, cell1.hydrodynamics_label, cell1.depth2_label, cell1.substratum2_label)
-print('cell3:', cell3.salinity_label, cell3.depth1_label, cell3.hydrodynamics_label, cell3.depth2_label, cell3.substratum2_label)
-
-print(cell1.ecotope, cell2.ecotope)
-# >>> undefined undefined
+# def check(dict, cell):
+#     cell
+#     try:
+#         label = dict[cell]
+#     except:
+#         label = "BXX_XXX"
+#     return label
+#print(check(ECOTOPES, cell1))
 
 # The method below will do something similar to the above, but than all grouped in a method. However, you will loose the
 # Cell-object, which is deleted once the method has been completed. There are many ways to keep the Cell-object though:
 # 1. return the Cell-object instead of its ecotope-property [easy-fix];
 # 2. store every newly created Cell-object, which is to be coded within the Cell-object (see grid.py > Cell) [advanced].
 
-#def eco_return(salinity, depth1, hydrodynamics, depth2, substratum2):
-#    cell = Cell(salinity=salinity, depth1=depth1, hydrodynamics=hydrodynamics, depth2=depth2, substratum2=substratum2)
-#    cell.salinity_label = label_salinity(cell.salinity)
-    # etc.
-#    return cell.ecotope
+def label_ecotope(salinity, depth1, hydrodynamics, depth2, substratum2):
+    cell = CellData(salinity=salinity, depth1=depth1, hydrodynamics=hydrodynamics, depth2=depth2, substratum2=substratum2)
+    cell.salinity_label = label_salinity(cell.salinity)
+    cell.depth1_label = label_depth1(cell.depth1)
+    cell.hydrodynamics_label = label_hydrodynamics(cell.hydrodynamics)
+    cell.depth2_label = label_depth2(cell.depth2)
+    cell.substratum2 = label_substratum2(cell.substratum2)
+    cell_labels = (cell.salinity_label, cell.depth1_label, cell.hydrodynamics_label, cell.depth2_label, cell.substratum2_label)
+    print(cell_labels)
+    try:
+       label = ECOTOPES[cell_labels]
+    except:
+      print("NO MATCH")
+      label = "BXX_XXX"
+    return label
+
+print(label_ecotope( 18, 1, [0, 0], [7, 5, 300], [200, 10]))
