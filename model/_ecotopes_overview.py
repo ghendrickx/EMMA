@@ -4,6 +4,7 @@ Overview of the ecotopes included in the model.
 
 ECOTOPES = {
         ('brackish', 'sub-littoral', 'high energy', None, 'fine sands') : 'B2_11',
+        ('brackish', 'sub-littoral', 'high energy', None, 'coarse sands') : 'B2_11',
         ('brackish', 'sub-littoral', 'high energy', None, 'rich in silt') : 'B2_11s',
         ('brackish', 'sub-littoral', 'low energy', 'deep', 'rich in silt') : 'B2_122s',
         ('brackish', 'sub-littoral', 'low energy', 'deep', 'fine sands') : 'B2_122f',
@@ -13,6 +14,7 @@ ECOTOPES = {
         ('brackish', 'sub-littoral', 'stagnant', 'deep', None): 'B2_132',
         ('brackish', 'sub-littoral', 'stagnant', 'shallow', None): 'B2_133',
         ('brackish', 'littoral', 'high energy', None, 'fine sands'): 'B2_21',
+        ('brackish', 'littoral', 'high energy', None, 'coarse sands'): 'B2_21',
         ('brackish', 'littoral', 'high energy', None, 'rich in silt'): 'B2_21s',
         ('brackish', 'littoral', 'low energy', 'low littoral', 'rich in silt'): 'B2_221s',
         ('brackish', 'littoral', 'low energy', 'low littoral', 'fine sands'): 'B2_221f',
@@ -21,18 +23,21 @@ ECOTOPES = {
         ('brackish', 'littoral', 'low energy', 'high littoral', 'rich in silt'): 'B2_223s',
         ('brackish', 'littoral', 'low energy', 'high littoral', 'fine sands'): 'B2_223f',
         ('brackish', 'supra-littoral', 'high energy', None, 'fine sands'): 'B2_311',
+        ('brackish', 'supra-littoral', 'high energy', None, 'coarse sands'): 'B2_311',
         ('brackish', 'supra-littoral', 'low energy', 'pioneer zone', None): 'B2_321',
         ('brackish', 'supra-littoral', 'low energy', 'low salt marsh', None): 'B2_322',
         ('brackish', 'supra-littoral', 'low energy', 'middle high salt marsh', None): 'B2_323',
         ('brackish', 'supra-littoral', 'low energy', 'high salt marsh', None): 'B2_324',
         ('brackish', 'supra-littoral', 'stagnant', None, None): 'B2_331',
         ('variable', 'sub-littoral', 'high energy', None, 'fine sands'): 'V2_11',
+        ('variable', 'sub-littoral', 'high energy', None, 'coarse sands'): 'V2_11',
         ('variable', 'sub-littoral', 'high energy', None, 'rich in silt'): 'V2_11s',
         ('variable', 'sub-littoral', 'low energy', 'deep', 'rich in silt'): 'V2_122s',
         ('variable', 'sub-littoral', 'low energy', 'deep', 'fine sands'): 'V2_122f',
         ('variable', 'sub-littoral', 'low energy', 'shallow', 'rich in silt'): 'V2_123f',
         ('variable', 'sub-littoral', 'low energy', 'shallow', 'fine sands'): 'V2_123f',
         ('variable', 'littoral', 'high energy', None, 'fine sands'): 'V2_21',
+        ('variable', 'littoral', 'high energy', None, 'coarse sands'): 'V2_21',
         ('variable', 'littoral', 'high energy', None, 'rich in silt'): 'V2_21s',
         ('variable', 'littoral', 'low energy', 'low littoral', 'rich in silt'): 'V2_221s',
         ('variable', 'littoral', 'low energy', 'low littoral', 'fine sands'): 'V2_221f',
@@ -44,6 +49,7 @@ ECOTOPES = {
         ('variable', 'littoral', 'low energy', 'high littoral', 'fine sands'): 'V2_223f',
         ('variable', 'littoral', 'low energy', 'high littoral', 'coarse sands'): 'V2_223z',
         ('variable', 'supra-littoral', 'high energy', None, 'coarse sands'): 'V2_31',
+        ('variable', 'supra-littoral', 'high energy', None, 'fine sands'): 'V2_31',
         ('variable', 'supra-littoral', 'low energy', 'pioneer zone', None): 'V2_321',
         ('variable', 'supra-littoral', 'low energy', 'low salt marsh', None): 'V2_322',
         ('variable', 'supra-littoral', 'low energy', 'middle high salt marsh', None): 'V2_323',
@@ -75,7 +81,9 @@ ECOTOPES = {
         ('marine', 'littoral', 'low energy', 'high littoral', 'rich in silt'): 'Z2_223z',
         ('marine', 'littoral', 'low energy', 'high littoral', 'fine sands'): 'Z2_223f',
         ('marine', 'littoral', 'low energy', 'high littoral', 'coarse sands'): 'Z2_223z',
+        ('marine', 'supra-littoral', 'low energy', 'low salt marsh', None) : 'Z2_322',
+        ('marine', 'supra-littoral', 'low energy', 'middle high salt marsh', None) : 'Z2_323',
+        ('marine', 'supra-littoral', 'low energy', 'high salt marsh', None) : 'Z2_324',
 
 }
-
-# print(ECOTOPES)
+# Could add: Sediment in supra-littoral zone, for marine environment (extra terms like dry beach, embryonic dunes, shore vegetation)

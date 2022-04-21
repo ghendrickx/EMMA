@@ -9,7 +9,7 @@ import numpy as np
 #cell1 = dict([('salinity', 6), ('depth1', 1), ('hydrodynamics', [0.3, 0.9]), ('depth2', [7, 5, 300]), ('substratum2', [200, 10])])
 #B2_122s
 cell1 = dict([('salinity', 6), ('depth1', 1), ('hydrodynamics', [0.3, 0.9]), ('depth2', [7, 5, 300]), ('substratum2', [200, 30])])
-
+ brakish
 
 # hydrodynamics [linear current velocity, orbital velocity]
 # depth2 : [depth [m], duration of flooding [%], frequency of flooding (300-5)[ x /year]]
@@ -17,7 +17,7 @@ cell1 = dict([('salinity', 6), ('depth1', 1), ('hydrodynamics', [0.3, 0.9]), ('d
 print(cell1)
 # Salinity: should later check for salinity fluctuation as well: (4*std/mean)*100%
 if (cell1['salinity'] >= 5.4) & (cell1['salinity'] <= 18):
-    cell1['salinity'] = 'brakish'
+    cell1['salinity'] = 'brackish'
 elif cell1['salinity'] > 18:
     cell1['salinity'] = 'marine'
 elif cell1['salinity'] < 5.4:
@@ -137,7 +137,7 @@ def B2_11s(data):
 print(B2_11s(cell1))
 
 def B2_122s(data):
-    if not data['salinity'] == 'brakish':
+    if not data['salinity'] == 'brackish':
         return False
     if not data['depth1'] == 'sub-littoral':
         return False
@@ -163,7 +163,3 @@ def B2_122f(data):
         return False
     return 'B2_122f'
 print(B2_122f(cell1))
-
-print(print(B2_122f(cell1)))
-end_time = time.time()
-print((end_time-start_time)*10000)
