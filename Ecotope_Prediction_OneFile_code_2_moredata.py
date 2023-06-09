@@ -1,10 +1,10 @@
-import xarray as xr
+# import xarray as xr
 import pandas as pd
 import numpy as np
-import seaborn as sns
+# import seaborn as sns
 import matplotlib.pyplot as plt
 
-from Compare_maps_2 import polygon_xy
+# from Compare_maps_2 import polygon_xy
 
 # Un-# this for opening the data
 
