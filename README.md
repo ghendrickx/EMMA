@@ -1,1 +1,1 @@
-# EcotopePrediction
+# EMMA
