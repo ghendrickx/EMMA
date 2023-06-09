@@ -62,3 +62,31 @@ def depth_1_code(inundated: float) -> str:
 
     # periodically inundated: littoral
     return '2'
+
+
+def hydrodynamics_code(velocity: float, code_depth_1: str) -> str:
+    """Determine ecotope-code in the category 'hydrodynamic'.
+
+    :param velocity: flow velocity [m/s]
+    :param depth: water depth [m]
+
+    :type velocity: float
+    :type depth: float
+
+    :return: hydrodynamics code
+    :rtype: str
+    """
+    # hydrodynamic unknown component
+    if velocity is None:
+        return 'x'
+
+    # no flow: stagnant
+    elif velocity == 0:
+        return '3'
+
+    # sub-littoral flow
+    elif code_depth_1 == '1':
+        return '1' if velocity > .8 else '2'
+
+    # littoral flow
+    return '1' if velocity > .2 else '2'
