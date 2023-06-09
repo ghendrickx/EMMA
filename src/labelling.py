@@ -68,10 +68,10 @@ def hydrodynamics_code(velocity: float, code_depth_1: str) -> str:
     """Determine ecotope-code in the category 'hydrodynamic'.
 
     :param velocity: flow velocity [m/s]
-    :param depth: water depth [m]
+    :param depth: ecotope-code of 'depth 1'
 
     :type velocity: float
-    :type depth: float
+    :type depth: str
 
     :return: hydrodynamics code
     :rtype: str
