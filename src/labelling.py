@@ -90,3 +90,54 @@ def hydrodynamics_code(velocity: float, code_depth_1: str) -> str:
 
     # littoral flow
     return '1' if velocity > .2 else '2'
+
+
+def depth_2_code(code_depth_1: str, depth: float, inundated: float, frequency: int) -> str:
+    """Determine ecotope-code in the category 'depth 2'.
+
+    :param code_depth_1: ecotope-code of 'depth 1'
+    :param depth: water depth [m]
+    :param inundated: temporal percentage of inundation [-]
+    :param frequency: annual frequency of flooding [n/yr]
+
+    :type code_depth_1: str
+    :type depth: float
+    :type inundated: float
+    :type frequency: int
+
+    :return: depth 2 code
+    :rtype: str
+    """
+    # depth 2 unknown component
+    if code_depth_1 in (None, 'x'):
+        return 'x'
+
+    # sub-littoral: water depth
+    elif code_depth_1 == '1':
+        if depth >= 10:
+            return '1'
+        elif depth < 5:
+            return '3'
+        return '2'
+
+    # littoral: inundation time
+    elif code_depth_1 == '2':
+        if inundated > .75:
+            return '1'
+        elif inundated < .25:
+            return '3'
+        return '2'
+
+    # supra-littoral: flood frequency
+    elif code_depth_1 == '3':
+        if frequency > 300:
+            return '1'
+        elif frequency > 150:
+            return '2'
+        elif frequency > 50:
+            return '3'
+        return '4'
+
+    # raise error
+    else:
+        raise NotImplementedError
