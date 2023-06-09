@@ -37,3 +37,28 @@ def salinity_code(salinity_mean: float, salinity_min: float, salinity_max: float
 
     # salinity label: brackish
     return 'B'
+
+
+def depth_1_code(inundated: float) -> str:
+    """Determine ecotope-code in the category 'depth 1'.
+
+    :param inundated: temporal percentage of inundation [-]
+    :type inundated: float
+
+    :return: depth 1 code
+    :rtype: str
+    """
+    # depth 1 component unknown
+    if inundated is None:
+        return 'x'
+
+    # always inundated: sub-littoral
+    elif inundated == 1:
+        return '1'
+
+    # always drained: supra-littoral
+    elif inundated == 0:
+        return '3'
+
+    # periodically inundated: littoral
+    return '2'
