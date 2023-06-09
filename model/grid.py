@@ -76,6 +76,7 @@ class Cell:
         if not self._already_initiated:
             self._x = x
             self._y = y
+            self._ecotope = None
             self._variables = _CellVariables(**kwargs)
             self._already_initiated = True
 
@@ -86,6 +87,18 @@ class Cell:
     def __repr__(self):
         """Object-representation of Cell."""
         return f'Cell({self._x}, {self._y})'
+
+    @property
+    def ecotope(self):
+        return self._ecotope
+
+    @ecotope.setter
+    def ecotope(self, ecotope_):
+        if hasattr(ecotope_, 'is_ecotope') and ecotope_.is_ecotope:
+            self._ecotope = ecotope_
+        else:
+            msg = f'Unknown type was attempted to be set as ecotope to {self}: {ecotope_}'
+            LOG.warning(msg)
 
     @property
     def x(self):
@@ -174,6 +187,15 @@ class Cell:
         if hasattr(self._variables, variable):
             return getattr(self._variables, variable)
         LOG.warning(f'{self} does not have the characteristic \"{variable}\".')
+
+    @classmethod
+    def get_cells(cls):
+        """Get all defined cells.
+
+        :return: grid cells
+        :rtype: set
+        """
+        return list(cls._cells.values())
 
 
 class Grid:
@@ -374,5 +396,6 @@ if __name__ == '__main__':
     # classes by, e.g., removing redundant methods and properties.
     grid = Grid()
     grid.add_rectangle(x_range=[0, 10], y_range=[0, 20], spacing=5)
+    #grid.add_square(xy_range=[0,2], spacing=1)
     print(f'Number of cells in grid\t:\t{grid.size}')
     print(f'Cells in grid:\n{grid.cells}')
