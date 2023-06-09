@@ -173,7 +173,12 @@ def depth_2_code(code_substratum_1: str, code_depth_1: str, depth: float, inunda
 def substratum_2_code(code_substratum_1: str, code_hydrodynamics: str, grain_size: float) -> str:
     """Determine ecotope-code in the category 'substratum 2'.
 
+    :param code_substratum_1: ecotope-code of 'substratum 1'
+    :param code_hydrodynamics: ecotope-code of 'hydrodynamics'
     :param grain_size: median grain size [um]
+
+    :type code_substratum_1: str
+    :type code_hydrodynamics: str
     :type grain_size: float
 
     :return: substratum 2 code
