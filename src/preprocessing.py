@@ -142,3 +142,23 @@ def process_inundation(water_depth: np.ndarray, time_axis: int=0) -> np.ndarray:
 
     # return processed data
     return inundation
+
+
+def process_frequency(water_depth: np.ndarray, time_axis: int=0) -> np.ndarray:
+    """Pre-process inundation frequency time-series.
+
+    :param water_depth: water depth time-series
+    :param time_axis: axis with temporal variability, defaults to 0
+
+    :type water_depth: numpy.ndarray
+    :type time_axis: int, optional
+
+    :return: inundation frequencies
+    :rtype: numpy.ndarray
+    """
+    # collapse time axis
+    sign_changes = np.diff(np.sign(water_depth), axis=time_axis)
+    frequency = np.count_nonzero(sign_changes, axis=time_axis) / 2
+
+    # return processed data
+    return frequency
