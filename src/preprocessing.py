@@ -4,7 +4,7 @@ Pre-processing of output data of hydrodynamic model.
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
 import os
-from typing import Tuple
+import typing
 
 import netCDF4
 import numpy as np
@@ -104,7 +104,7 @@ class MapData:
         return self.get_variable('salinity')
 
 
-def process_salinity(salinity: np.ndarray, time_axis: int=0) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def process_salinity(salinity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Pre-process (depth-averaged) salinity time-series.
 
     :param salinity: (depth-averaged) salinity time-series
@@ -125,7 +125,7 @@ def process_salinity(salinity: np.ndarray, time_axis: int=0) -> Tuple[np.ndarray
     return min_salinity, mean_salinity, max_salinity
 
 
-def process_water_depth(water_depth: np.ndarray, time_axis: int=0) -> Tuple[np.ndarray, np.ndarray]:
+def process_water_depth(water_depth: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray]:
     """Pre-process water depth time-series.
 
     :param water_depth: water depth time-series
@@ -146,7 +146,7 @@ def process_water_depth(water_depth: np.ndarray, time_axis: int=0) -> Tuple[np.n
     return duration, frequency
 
 
-def process_velocity(velocity: np.ndarray, time_axis: int=0) -> Tuple[np.ndarray, np.ndarray]:
+def process_velocity(velocity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray]:
     """Pre-process flow velocity time-series.
 
     :param velocity: flow velocity time-series
