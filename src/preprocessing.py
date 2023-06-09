@@ -123,3 +123,22 @@ def process_salinity(salinity: np.ndarray, time_axis: int=0) -> Tuple[np.ndarray
 
     # return processed data
     return min_salinity, mean_salinity, max_salinity
+
+
+def process_inundation(water_depth: np.ndarray, time_axis: int=0) -> np.ndarray:
+    """Pre-process inundation time-series.
+
+    :param water_depth: water depth time-series
+    :param time_axis: axis with temporal variability, defaults to 0
+
+    :type water_depth: numpy.ndarray
+    :type time_axis: int, optional
+
+    :return: inundation percentages
+    :rtype: numpy.ndarray
+    """
+    # collapse time axis
+    inundation = np.sum(water_depth > 0, axis=time_axis) / water_depth.shape[time_axis]
+
+    # return processed data
+    return inundation
