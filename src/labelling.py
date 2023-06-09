@@ -170,7 +170,7 @@ def depth_2_code(code_substratum_1: str, code_depth_1: str, depth: float, inunda
         raise NotImplementedError
 
 
-def substratum_2_code(grain_size: float) -> str:
+def substratum_2_code(code_substratum_1: str, code_hydrodynamics: str, grain_size: float) -> str:
     """Determine ecotope-code in the category 'substratum 2'.
 
     :param grain_size: median grain size [um]
@@ -180,20 +180,25 @@ def substratum_2_code(grain_size: float) -> str:
     :rtype: str
     """
     # substratum 2 component unknown
-    if grain_size is None:
+    if code_substratum_1 in (None, 'x'):
         return 'x'
 
-    # rich in silt
-    elif grain_size <= 25:
-        return 's'
+    # hard substratum
+    elif code_substratum_1 == '1':
+        if code_hydrodynamics in (None, 'x'):
+            return 'x'
+        elif code_hydrodynamics == '1':
+            return '2'
+        return '1'
 
-    # fine sediment
-    elif grain_size <= 250:
-        return 'f'
-
-    # coarse sand
-    elif grain_size <= 2000:
-        return 'z'
-
-    # gravel
-    return 'g'
+    # soft substratum
+    elif code_substratum_1 == '2':
+        if grain_size is None:
+            return 'x'
+        elif grain_size <= 25:
+            return 's'
+        elif grain_size <= 250:
+            return 'f'
+        elif grain_size <= 2000:
+            return 'z'
+        return 'g'
