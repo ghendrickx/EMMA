@@ -164,7 +164,7 @@ def process_frequency(water_depth: np.ndarray, time_axis: int=0) -> np.ndarray:
     return frequency
 
 
-def process_velocity(velocity: np.ndarray, time_axis: int=0) -> np.ndarray:
+def process_velocity(velocity: np.ndarray, time_axis: int=0) -> Tuple[np.ndarray, np.ndarray]:
     """Pre-process flow velocity time-series.
 
     :param velocity: flow velocity time-series
@@ -173,11 +173,12 @@ def process_velocity(velocity: np.ndarray, time_axis: int=0) -> np.ndarray:
     :type velocity: numpy.ndarray
     :type time_axis: int, optional
 
-    :return: temporal maximum flow velocity
-    :rtype: numpy.ndarray
+    :return: temporal median and maximum flow velocities
+    :rtype: tuple
     """
-    # collpase time axis
+    # collapse time axis
+    median_velocity = np.median(velocity, axis=time_axis)
     max_velocity = np.max(velocity, axis=time_axis)
 
     # return processed data
-    return max_velocity
+    return median_velocity, max_velocity
