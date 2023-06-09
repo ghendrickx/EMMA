@@ -182,3 +182,24 @@ def process_velocity(velocity: np.ndarray, time_axis: int=0) -> Tuple[np.ndarray
 
     # return processed data
     return median_velocity, max_velocity
+
+
+def grain_size_estimation(
+        median_velocity: np.ndarray, *, shields: float=.03, chezy: float=60, r_density: float=1.58
+) -> np.ndarray:
+    """Estimation of grain sizes based on (median) flow velocities.
+
+    :param median_velocity: temporal median flow velocities
+    :param shields: critical Shields parameters [-], defaults to .03
+    :param chezy: Chezy coefficient [m^(1/2) /s], defaults to 60
+    :param r_density: relative density between sediment and water [-], defaults to 1.58
+
+    :type median_velocity: numpy.ndarray
+    :type shields: float, optional
+    :type chezy: float, optional
+    :type r_density: float, optional
+
+    :return: grain sizes [um]
+    :rtype: numpy.ndarray
+    """
+    return median_velocity ** 2 / (shields * r_density * chezy ** 2) * 1e6
