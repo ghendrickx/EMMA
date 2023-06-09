@@ -103,6 +103,14 @@ class MapData:
         """
         return self.get_variable('salinity')
 
+    @property
+    def grain_size(self) -> typing.Optional[np.ndarray]:
+        """
+        :return: grain-sizes [um]
+        :rtype: numpy.ndarray
+        """
+        return None
+
 
 def process_salinity(salinity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Pre-process (depth-averaged) salinity time-series.
