@@ -125,8 +125,8 @@ def process_salinity(salinity: np.ndarray, time_axis: int=0) -> Tuple[np.ndarray
     return min_salinity, mean_salinity, max_salinity
 
 
-def process_inundation(water_depth: np.ndarray, time_axis: int=0) -> np.ndarray:
-    """Pre-process inundation time-series.
+def process_water_depth(water_depth: np.ndarray, time_axis: int=0) -> Tuple[np.ndarray, np.ndarray]:
+    """Pre-process water depth time-series.
 
     :param water_depth: water depth time-series
     :param time_axis: axis with temporal variability, defaults to 0
@@ -134,34 +134,16 @@ def process_inundation(water_depth: np.ndarray, time_axis: int=0) -> np.ndarray:
     :type water_depth: numpy.ndarray
     :type time_axis: int, optional
 
-    :return: inundation percentages
-    :rtype: numpy.ndarray
+    :return: inundation duration and frequency
+    :rtype: tuple
     """
     # collapse time axis
-    inundation = np.sum(water_depth > 0, axis=time_axis) / water_depth.shape[time_axis]
-
-    # return processed data
-    return inundation
-
-
-def process_frequency(water_depth: np.ndarray, time_axis: int=0) -> np.ndarray:
-    """Pre-process inundation frequency time-series.
-
-    :param water_depth: water depth time-series
-    :param time_axis: axis with temporal variability, defaults to 0
-
-    :type water_depth: numpy.ndarray
-    :type time_axis: int, optional
-
-    :return: inundation frequencies
-    :rtype: numpy.ndarray
-    """
-    # collapse time axis
+    duration = np.sum(water_depth > 0, axis=time_axis) / water_depth.shape[time_axis]
     sign_changes = np.diff(np.sign(water_depth), axis=time_axis)
     frequency = np.count_nonzero(sign_changes, axis=time_axis) / 2
 
     # return processed data
-    return frequency
+    return duration, frequency
 
 
 def process_velocity(velocity: np.ndarray, time_axis: int=0) -> Tuple[np.ndarray, np.ndarray]:
