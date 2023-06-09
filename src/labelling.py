@@ -39,6 +39,27 @@ def salinity_code(salinity_mean: float, salinity_min: float, salinity_max: float
     return 'B'
 
 
+def substratum_1_code(substratum_type: str) -> str:
+    """Determine ecotope-code in the category 'substratum 1'.
+
+    :param substratum_type: hard or soft substratum
+    :type substratum_type: str
+
+    :return: substratum 1 code
+    :rtype: str
+    """
+    # substratum 1 component unknown
+    if substratum_type is None:
+        return 'x'
+
+    # soft substratum
+    elif substratum_type == 'soft':
+        return '2'
+
+    # hard substratum
+    return '1'
+
+
 def depth_1_code(inundated: float) -> str:
     """Determine ecotope-code in the category 'depth 1'.
 
