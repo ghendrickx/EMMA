@@ -113,14 +113,16 @@ def hydrodynamics_code(velocity: float, code_depth_1: str) -> str:
     return '1' if velocity > .2 else '2'
 
 
-def depth_2_code(code_depth_1: str, depth: float, inundated: float, frequency: int) -> str:
+def depth_2_code(code_substratum_1: str, code_depth_1: str, depth: float, inundated: float, frequency: int) -> str:
     """Determine ecotope-code in the category 'depth 2'.
 
+    :param code_substratum_1: ecotope-code of 'substratum 1'
     :param code_depth_1: ecotope-code of 'depth 1'
     :param depth: water depth [m]
     :param inundated: temporal percentage of inundation [-]
     :param frequency: annual frequency of flooding [n/yr]
 
+    :type code_substratum_1: str
     :type code_depth_1: str
     :type depth: float
     :type inundated: float
@@ -129,6 +131,10 @@ def depth_2_code(code_depth_1: str, depth: float, inundated: float, frequency: i
     :return: depth 2 code
     :rtype: str
     """
+    # hard substratum: no depth 2 label/code
+    if code_substratum_1 == '1':
+        return ''
+
     # depth 2 unknown component
     if code_depth_1 in (None, 'x'):
         return 'x'
