@@ -23,7 +23,7 @@ def load_config(file_name: str=None, wd: str=None) -> dict:
     :rtype: dict
     """
     # load default configuration
-    with open(os.path.join(os.path.dirname(__file__), 'zes1.json')) as f_default:
+    with open(os.path.join(os.path.dirname(__file__), 'emma.json')) as f_default:
         default = json.load(f_default)
 
     # load user-defined configuration
