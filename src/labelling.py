@@ -59,26 +59,46 @@ def substratum_1_code(substratum_type: str) -> str:
     return '1'
 
 
-def depth_1_code(water_depth: float) -> str:
+def depth_1_code(water_depth: float, lat: float=None, mhwn: float=None) -> str:
     """Determine ecotope-code in the category 'depth 1'.
 
     :param water_depth: temporal mean water depth [m]
+    :param lat: lowest astronomical tide [m], defaults to None
+    :param mhwn: mean high water, neap tide [m], defaults to None
+
     :type water_depth: float
+    :type lat: float, optional
+    :type mhwn: float, optional
 
     :return: depth 1 code
     :rtype: str
     """
+    # dynamic thresholds
+    assert (lat is None and mhwn is None) or (lat is not None and mhwn is not None)
+
     # depth 1 component unknown
     if water_depth is None:
         return 'x'
 
-    # always inundated: sub-littoral
-    elif water_depth > CONFIG['depth-1']['sub-littoral']:
-        return '1'
+    # static determination
+    elif lat is None and mhwn is None:
+        # always inundated: sub-littoral
+        if water_depth > CONFIG['depth-1']['sub-littoral']:
+            return '1'
 
-    # always drained: supra-littoral
-    elif water_depth < CONFIG['depth-1']['supra-littoral']:
-        return '3'
+        # generally drained: supra-littoral
+        elif water_depth < CONFIG['depth-1']['supra-littoral']:
+            return '3'
+
+    # dynamic determination
+    elif lat is not None and mhwn is not None:
+        # always inundated: sub-littoral
+        if water_depth > lat:
+            return '1'
+
+        # generally drained: supra-littoral
+        elif water_depth < mhwn:
+            return '3'
 
     # periodically inundated: littoral
     return '2'
