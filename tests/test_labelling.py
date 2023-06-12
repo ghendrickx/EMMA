@@ -17,27 +17,27 @@ class TestSalinityCode:
 
     def test_unknown(self):
         """Test the ecotope-code determination when insufficient data is available."""
-        output = lab.salinity_code(None, 0, 30)
+        output = lab.salinity_code(None, 0)
         assert output == 'x'
 
     def test_variable(self):
         """Test the ecotope-code determination resulting in 'variable' ('V')."""
-        output = lab.salinity_code(10, 0, 30)
+        output = lab.salinity_code(10, 3)
         assert output == 'V'
 
     def test_fresh(self):
         """Test the ecotope-code determination resulting in 'freshwater' ('F')."""
-        output = lab.salinity_code(2.5, 2, 3)
+        output = lab.salinity_code(2.5, 0)
         assert output == 'F'
 
     def test_marine(self):
         """Test the ecotope-code determination resulting in 'marine' ('Z')."""
-        output = lab.salinity_code(28, 27, 30)
+        output = lab.salinity_code(28, 4)
         assert output == 'Z'
 
     def test_brackish(self):
         """Test the ecoptope-code determination resulting in 'brackish' ('B')."""
-        output = lab.salinity_code(15, 8, 20)
+        output = lab.salinity_code(15, 3)
         assert output == 'B'
 
 

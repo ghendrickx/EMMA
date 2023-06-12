@@ -115,7 +115,7 @@ class MapData:
         return None
 
 
-def process_salinity(salinity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def process_salinity(salinity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray]:
     """Pre-process (depth-averaged) salinity time-series.
 
     :param salinity: (depth-averaged) salinity time-series
@@ -124,16 +124,15 @@ def process_salinity(salinity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.
     :type salinity: numpy.ndarray
     :type time_axis: int, optional
 
-    :return: temporal minimum, mean, and maximum (depth-averaged) salinity
+    :return: temporal mean and standard deviation of (depth-averaged) salinity
     :rtype: tuple
     """
     # collapse time axis
-    min_salinity = np.min(salinity, axis=time_axis)
     mean_salinity = np.mean(salinity, axis=time_axis)
-    max_salinity = np.max(salinity, axis=time_axis)
+    std_salinity = np.std(salinity, axis=time_axis)
 
     # return processed data
-    return min_salinity, mean_salinity, max_salinity
+    return mean_salinity, std_salinity
 
 
 def process_water_depth(water_depth: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:

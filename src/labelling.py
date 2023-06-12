@@ -6,16 +6,14 @@ Authors: Soesja Brunink & Gijs G. Hendrickx
 CONFIG = dict()
 
 
-def salinity_code(salinity_mean: float, salinity_min: float, salinity_max: float) -> str:
+def salinity_code(salinity_mean: float, salinity_std: float) -> str:
     """Determine ecotope-code in the category 'salinity'.
 
     :param salinity_mean: temporal mean salinity [psu]
-    :param salinity_min: temporal minimum salinity [psu]
-    :param salinity_max: temporal maximum salinity [psu]
+    :param salinity_std: temporal standard deviation of salinity [psu]
 
     :type salinity_mean: float
-    :type salinity_min: float
-    :type salinity_max: float
+    :type salinity_std: float
 
     :return: salinity code
     :rtype: str
@@ -25,7 +23,7 @@ def salinity_code(salinity_mean: float, salinity_min: float, salinity_max: float
         return 'x'
 
     # salinity label: variable
-    if salinity_max - salinity_min > CONFIG['salinity']['variable'] * salinity_mean:
+    if CONFIG['salinity']['variable'] * salinity_std > salinity_mean:
         return 'V'
 
     # salinity label: fresh

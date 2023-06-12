@@ -31,7 +31,7 @@ class TestProcessTimeSeries:
         processed over the time-axis (default: 0).
         """
         ts = dummy_time_series
-        truth = np.min(ts, axis=0), np.mean(ts, axis=0), np.max(ts, axis=0)
+        truth = np.mean(ts, axis=0), np.std(ts, axis=0)
         output = pre.process_salinity(ts)
         assert np.array_equal(truth, output)
 
@@ -40,7 +40,7 @@ class TestProcessTimeSeries:
         processed over the time-axis, here set to 1.
         """
         ts = dummy_time_series
-        truth = np.min(ts, axis=1), np.mean(ts, axis=1), np.max(ts, axis=1)
+        truth = np.mean(ts, axis=1), np.std(ts, axis=1)
         output = pre.process_salinity(ts, time_axis=1)
         assert np.array_equal(truth, output)
 

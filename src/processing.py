@@ -56,14 +56,14 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
     data.close()
 
     # pre-process model data
-    min_salinity, mean_salinity, max_salinity = pre.process_salinity(salinity, time_axis=time_axis)
+    mean_salinity, std_salinity = pre.process_salinity(salinity, time_axis=time_axis)
     mean_depth, in_duration, in_frequency = pre.process_water_depth(water_depth, time_axis=time_axis)
     med_velocity, max_velocity = pre.process_velocity(velocity, time_axis=time_axis)
     if grain_sizes is None:
         grain_sizes = pre.grain_size_estimation(med_velocity, shields=shields, chezy=chezy, r_density=r_density)
 
     # ecotope-labelling
-    char_1 = np.vectorize(lab.salinity_code)(mean_salinity, min_salinity, max_salinity)
+    char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
     # noinspection PyTypeChecker
     char_2 = np.full_like(char_1, lab.substratum_1_code(substratum_1), dtype=str)
     char_3 = np.vectorize(lab.depth_1_code)(in_duration)

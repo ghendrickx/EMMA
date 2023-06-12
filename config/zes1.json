@@ -1,6 +1,6 @@
 {
   "salinity": {
-    "variable": 1,
+    "variable": 4,
     "fresh": 5.4,
     "marine": 18
   },
