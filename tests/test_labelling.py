@@ -70,17 +70,17 @@ class TestDepth1Code:
 
     def test_sub_littoral(self):
         """Test the ecotope-code determination resulting in 'sub-littoral' ('1')."""
-        output = lab.depth_1_code(1.)
+        output = lab.depth_1_code(2.5)
         assert output == '1'
 
     def test_littoral(self):
         """Test the ecotope-code determination resulting in 'littoral' ('2')."""
-        output = lab.depth_1_code(.4)
+        output = lab.depth_1_code(0)
         assert output == '2'
 
     def test_supra_littoral(self):
         """Test the ecotope-code determination resulting in 'supra-littoral' ('3')."""
-        output = lab.depth_1_code(0.)
+        output = lab.depth_1_code(-2.5)
         assert output == '3'
 
 

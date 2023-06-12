@@ -59,25 +59,25 @@ def substratum_1_code(substratum_type: str) -> str:
     return '1'
 
 
-def depth_1_code(inundated: float) -> str:
+def depth_1_code(water_depth: float) -> str:
     """Determine ecotope-code in the category 'depth 1'.
 
-    :param inundated: temporal percentage of inundation [-]
-    :type inundated: float
+    :param water_depth: temporal mean water depth [m]
+    :type water_depth: float
 
     :return: depth 1 code
     :rtype: str
     """
     # depth 1 component unknown
-    if inundated is None:
+    if water_depth is None:
         return 'x'
 
     # always inundated: sub-littoral
-    elif inundated == 1:
+    elif water_depth > CONFIG['depth-1']['sub-littoral']:
         return '1'
 
     # always drained: supra-littoral
-    elif inundated == 0:
+    elif water_depth < CONFIG['depth-1']['supra-littoral']:
         return '3'
 
     # periodically inundated: littoral
