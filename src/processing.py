@@ -13,22 +13,6 @@ from src import labelling as lab, preprocessing as pre
 _LOG = logging.getLogger(__name__)
 
 
-def vectorised_labelling(func: callable, *args) -> np.char.array:
-    """Vectorised execution of ecotope-code determination functions, translating the string-containing arrays to
-    `np.char.array` for efficient further processing.
-
-    :param func: ecotope-code determination function
-    :param args: function's arguments
-
-    :type func: callable
-    :type args: numpy.ndarray, float, str
-
-    :return: partial ecotope-codes
-    :rtype: numpy.char.array
-    """
-    return np.char.array(np.vectorize(func)(*args))
-
-
 def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
     """Map ecotopes from hydrodynamic model data.
 
