@@ -51,21 +51,25 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
 
     # pre-process model data
     min_salinity, mean_salinity, max_salinity = pre.process_salinity(salinity, time_axis=time_axis)
-    in_duration, in_frequency = pre.process_water_depth(water_depth, time_axis=time_axis)
+    mean_depth, in_duration, in_frequency = pre.process_water_depth(water_depth, time_axis=time_axis)
     med_velocity, max_velocity = pre.process_velocity(velocity, time_axis=time_axis)
     if grain_sizes is None:
         grain_sizes = pre.grain_size_estimation(med_velocity, shields=shields, chezy=chezy, r_density=r_density)
 
     # ecotope-labelling
     char_1 = np.vectorize(lab.salinity_code)(mean_salinity, min_salinity, max_salinity)
-    char_2 = lab.substratum_1_code(substratum_1)
+    # noinspection PyTypeChecker
+    char_2 = np.full_like(char_1, lab.substratum_1_code(substratum_1), dtype=str)
     char_3 = np.vectorize(lab.depth_1_code)(in_duration)
     char_4 = np.vectorize(lab.hydrodynamics_code)(max_velocity, char_3)
-    char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, water_depth, in_duration, in_frequency)
+    char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, mean_depth, in_duration, in_frequency)
     char_6 = np.vectorize(lab.substratum_2_code)(char_2, char_4, grain_sizes)
 
-    ecotopes = np.char.array(char_1) + char_2 + '.' + np.char.array(char_3) + np.char.array(char_4) + \
-           np.char.array(char_5) + np.char.array(char_6)
+    ecotopes = [
+        f'{c1}{c2}.{c3}{c4}{c5}{c6}'
+        for c1, c2, c3, c4, c5, c6
+        in zip(char_1, char_2, char_3, char_4, char_5, char_6)
+    ]
 
     # return ecotope-map
     return {(x, y): eco for x, y, eco in zip(x_coordinates, y_coordinates, ecotopes)}
