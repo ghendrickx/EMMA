@@ -136,7 +136,7 @@ def process_salinity(salinity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.
     return min_salinity, mean_salinity, max_salinity
 
 
-def process_water_depth(water_depth: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray]:
+def process_water_depth(water_depth: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Pre-process water depth time-series.
 
     :param water_depth: water depth time-series
@@ -149,12 +149,13 @@ def process_water_depth(water_depth: np.ndarray, time_axis: int=0) -> typing.Tup
     :rtype: tuple
     """
     # collapse time axis
+    mean_depth = np.mean(water_depth, axis=time_axis)
     duration = np.sum(water_depth > 0, axis=time_axis) / water_depth.shape[time_axis]
     sign_changes = np.diff(np.sign(water_depth), axis=time_axis)
     frequency = np.count_nonzero(sign_changes, axis=time_axis) / 2
 
     # return processed data
-    return duration, frequency
+    return mean_depth, duration, frequency
 
 
 def process_velocity(velocity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray]:
