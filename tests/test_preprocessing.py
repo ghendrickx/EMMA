@@ -14,6 +14,7 @@ from src import preprocessing as pre
 
 @pytest.fixture
 def dummy_time_series():
+    """Create a random array to test the order of its statistics."""
     return np.random.random((100, 100))
 
 
@@ -21,6 +22,9 @@ def dummy_time_series():
 
 
 class TestProcessTimeSeries:
+    """Tests for `process_salinity()` (prefix: `test_salinity`), `process_water_depth()` (prefix: `test_water_depth`),
+    `process_velocity()` (prefix: `test_velocity`), and `grain_size_estimation()` (`test_grain_size_estimation()`).
+    """
 
     def test_salinity(self, dummy_time_series):
         """Processing of salinity time-series should return a tuple with the temporal minimum, mean, and maximum values,
