@@ -39,8 +39,7 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
     # set configuration file
     f_config = kwargs.get('config_file')
     wd_config = kwargs.get('config_wd')
-    configuration = config_file.load_config(f_config, wd_config)
-    lab.CONFIG = configuration
+    lab.CONFIG = config_file.load_config(f_config, wd_config)
 
     # extract model data
     data = pre.MapData(file_name, wd=wd)
