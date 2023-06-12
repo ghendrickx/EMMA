@@ -101,7 +101,10 @@ class MapData:
         :return: depth-averaged salinity [psu]
         :rtype: numpy.ndarray
         """
-        return self.get_variable('salinity')
+        try:
+            return self.get_variable('salinity')
+        except IndexError:
+            return self.get_variable('sa1')
 
     @property
     def grain_size(self) -> typing.Optional[np.ndarray]:
