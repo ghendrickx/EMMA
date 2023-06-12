@@ -3,10 +3,76 @@ Tests for `config_file.py`.
 
 Author: Gijs G. Hendrickx
 """
+import pytest
+
 from config.config_file import load_config
+
+"""pytest.fixtures"""
+
+
+@pytest.fixture
+def required_keys():
+    """List of required key-words of configuration file: depth 1."""
+    return 'salinity', 'hydrodynamics', 'depth-2', 'substratum-2'
+
 
 """TestClasses"""
 
 
 class TestLoadConfig:
     """Tests for `load_config()`."""
+
+    def setup_method(self):
+        """Initialise with default configuration."""
+        self.config = load_config()
+
+    def test_keys(self, required_keys):
+        """Test if all required key-words are in the configuration file: depth 1."""
+        keys = list(self.config.keys())
+        for k in required_keys:
+            assert k in keys
+
+    def test_keys_salinity(self):
+        """Test if all required key-words for the 'salinity'-key are in the configuration file: depth 2."""
+        keys = list(self.config['salinity'].keys())
+        for k in ('variable', 'fresh', 'marine'):
+            assert k in keys
+
+    def test_keys_hydrodynamics(self):
+        """Test if all required key-words for the 'hydrodynamics'-key are in the configuration file: depth 2."""
+        keys = list(self.config['hydrodynamics'].keys())
+        for k in ('stagnant', 'sub-littoral', 'littoral'):
+            assert k in keys
+
+    def test_keys_depth_2(self):
+        """Test if all required key-words for the 'depth 2'-key are in the configuration file: depth 2."""
+        keys = list(self.config['depth-2'].keys())
+        for k in ('sub-littoral', 'littoral', 'supra-littoral'):
+            assert k in keys
+
+    def test_keys_substratum_2(self):
+        """Test if all required key-words for the 'substratum 2'-key are in the configuration file: depth 2."""
+        keys = list(self.config['substratum-2'].keys())
+        for k in ('soft',):
+            assert k in keys
+
+    def test_keys_depth_2_sub_littoral(self):
+        """Test if all required key-words for the 'sub-littoral'-key in the 'depth 2'-key are in the configuration file:
+        depth 3."""
+        keys = list(self.config['depth-2']['sub-littoral'].keys())
+        for k in ('depth-upper', 'depth-lower'):
+            assert k in keys
+
+    def test_keys_depth_2_littoral(self):
+        """Test if all required key-words for the 'littoral'-key in the 'depth 2'-key are in the configuration file:
+        depth 3."""
+        keys = list(self.config['depth-2']['littoral'].keys())
+        for k in ('inundation-upper', 'inundation-lower'):
+            assert k in keys
+
+    def test_keys_depth_2_supra_littoral(self):
+        """Test if all required key-words for the 'supra-littoral'-key in the 'depth 2'-key are in the configuration
+        file: depth 3."""
+        keys = list(self.config['depth-2']['supra-littoral'].keys())
+        for k in ('frequency-1', 'frequency-2', 'frequency-3'):
+            assert k in keys
