@@ -3,18 +3,7 @@ Tests for `config_file.py`.
 
 Author: Gijs G. Hendrickx
 """
-import pytest
-
 from config.config_file import load_config
-
-"""pytest.fixtures"""
-
-
-@pytest.fixture
-def required_keys():
-    """List of required key-words of configuration file: depth 1."""
-    return 'salinity', 'hydrodynamics', 'depth-2', 'substratum-2'
-
 
 """TestClasses"""
 
@@ -26,10 +15,10 @@ class TestLoadConfig:
         """Initialise with default configuration."""
         self.config = load_config()
 
-    def test_keys(self, required_keys):
+    def test_keys(self):
         """Test if all required key-words are in the configuration file: depth 1."""
         keys = list(self.config.keys())
-        for k in required_keys:
+        for k in ('salinity', 'hydrodynamics', 'depth-2', 'substratum-2'):
             assert k in keys
 
     def test_keys_salinity(self):
