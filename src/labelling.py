@@ -3,6 +3,7 @@ Labelling of ecotopes.
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
+CONFIG = dict()
 
 
 def salinity_code(salinity_mean: float, salinity_min: float, salinity_max: float) -> str:
@@ -24,15 +25,15 @@ def salinity_code(salinity_mean: float, salinity_min: float, salinity_max: float
         return 'x'
 
     # salinity label: variable
-    if salinity_max - salinity_min > salinity_mean:
+    if salinity_max - salinity_min > CONFIG['salinity']['variable'] * salinity_mean:
         return 'V'
 
     # salinity label: fresh
-    elif salinity_mean < 5.4:
+    elif salinity_mean < CONFIG['salinity']['fresh']:
         return 'F'
 
     # salinity label: marine
-    elif salinity_mean > 18:
+    elif salinity_mean > CONFIG['salinity']['marine']:
         return 'Z'
 
     # salinity label: brackish
@@ -102,15 +103,15 @@ def hydrodynamics_code(velocity: float, code_depth_1: str) -> str:
         return 'x'
 
     # no flow: stagnant
-    elif velocity == 0:
+    elif velocity == CONFIG['hydrodynamics']['stagnant']:
         return '3'
 
     # sub-littoral flow
     elif code_depth_1 == '1':
-        return '1' if velocity > .8 else '2'
+        return '1' if velocity > CONFIG['hydrodynamics']['sub-littoral'] else '2'
 
     # littoral flow
-    return '1' if velocity > .2 else '2'
+    return '1' if velocity > CONFIG['hydrodynamics']['littoral'] else '2'
 
 
 def depth_2_code(code_substratum_1: str, code_depth_1: str, depth: float, inundated: float, frequency: int) -> str:
@@ -141,27 +142,27 @@ def depth_2_code(code_substratum_1: str, code_depth_1: str, depth: float, inunda
 
     # sub-littoral: water depth
     elif code_depth_1 == '1':
-        if depth >= 10:
+        if depth >= CONFIG['depth-2']['sub-littoral']['depth-upper']:
             return '1'
-        elif depth < 5:
+        elif depth < CONFIG['depth-2']['sub-littoral']['depth-lower']:
             return '3'
         return '2'
 
     # littoral: inundation time
     elif code_depth_1 == '2':
-        if inundated > .75:
+        if inundated > CONFIG['depth-2']['littoral']['inundation-upper']:
             return '1'
-        elif inundated < .25:
+        elif inundated < CONFIG['depth-2']['littoral']['inundation-lower']:
             return '3'
         return '2'
 
     # supra-littoral: flood frequency
     elif code_depth_1 == '3':
-        if frequency > 300:
+        if frequency > CONFIG['depth-2']['supra-littoral']['frequency-1']:
             return '1'
-        elif frequency > 150:
+        elif frequency > CONFIG['depth-2']['supra-littoral']['frequency-2']:
             return '2'
-        elif frequency > 50:
+        elif frequency > CONFIG['depth-2']['supra-littoral']['frequency-3']:
             return '3'
         return '4'
 
@@ -200,10 +201,10 @@ def substratum_2_code(code_substratum_1: str, code_hydrodynamics: str, grain_siz
     elif code_substratum_1 == '2':
         if grain_size is None:
             return 'x'
-        elif grain_size <= 25:
+        elif grain_size <= CONFIG['substratum-2']['soft']['silt']:
             return 's'
-        elif grain_size <= 250:
+        elif grain_size <= CONFIG['substratum-2']['soft']['fines']:
             return 'f'
-        elif grain_size <= 2000:
+        elif grain_size <= CONFIG['substratum-2']['soft']['sand']:
             return 'z'
         return 'g'
