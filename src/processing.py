@@ -7,6 +7,7 @@ import logging
 
 import numpy as np
 
+from config import config_file
 from src import labelling as lab, preprocessing as pre
 
 
@@ -34,6 +35,12 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
     shields = kwargs.get('shields', .03)
     chezy = kwargs.get('chezy', 60)
     r_density = kwargs.get('relative_density', 1.58)
+
+    # set configuration file
+    f_config = kwargs.get('config_file')
+    wd_config = kwargs.get('config_wd')
+    configuration = config_file.load_config(f_config, wd_config)
+    lab.CONFIG = configuration
 
     # extract model data
     data = pre.MapData(file_name, wd=wd)
