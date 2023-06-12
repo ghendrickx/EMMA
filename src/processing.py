@@ -46,6 +46,7 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
     assert substratum_1 in (None, 'soft', 'hard')
     _LOG.warning(f'`substratum 1` is uniformly applied: \"{substratum_1}\"')
 
+    # substratum 2
     shields = kwargs.get('shields', .03)
     chezy = kwargs.get('chezy', 60)
     r_density = kwargs.get('relative_density', 1.58)
@@ -72,14 +73,15 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
         grain_sizes = pre.grain_size_estimation(med_velocity, shields=shields, chezy=chezy, r_density=r_density)
 
     # ecotope-labelling
-    char_1 = vectorised_labelling(lab.salinity_code, mean_salinity, min_salinity, max_salinity)
+    char_1 = np.vectorize(lab.salinity_code)(mean_salinity, min_salinity, max_salinity)
     char_2 = lab.substratum_1_code(substratum_1)
-    char_3 = vectorised_labelling(lab.depth_1_code, in_duration)
-    char_4 = vectorised_labelling(lab.hydrodynamics_code, max_velocity, char_3)
-    char_5 = vectorised_labelling(lab.depth_2_code, char_2, char_3, in_duration, in_frequency)
-    char_6 = vectorised_labelling(lab.substratum_2_code, char_2, char_4, grain_sizes)
+    char_3 = np.vectorize(lab.depth_1_code)(in_duration)
+    char_4 = np.vectorize(lab.hydrodynamics_code)(max_velocity, char_3)
+    char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, water_depth, in_duration, in_frequency)
+    char_6 = np.vectorize(lab.substratum_2_code)(char_2, char_4, grain_sizes)
 
-    ecotopes = char_1 + char_2 + char_3 + char_4 + char_5 + char_6
+    ecotopes = np.char.array(char_1) + char_2 + '.' + np.char.array(char_3) + np.char.array(char_4) + \
+           np.char.array(char_5) + np.char.array(char_6)
 
     # return ecotope-map
     return {(x, y): eco for x, y, eco in zip(x_coordinates, y_coordinates, ecotopes)}
