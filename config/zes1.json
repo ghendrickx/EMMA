@@ -5,6 +5,7 @@
     "marine": 18
   },
   "hydrodynamics": {
+    "stagnant": 0,
     "sub-littoral": 0.8,
     "littoral": 0.2
   },
