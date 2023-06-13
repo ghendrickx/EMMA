@@ -28,7 +28,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> dict:
     # > substratum 1
     substratum_1 = kwargs.get('substratum_1')
     assert substratum_1 in (None, 'soft', 'hard')
-    _LOG.warning(f'`substratum 1` is uniformly applied: \"{substratum_1}\"')
+    _LOG.warning(f'`substratum 1` is uniformly applied: \"{substratum_1}\".')
 
     # > substratum 2
     shields = kwargs.get('shields', .03)
@@ -68,7 +68,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> dict:
     velocity = data.velocity
     salinity = data.salinity
     if model_sediment:
-        _LOG.critical('Retrieving grain sizes from the model not implemented.')
+        _LOG.warning('Retrieving grain sizes from the model not implemented.')
         grain_sizes = data.grain_size
     else:
         grain_sizes = None
