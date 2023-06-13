@@ -55,6 +55,23 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
         grain_sizes = None
     data.close()
 
+    # tidal characteristics
+    mlws = kwargs.get('mlws')
+    mhwn = kwargs.get('mhwn')
+    if mlws is None or mhwn is None:
+        _LOG.warning(
+            f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]. '
+            f'If not provided, they should be hard-coded in the configuration-file.'
+        )
+    lat = kwargs.get('lat')
+    if lat is None:
+        # TODO: Do not raise this warning in case ZES.1 configuration is used!
+        _LOG.warning(
+            f'Lowest astronomical tide (LAT) not provided (`lat={lat}` [m])`; '
+            f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance`.'
+        )
+        lat = mlws
+
     # pre-process model data
     mean_salinity, std_salinity = pre.process_salinity(salinity, time_axis=time_axis)
     mean_depth, in_duration, in_frequency = pre.process_water_depth(water_depth, time_axis=time_axis)
@@ -68,9 +85,9 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
     char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
     # noinspection PyTypeChecker
     char_2 = np.full_like(char_1, lab.substratum_1_code(substratum_1), dtype=str)
-    char_3 = np.vectorize(lab.depth_1_code)(in_duration)
+    char_3 = np.vectorize(lab.depth_1_code)(mean_depth, lat, mhwn)
     char_4 = np.vectorize(lab.hydrodynamics_code)(max_velocity, char_3)
-    char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, mean_depth, in_duration, in_frequency)
+    char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, mean_depth, in_duration, in_frequency, mlws)
     char_6 = np.vectorize(lab.substratum_2_code)(char_2, char_4, grain_sizes)
 
     ecotopes = [
