@@ -11,6 +11,9 @@ import numpy as np
 
 
 class MapData:
+    """Interface to open, read, and close a netCDF-file with built-in functions to extract the relevant data and
+    compress any three-dimensional data to two-dimensional data (depth-averaged).
+    """
 
     def __init__(self, file_name: str, wd: str = None) -> None:
         """
