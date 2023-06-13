@@ -10,7 +10,6 @@ import numpy as np
 from config import config_file
 from src import labelling as lab, preprocessing as pre
 
-
 _LOG = logging.getLogger(__name__)
 
 
@@ -35,6 +34,7 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
     shields = kwargs.get('shields', .03)
     chezy = kwargs.get('chezy', 60)
     r_density = kwargs.get('relative_density', 1.58)
+    c_friction = kwargs.get('friction_coefficient')
 
     # set configuration file
     f_config = kwargs.get('config_file')
@@ -60,7 +60,9 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
     mean_depth, in_duration, in_frequency = pre.process_water_depth(water_depth, time_axis=time_axis)
     med_velocity, max_velocity = pre.process_velocity(velocity, time_axis=time_axis)
     if grain_sizes is None:
-        grain_sizes = pre.grain_size_estimation(med_velocity, shields=shields, chezy=chezy, r_density=r_density)
+        grain_sizes = pre.grain_size_estimation(
+            med_velocity, shields=shields, chezy=chezy, r_density=r_density, c_friction=c_friction
+        )
 
     # ecotope-labelling
     char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
