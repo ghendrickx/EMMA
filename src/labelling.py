@@ -132,7 +132,9 @@ def hydrodynamics_code(velocity: float, code_depth_1: str) -> str:
     return '1' if velocity > CONFIG['hydrodynamics']['littoral'] else '2'
 
 
-def depth_2_code(code_substratum_1: str, code_depth_1: str, depth: float, inundated: float, frequency: int) -> str:
+def depth_2_code(
+        code_substratum_1: str, code_depth_1: str, depth: float, inundated: float, frequency: int, mlws: float=None
+) -> str:
     """Determine ecotope-code in the category 'depth 2'.
 
     :param code_substratum_1: ecotope-code of 'substratum 1'
@@ -140,12 +142,14 @@ def depth_2_code(code_substratum_1: str, code_depth_1: str, depth: float, inunda
     :param depth: water depth [m]
     :param inundated: temporal percentage of inundation [-]
     :param frequency: annual frequency of flooding [n/yr]
+    :param mlws: mean low water, spring tide [m], defaults to None
 
     :type code_substratum_1: str
     :type code_depth_1: str
     :type depth: float
     :type inundated: float
     :type frequency: int
+    :type mlws: float, optional
 
     :return: depth 2 code
     :rtype: str
@@ -162,7 +166,7 @@ def depth_2_code(code_substratum_1: str, code_depth_1: str, depth: float, inunda
     elif code_depth_1 == '1':
         if depth >= CONFIG['depth-2']['sub-littoral']['depth-upper']:
             return '1'
-        elif depth < CONFIG['depth-2']['sub-littoral']['depth-lower']:
+        elif depth < CONFIG['depth-2']['sub-littoral']['depth-lower'] + (mlws or 0):
             return '3'
         return '2'
 
