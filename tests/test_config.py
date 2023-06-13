@@ -18,7 +18,7 @@ class TestLoadConfig:
     def test_keys(self):
         """Test if all required key-words are in the configuration file: depth 1."""
         keys = list(self.config.keys())
-        for k in ('salinity', 'hydrodynamics', 'depth-1', 'depth-2', 'substratum-2'):
+        for k in ('salinity', 'depth-1', 'hydrodynamics', 'depth-2', 'substratum-2'):
             assert k in keys
 
     def test_keys_salinity(self):
@@ -30,7 +30,7 @@ class TestLoadConfig:
     def test_keys_depth_1(self):
         """Test if all required key-words for the 'depth 1'-key are in the configuration file: depth 2."""
         keys = list(self.config['depth-1'].keys())
-        for k in ('sub-littoral', 'supra-littoral'):
+        for k in ('low-water', 'high-water'):
             assert k in keys
 
     def test_keys_hydrodynamics(self):
@@ -55,7 +55,7 @@ class TestLoadConfig:
         """Test if all required key-words for the 'sub-littoral'-key in the 'depth 2'-key are in the configuration file:
         depth 3."""
         keys = list(self.config['depth-2']['sub-littoral'].keys())
-        for k in ('depth-upper', 'depth-lower'):
+        for k in ('depth-upper', 'depth-lower', 'low-water'):
             assert k in keys
 
     def test_keys_depth_2_littoral(self):

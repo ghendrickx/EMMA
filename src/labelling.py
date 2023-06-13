@@ -83,11 +83,11 @@ def depth_1_code(water_depth: float, lat: float=None, mhwn: float=None) -> str:
     # static determination
     elif lat is None and mhwn is None:
         # always inundated: sub-littoral
-        if water_depth > CONFIG['depth-1']['sub-littoral']:
+        if water_depth > CONFIG['depth-1']['low-water']:
             return '1'
 
         # generally drained: supra-littoral
-        elif water_depth < CONFIG['depth-1']['supra-littoral']:
+        elif water_depth < CONFIG['depth-1']['high-water']:
             return '3'
 
     # dynamic determination
@@ -154,6 +154,9 @@ def depth_2_code(
     :return: depth 2 code
     :rtype: str
     """
+    # optional arguments
+    mlws = mlws or CONFIG['depth-2']['sub-littoral']['low-water']
+
     # hard substratum: no depth 2 label/code
     if code_substratum_1 == '1':
         return ''
@@ -166,7 +169,7 @@ def depth_2_code(
     elif code_depth_1 == '1':
         if depth >= CONFIG['depth-2']['sub-littoral']['depth-upper']:
             return '1'
-        elif depth < CONFIG['depth-2']['sub-littoral']['depth-lower'] + (mlws or 0):
+        elif depth < CONFIG['depth-2']['sub-littoral']['depth-lower'] + mlws:
             return '3'
         return '2'
 
