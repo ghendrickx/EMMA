@@ -63,6 +63,8 @@ class MapData:
         # return data
         return data
 
+    # TODO: Validate compatibility of naming conventions; consider including these names in a configuration file as well
+
     @property
     def x_coordinates(self) -> np.ndarray:
         """
