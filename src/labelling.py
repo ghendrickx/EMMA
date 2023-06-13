@@ -59,7 +59,7 @@ def substratum_1_code(substratum_type: str) -> str:
     return '1'
 
 
-def depth_1_code(water_depth: float, lat: float=None, mhwn: float=None) -> str:
+def depth_1_code(water_depth: float, lat: float = None, mhwn: float = None) -> str:
     """Determine ecotope-code in the category 'depth 1'.
 
     :param water_depth: temporal mean water depth [m]
@@ -108,10 +108,10 @@ def hydrodynamics_code(velocity: float, code_depth_1: str) -> str:
     """Determine ecotope-code in the category 'hydrodynamic'.
 
     :param velocity: flow velocity [m/s]
-    :param depth: ecotope-code of 'depth 1'
+    :param code_depth_1: ecotope-code of 'depth 1'
 
     :type velocity: float
-    :type depth: str
+    :type code_depth_1: str
 
     :return: hydrodynamics code
     :rtype: str
@@ -133,7 +133,7 @@ def hydrodynamics_code(velocity: float, code_depth_1: str) -> str:
 
 
 def depth_2_code(
-        code_substratum_1: str, code_depth_1: str, depth: float, inundated: float, frequency: int, mlws: float=None
+        code_substratum_1: str, code_depth_1: str, depth: float, inundated: float, frequency: int, mlws: float = None
 ) -> str:
     """Determine ecotope-code in the category 'depth 2'.
 

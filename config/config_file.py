@@ -10,7 +10,7 @@ import os
 _LOG = logging.getLogger(__name__)
 
 
-def load_config(file_name: str=None, wd: str=None) -> dict:
+def load_config(file_name: str = None, wd: str = None) -> dict:
     """Load the default configuration file and update with values from a user-defined configuration file, if applicable.
 
     :param file_name: configuration file name, defaults to None
@@ -22,6 +22,7 @@ def load_config(file_name: str=None, wd: str=None) -> dict:
     :return: label configuration
     :rtype: dict
     """
+    # TODO: Implement option to use the built-in ZES.1 configuration
     # load default configuration
     with open(os.path.join(os.path.dirname(__file__), 'emma.json')) as f_default:
         default = json.load(f_default)

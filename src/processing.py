@@ -13,7 +13,7 @@ from src import labelling as lab, preprocessing as pre
 _LOG = logging.getLogger(__name__)
 
 
-def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
+def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> dict:
     """Map ecotopes from hydrodynamic model data.
 
     :param file_name:
@@ -24,38 +24,23 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
     # optional arguments
     time_axis = kwargs.get('time_axis', 0)
     model_sediment = kwargs.get('model_sediment', False)
-    substratum_1 = kwargs.get('substratum_1')
 
-    # substratum 1
+    # > substratum 1
+    substratum_1 = kwargs.get('substratum_1')
     assert substratum_1 in (None, 'soft', 'hard')
     _LOG.warning(f'`substratum 1` is uniformly applied: \"{substratum_1}\"')
 
-    # substratum 2
+    # > substratum 2
     shields = kwargs.get('shields', .03)
     chezy = kwargs.get('chezy', 60)
     r_density = kwargs.get('relative_density', 1.58)
     c_friction = kwargs.get('friction_coefficient')
 
-    # set configuration file
+    # > configuration file
     f_config = kwargs.get('config_file')
     wd_config = kwargs.get('config_wd')
-    lab.CONFIG = config_file.load_config(f_config, wd_config)
 
-    # extract model data
-    data = pre.MapData(file_name, wd=wd)
-    x_coordinates = data.x_coordinates
-    y_coordinates = data.y_coordinates
-    water_depth = data.water_depth
-    velocity = data.velocity
-    salinity = data.salinity
-    if model_sediment:
-        _LOG.warning('Retrieving grain sizes from the model not implemented.')
-        grain_sizes = data.grain_size
-    else:
-        grain_sizes = None
-    data.close()
-
-    # tidal characteristics
+    # > tidal characteristics
     mlws = kwargs.get('mlws')
     mhwn = kwargs.get('mhwn')
     if mlws is None or mhwn is None:
@@ -72,6 +57,23 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
         )
         lat = mlws
 
+    # set configuration
+    lab.CONFIG = config_file.load_config(f_config, wd_config)
+
+    # extract model data
+    data = pre.MapData(file_name, wd=wd)
+    x_coordinates = data.x_coordinates
+    y_coordinates = data.y_coordinates
+    water_depth = data.water_depth
+    velocity = data.velocity
+    salinity = data.salinity
+    if model_sediment:
+        _LOG.critical('Retrieving grain sizes from the model not implemented.')
+        grain_sizes = data.grain_size
+    else:
+        grain_sizes = None
+    data.close()
+
     # pre-process model data
     mean_salinity, std_salinity = pre.process_salinity(salinity, time_axis=time_axis)
     mean_depth, in_duration, in_frequency = pre.process_water_depth(water_depth, time_axis=time_axis)
@@ -83,7 +85,7 @@ def map_ecotopes(file_name: str, wd: str=None, **kwargs) -> dict:
 
     # ecotope-labelling
     char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
-    # noinspection PyTypeChecker
+    #       noinspection PyTypeChecker
     char_2 = np.full_like(char_1, lab.substratum_1_code(substratum_1), dtype=str)
     char_3 = np.vectorize(lab.depth_1_code)(mean_depth, lat, mhwn)
     char_4 = np.vectorize(lab.hydrodynamics_code)(max_velocity, char_3)

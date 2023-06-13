@@ -12,7 +12,7 @@ import numpy as np
 
 class MapData:
 
-    def __init__(self, file_name: str, wd: str=None) -> None:
+    def __init__(self, file_name: str, wd: str = None) -> None:
         """
         :param file_name: netCDF file name with map-data
         :param wd: working directory, defaults to None
@@ -38,7 +38,7 @@ class MapData:
         """Close the netCDF dataset."""
         self._data.close()
 
-    def get_variable(self, variable: str, max_dim: int=2) -> np.ndarray:
+    def get_variable(self, variable: str, max_dim: int = 2) -> np.ndarray:
         """Retrieve a variable from the netCDF dataset based on the variable key-word.
 
         :param variable: variable key-word
@@ -115,7 +115,7 @@ class MapData:
         return None
 
 
-def process_salinity(salinity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray]:
+def process_salinity(salinity: np.ndarray, time_axis: int = 0) -> typing.Tuple[np.ndarray, np.ndarray]:
     """Pre-process (depth-averaged) salinity time-series.
 
     :param salinity: (depth-averaged) salinity time-series
@@ -135,7 +135,9 @@ def process_salinity(salinity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.
     return mean_salinity, std_salinity
 
 
-def process_water_depth(water_depth: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def process_water_depth(
+        water_depth: np.ndarray, time_axis: int = 0
+) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Pre-process water depth time-series.
 
     :param water_depth: water depth time-series
@@ -157,7 +159,7 @@ def process_water_depth(water_depth: np.ndarray, time_axis: int=0) -> typing.Tup
     return mean_depth, duration, frequency
 
 
-def process_velocity(velocity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.ndarray, np.ndarray]:
+def process_velocity(velocity: np.ndarray, time_axis: int = 0) -> typing.Tuple[np.ndarray, np.ndarray]:
     """Pre-process flow velocity time-series.
 
     :param velocity: flow velocity time-series
@@ -179,7 +181,7 @@ def process_velocity(velocity: np.ndarray, time_axis: int=0) -> typing.Tuple[np.
 
 def grain_size_estimation(
         median_velocity: np.ndarray, *,
-        shields: float=.03, chezy: float=60, r_density: float=1.58, c_friction: float=None
+        shields: float = .03, chezy: float = 60, r_density: float = 1.58, c_friction: float = None
 ) -> np.ndarray:
     """Estimation of grain sizes based on (median) flow velocities. The grain sizes can either be determined from the
     critical Shields parameter, the Chezy coefficient, and the relative density; or a variable encompassing all three
