@@ -6,14 +6,15 @@ Authors: Soesja Brunink & Gijs G. Hendrickx
 import logging
 
 import numpy as np
+import typing
 
 from config import config_file
-from src import labelling as lab, preprocessing as pre
+from src import labelling as lab, preprocessing as pre, export as exp
 
 _LOG = logging.getLogger(__name__)
 
 
-def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> dict:
+def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict, None]:
     """Map ecotopes from hydrodynamic model data.
 
     :param file_name:
@@ -24,6 +25,10 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> dict:
     # optional arguments
     time_axis = kwargs.get('time_axis', 0)
     model_sediment = kwargs.get('model_sediment', False)
+    # > export ecotope-data
+    f_export: str = kwargs.get('f_export')
+    wd_export: str = kwargs.get('wd_export')
+    return_ecotopes: bool = kwargs.get('return_ecotopes', True)
 
     # > substratum 1
     substratum_1 = kwargs.get('substratum_1')
@@ -97,5 +102,11 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> dict:
         in zip(char_1, char_2, char_3, char_4, char_5, char_6)
     ]
 
+    # export ecotope-data
+    if f_export:
+        _LOG.warning(f'Currently, only exporting to a *.csv-file is supported.')
+        exp.export2csv(x_coordinates, y_coordinates, ecotopes, f_export, wd=wd_export)
+
     # return ecotope-map
-    return {(x, y): eco for x, y, eco in zip(x_coordinates, y_coordinates, ecotopes)}
+    if return_ecotopes:
+        return {(x, y): eco for x, y, eco in zip(x_coordinates, y_coordinates, ecotopes)}
