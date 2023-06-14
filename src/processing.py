@@ -17,43 +17,49 @@ _LOG = logging.getLogger(__name__)
 def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict, None]:
     """Map ecotopes from hydrodynamic model data.
 
-    :param file_name:
-    :param wd:
-    :param kwargs:
-    :return:
+    :param file_name: file name of hydrodynamic model output data (*.nc)
+    :param wd: working directory, defaults to None
+    :param kwargs: optional arguments
+
+    :type file_name: str
+    :type wd: str, optional
+    :type kwargs: optional
+
+    :return: spatial distribution of ecotopes (optional)
     """
     # optional arguments
-    time_axis = kwargs.get('time_axis', 0)
-    model_sediment = kwargs.get('model_sediment', False)
+    time_axis: int = kwargs.get('time_axis', 0)
+    model_sediment: bool = kwargs.get('model_sediment', False)
+
     # > export ecotope-data
     f_export: str = kwargs.get('f_export')
     wd_export: str = kwargs.get('wd_export')
     return_ecotopes: bool = kwargs.get('return_ecotopes', True)
 
     # > substratum 1
-    substratum_1 = kwargs.get('substratum_1')
+    substratum_1: str = kwargs.get('substratum_1')
     assert substratum_1 in (None, 'soft', 'hard')
     _LOG.warning(f'`substratum 1` is uniformly applied: \"{substratum_1}\".')
 
     # > substratum 2
-    shields = kwargs.get('shields', .03)
-    chezy = kwargs.get('chezy', 60)
-    r_density = kwargs.get('relative_density', 1.58)
-    c_friction = kwargs.get('friction_coefficient')
+    shields: float = kwargs.get('shields', .03)
+    chezy: float = kwargs.get('chezy', 60)
+    r_density: float = kwargs.get('relative_density', 1.58)
+    c_friction: float = kwargs.get('friction_coefficient')
 
     # > configuration file
-    f_config = kwargs.get('config_file')
-    wd_config = kwargs.get('config_wd')
+    f_config: str = kwargs.get('config_file')
+    wd_config: str = kwargs.get('config_wd')
 
     # > tidal characteristics
-    mlws = kwargs.get('mlws')
-    mhwn = kwargs.get('mhwn')
+    mlws: float = kwargs.get('mlws')
+    mhwn: float = kwargs.get('mhwn')
     if mlws is None or mhwn is None:
         _LOG.warning(
             f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]. '
             f'If not provided, the hard-coded values in the configuration-file ({f_config or "emma.json"}) are used.'
         )
-    lat = kwargs.get('lat')
+    lat: float = kwargs.get('lat')
     if lat is None and f_config not in ('zes1.json',):
         _LOG.warning(
             f'Lowest astronomical tide (LAT) not provided (`lat={lat}` [m])`; '
