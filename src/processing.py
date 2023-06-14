@@ -46,11 +46,10 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> dict:
     if mlws is None or mhwn is None:
         _LOG.warning(
             f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]. '
-            f'If not provided, they should be hard-coded in the configuration-file.'
+            f'If not provided, the hard-coded values in the configuration-file ({f_config or "emma.json"}) are used.'
         )
     lat = kwargs.get('lat')
-    if lat is None:
-        # TODO: Do not raise this warning in case ZES.1 configuration is used!
+    if lat is None and f_config not in ('zes1.json',):
         _LOG.warning(
             f'Lowest astronomical tide (LAT) not provided (`lat={lat}` [m])`; '
             f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance`.'

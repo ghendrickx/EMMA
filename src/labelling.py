@@ -90,7 +90,7 @@ def depth_1_code(water_depth: float, lat: float = None, mhwn: float = None) -> s
         elif water_depth < CONFIG['depth-1']['high-water']:
             return '3'
 
-    # dynamic determination
+    # quasi-static determination
     elif lat is not None and mhwn is not None:
         # always inundated: sub-littoral
         if water_depth > lat:
