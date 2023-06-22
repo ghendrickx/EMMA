@@ -95,6 +95,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
         grain_sizes = pre.grain_size_estimation(
             med_velocity, shields=shields, chezy=chezy, r_density=r_density, c_friction=c_friction
         )
+    _LOG.info(f'Model data pre-processed')
 
     # ecotope-labelling
     char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
@@ -110,6 +111,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
         for c1, c2, c3, c4, c5, c6
         in zip(char_1, char_2, char_3, char_4, char_5, char_6)
     ]
+    _LOG.info(f'Ecotopes defined: {len(ecotopes)} instances; {len(np.unique(ecotopes))} unique ecotopes')
 
     # export ecotope-data
     if f_export:
