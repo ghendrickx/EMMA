@@ -116,7 +116,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     # export ecotope-data
     if f_export:
         _LOG.warning(f'Currently, only exporting to a *.csv-file is supported.')
-        exp.export2csv(x_coordinates, y_coordinates, ecotopes, f_export, wd=wd_export)
+        exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
 
     # return ecotope-map
     if return_ecotopes:
