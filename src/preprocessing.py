@@ -3,11 +3,14 @@ Pre-processing of output data of hydrodynamic model.
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
+import logging
 import os
 import typing
 
 import netCDF4
 import numpy as np
+
+_LOG = logging.getLogger(__name__)
 
 
 class MapData:
@@ -23,11 +26,12 @@ class MapData:
         :type file_name: str
         :type wd: str
         """
-        self.file_name = file_name
-        self.wd = wd or os.getcwd()
+        self.file = os.path.join(wd or os.getcwd(), file_name)
 
-        self._data = netCDF4.Dataset(os.path.join(self.wd, self.file_name))
+        self._data = netCDF4.Dataset(self.file)
         self._velocity = None
+
+        _LOG.info(f'Map-file loaded: {self.file}')
 
     @property
     def data(self) -> netCDF4.Dataset:
@@ -40,6 +44,8 @@ class MapData:
     def close(self) -> None:
         """Close the netCDF dataset."""
         self._data.close()
+
+        _LOG.info(f'NetCDF-file closed: {self.file}')
 
     def get_variable(self, variable: str, max_dim: int = 2) -> np.ndarray:
         """Retrieve a variable from the netCDF dataset based on the variable key-word.
@@ -136,6 +142,9 @@ def process_salinity(salinity: np.ndarray, time_axis: int = 0) -> typing.Tuple[n
     mean_salinity = np.mean(salinity, axis=time_axis)
     std_salinity = np.std(salinity, axis=time_axis)
 
+    # logging
+    _LOG.info('Salinity-data pre-processed')
+
     # return processed data
     return mean_salinity, std_salinity
 
@@ -160,6 +169,9 @@ def process_water_depth(
     sign_changes = np.diff(np.sign(water_depth), axis=time_axis)
     frequency = np.count_nonzero(sign_changes, axis=time_axis) / 2
 
+    # logging
+    _LOG.info('Water depth- & flooding/drying-data pre-processed')
+
     # return processed data
     return mean_depth, duration, frequency
 
@@ -179,6 +191,9 @@ def process_velocity(velocity: np.ndarray, time_axis: int = 0) -> typing.Tuple[n
     # collapse time axis
     median_velocity = np.median(velocity, axis=time_axis)
     max_velocity = np.max(velocity, axis=time_axis)
+
+    # logging
+    _LOG.info('Flow velocity-data pre-processed')
 
     # return processed data
     return median_velocity, max_velocity
