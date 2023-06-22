@@ -70,7 +70,7 @@ class TestDepth1Code:
 
     def test_sub_littoral(self):
         """Test the ecotope-code determination resulting in 'sub-littoral' ('1')."""
-        output = lab.depth_1_code(2.5)
+        output = lab.depth_1_code(2.8)
         assert output == '1'
 
     def test_littoral(self):
@@ -94,22 +94,22 @@ class TestHydrodynamicsCode:
 
     def test_sub_littoral_high_energy(self):
         """Test the ecotope-code determination resulting in 'high energy' ('1') for 'sub-littoral' ('1') conditions."""
-        output = lab.hydrodynamics_code(.9, '1')
+        output = lab.hydrodynamics_code(.7, '1')
         assert output == '1'
 
     def test_sub_littoral_low_energy(self):
         """Test the ecotope-code determination resulting in 'low energy' ('2') for 'sub-littoral' ('1') conditions."""
-        output = lab.hydrodynamics_code(.7, '1')
+        output = lab.hydrodynamics_code(.6, '1')
         assert output == '2'
 
     def test_littoral_high_energy(self):
         """Test the ecotope-code determination resulting in 'high energy' ('1') for 'littoral' ('2') conditions."""
-        output = lab.hydrodynamics_code(.3, '2')
+        output = lab.hydrodynamics_code(.7, '2')
         assert output == '1'
 
     def test_littoral_low_energy(self):
         """Test the ecotope-code determination resulting in 'low energy' ('2') for 'littoral' ('2') conditions."""
-        output = lab.hydrodynamics_code(.1, '2')
+        output = lab.hydrodynamics_code(.6, '2')
         assert output == '2'
 
     def test_stagnant(self):
@@ -138,12 +138,12 @@ class TestDepth2Code:
 
     def test_sub_littoral_very_deep(self):
         """Test the ecotope-code determination resulting in 'very deep' ('1') for 'sub-littoral' ('1') conditions."""
-        output = lab.depth_2_code('2', '1', 11., 0., 0)
+        output = lab.depth_2_code('2', '1', 35., 0., 0)
         assert output == '1'
 
     def test_sub_littoral_deep(self):
         """Test the ecotope-code determination resulting in 'deep' ('2') for 'sub-littoral' ('1') conditions."""
-        output = lab.depth_2_code('2', '1', 8., 0., 0)
+        output = lab.depth_2_code('2', '1', 13., 0., 0)
         assert output == '2'
 
     def test_sub_littoral_shallow(self):
