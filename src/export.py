@@ -12,9 +12,9 @@ _LOG = logging.getLogger(__name__)
 
 
 def _file_name(default: str, extension: str = None) -> callable:
-    """Decorator to define default file name and do the logging of file-handling.
+    """Decorator to define default file name and log the file-location of the exported data.
 
-    :param default:  default file name
+    :param default: default file name
     :param extension: file extension, defaults to None
 
     :type default: str
@@ -34,16 +34,15 @@ def _file_name(default: str, extension: str = None) -> callable:
             wd = kwargs.pop('wd', os.getcwd())
 
             # function execution
-            if kwargs:
-                func(*args, file_name=file_name, wd=wd, **kwargs)
-            else:
-                func(*args, file_name=file_name, wd=wd)
+            func(*args, file_name=file_name, wd=wd, **kwargs)
 
             # logging
             _LOG.info(f'Data exported: {os.path.join(wd, file_name)}')
 
+        # return wrapper function
         return wrapper
 
+    # return decorator function
     return decorator
 
 
