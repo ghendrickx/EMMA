@@ -186,7 +186,7 @@ def process_velocity(velocity: np.ndarray, time_axis: int = 0) -> typing.Tuple[n
 
 def grain_size_estimation(
         median_velocity: np.ndarray, *,
-        shields: float = .03, chezy: float = 60, r_density: float = 1.58, c_friction: float = None
+        shields: float = .07, chezy: float = 50, r_density: float = 1.58, c_friction: float = None
 ) -> np.ndarray:
     """Estimation of grain sizes based on (median) flow velocities. The grain sizes can either be determined from the
     critical Shields parameter, the Chezy coefficient, and the relative density; or a variable encompassing all three
@@ -197,7 +197,7 @@ def grain_size_estimation(
     :param shields: critical Shields parameters [-], defaults to .03
     :param chezy: Chezy coefficient [m^(1/2) /s], defaults to 60
     :param r_density: relative density between sediment and water [-], defaults to 1.58
-    :param c_friction: proxy of bottom friction coefficient [s2], defaults to None
+    :param c_friction: proxy of bottom friction coefficient [s2 /m], defaults to None
 
     :type median_velocity: numpy.ndarray
     :type shields: float, optional
@@ -209,5 +209,5 @@ def grain_size_estimation(
     :rtype: numpy.ndarray
     """
     if c_friction is None:
-        c_friction = 1 / (shields * r_density * chezy ** 2)
-    return (c_friction * median_velocity ** 2) * 1e6
+        c_friction = 1e6 / (shields * r_density * chezy ** 2)
+    return c_friction * median_velocity ** 2
