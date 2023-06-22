@@ -1,3 +1,5 @@
+![Tests](https://github.com/ghendrickx/EMMA/actions/workflows/tests.yml/badge.svg)
+
 # EMMA
 The _Ecotope Map Maker based on Abiotics_ (EMMA) facilitates the translation from hydrodynamic model output data to 
 ecotope maps. _Ecotopes_ are ecological units that are defined by abiotic, biotic, and anthropogenic local conditions.

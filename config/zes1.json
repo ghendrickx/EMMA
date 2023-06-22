@@ -1,0 +1,39 @@
+{
+  "salinity": {
+    "variable": 4,
+    "fresh": 5.4,
+    "marine": 18
+  },
+  "depth-1": {
+    "low-water": 2.31,
+    "high-water": -1.85
+  },
+  "hydrodynamics": {
+    "stagnant": 0,
+    "sub-littoral": 0.8,
+    "littoral": 0.2
+  },
+  "depth-2": {
+    "sub-littoral": {
+      "depth-upper": 10,
+      "depth-lower": 5,
+      "low-water": 2.31
+    },
+    "littoral": {
+      "inundation-upper": 0.75,
+      "inundation-lower": 0.25
+    },
+    "supra-littoral": {
+      "frequency-1": 300,
+      "frequency-2": 150,
+      "frequency-3": 50
+    }
+  },
+  "substratum-2": {
+    "soft": {
+      "silt": 25,
+      "fines": 250,
+      "sand": 2000
+    }
+  }
+}
