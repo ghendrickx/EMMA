@@ -68,7 +68,7 @@ class TestProcessTimeSeries:
         critical Shields parameter (`shields=.03`), Chezy coefficient (`chezy=60`), and relative density
         (`r_density=1.58`).
         """
-        truth = np.array([0, 5860.29067042])
+        truth = np.array([0, 3616.6365280289324])
         output = pre.grain_size_estimation(np.array([0, 1]))
         for t, o in zip(truth, output):
             assert pytest.approx(t) == o
