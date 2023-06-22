@@ -81,7 +81,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
         lat = mlws
 
     # set configuration
-    lab.CONFIG = config_file.load_config(f_config, wd_config)
+    lab.CONFIG = config_file.load_config('emma.json', f_config, wd_config)
 
     # extract model data
     data = pre.MapData(file_name, wd=wd)

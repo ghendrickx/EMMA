@@ -13,7 +13,7 @@ class TestLoadConfig:
 
     def setup_method(self):
         """Initialise with default configuration."""
-        self.config = load_config()
+        self.config = load_config('emma.json')
 
     def test_keys(self):
         """Test if all required key-words are in the configuration file: depth 1."""
