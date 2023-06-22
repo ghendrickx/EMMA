@@ -175,9 +175,9 @@ def depth_2_code(
 
     # littoral: inundation time
     elif code_depth_1 == '2':
-        if inundated > CONFIG['depth-2']['littoral']['inundation-upper']:
+        if inundated >= CONFIG['depth-2']['littoral']['inundation-upper']:
             return '1'
-        elif inundated < CONFIG['depth-2']['littoral']['inundation-lower']:
+        elif inundated <= CONFIG['depth-2']['littoral']['inundation-lower']:
             return '3'
         return '2'
 
