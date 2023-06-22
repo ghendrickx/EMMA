@@ -31,6 +31,10 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     time_axis: int = kwargs.get('time_axis', 0)
     model_sediment: bool = kwargs.get('model_sediment', False)
 
+    # > configuration file
+    f_config: str = kwargs.get('config_file')
+    wd_config: str = kwargs.get('config_wd')
+
     # > export ecotope-data
     f_export: str = kwargs.get('f_export')
     wd_export: str = kwargs.get('wd_export')
@@ -42,14 +46,13 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     _LOG.warning(f'`substratum 1` is uniformly applied: \"{substratum_1}\".')
 
     # > substratum 2
-    shields: float = kwargs.get('shields', .03)
-    chezy: float = kwargs.get('chezy', 60)
+    shields: float = kwargs.get('shields', .07)
+    chezy: float = kwargs.get('chezy', 50)
     r_density: float = kwargs.get('relative_density', 1.58)
     c_friction: float = kwargs.get('friction_coefficient')
-
-    # > configuration file
-    f_config: str = kwargs.get('config_file')
-    wd_config: str = kwargs.get('config_wd')
+    # >> calibrated `c_friction`-value
+    if f_config in (None, 'emma.json') and substratum_1 == 'soft':
+        c_friction = 1300
 
     # > tidal characteristics
     mlws: float = kwargs.get('mlws')
