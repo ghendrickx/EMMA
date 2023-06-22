@@ -4,6 +4,7 @@ Processing of output data of hydrodynamic model by labelling the ecotopes.
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
 import logging
+import time
 
 import numpy as np
 import typing
@@ -27,6 +28,9 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
 
     :return: spatial distribution of ecotopes (optional)
     """
+    # start time
+    t0 = time.perf_counter()
+
     # optional arguments
     time_axis: int = kwargs.get('time_axis', 0)
     model_sediment: bool = kwargs.get('model_sediment', False)
@@ -39,6 +43,12 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     f_export: str = kwargs.get('f_export')
     wd_export: str = kwargs.get('wd_export')
     return_ecotopes: bool = kwargs.get('return_ecotopes', True)
+
+    # set logging configuration
+    export_log: bool = kwargs.get('export_log', True)
+    if export_log:
+        log_file = export_log if isinstance(export_log, str) else None
+        exp.export2log(kwargs.get('log_level', 'warning'), file_name=log_file, wd=wd_export)
 
     # > substratum 1
     substratum_1: str = kwargs.get('substratum_1')
@@ -117,6 +127,10 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     if f_export:
         _LOG.warning(f'Currently, only exporting to a *.csv-file is supported.')
         exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
+
+    # logging
+    t1 = time.perf_counter()
+    _LOG.info(f'Ecotope-map generated in {t1 - t0:.4f} seconds')
 
     # return ecotope-map
     if return_ecotopes:
