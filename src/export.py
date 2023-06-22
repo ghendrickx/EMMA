@@ -62,7 +62,7 @@ def _default_file_name(file_name: str, default: str, extension: str = None):
     :rtype: str
     """
     if file_name is None:
-        _LOG.info(f'Default file-name used: {default}')
+        _LOG.info(f'Default file name used: {default}')
         return default
 
     if extension is None:
@@ -73,7 +73,35 @@ def _default_file_name(file_name: str, default: str, extension: str = None):
     if not file_name.endswith(extension):
         return f'{file_name.split(".")[0]}{extension}'
 
+    _LOG.info(f'Custom file name used: {file_name}')
     return file_name
+
+
+@_file_name(default='emma.log')
+def export2log(level: str, *, file_name: str = None, wd: str = None) -> None:
+    """Export log-file of the determination of the ecotope-map(s).
+
+    :param level: logging level
+    :param file_name: file name, defaults to None
+    :param wd: working directory, defaults to None
+
+    :type level: str
+    :type file_name: str, optional
+    :type wd: str, optional
+    """
+    # remove previous log-file
+    file = os.path.join(wd, file_name)
+    if os.path.exists(file):
+        os.remove(file)
+
+    # set logging configuration
+    logging.basicConfig(
+        filename=file,
+        filemode='a',
+        format='%(asctime)s %(name)s %(levelname)s %(message)s',
+        datefmt='%H:%M:%S',
+        level=level.upper()
+    )
 
 
 @_file_name(default='ecotopes.csv')
