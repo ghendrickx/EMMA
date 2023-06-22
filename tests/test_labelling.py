@@ -17,6 +17,7 @@ class TestSalinityCode:
 
     def test_unknown(self):
         """Test the ecotope-code determination when insufficient data is available."""
+        # noinspection PyTypeChecker
         output = lab.salinity_code(None, 0)
         assert output == 'x'
 
@@ -46,6 +47,7 @@ class TestSubstratum1Code:
 
     def test_unknown(self):
         """Test the ecotope-code determination when insufficient data is available."""
+        # noinspection PyTypeChecker
         output = lab.substratum_1_code(None)
         assert output == 'x'
 
@@ -65,6 +67,7 @@ class TestDepth1Code:
 
     def test_unknown(self):
         """Test the ecotope-code determination when insufficient data is available."""
+        # noinspection PyTypeChecker
         output = lab.depth_1_code(None)
         assert output == 'x'
 
@@ -89,6 +92,7 @@ class TestHydrodynamicsCode:
 
     def test_unknown(self):
         """Test the ecotope-code determination when insufficient data is available."""
+        # noinspection PyTypeChecker
         output = lab.hydrodynamics_code(None, '')
         assert output == 'x'
 
@@ -128,6 +132,7 @@ class TestDepth2Code:
 
     def test_unknown(self):
         """Test the ecotope-code determination when insufficient data is available."""
+        # noinspection PyTypeChecker
         output = lab.depth_2_code('', None, 0., 0., 0)
         assert output == 'x'
 
@@ -205,6 +210,7 @@ class TestSubstratum2Code:
 
     def test_unknown(self):
         """Test the ecotope-code determination when insufficient data is available."""
+        # noinspection PyTypeChecker
         output = lab.substratum_2_code(None, '', 0.)
         assert output == 'x'
 
@@ -215,6 +221,7 @@ class TestSubstratum2Code:
 
     def test_hydrodynamics_unknown(self):
         """Test the ecotope-code determination when insufficient data is available."""
+        # noinspection PyTypeChecker
         output = lab.substratum_2_code('1', None, 0.)
         assert output == 'x'
 
@@ -241,6 +248,7 @@ class TestSubstratum2Code:
 
     def test_grains_unknown(self):
         """Test the ecotope-code determination when insufficient data is available."""
+        # noinspection PyTypeChecker
         output = lab.substratum_2_code('2', '', None)
         assert output == 'x'
 
