@@ -29,11 +29,13 @@ def load_config(file_name: str = None, wd: str = None) -> dict:
     # no user-defined configuration
     if file_name is None:
         user = {}
+        _LOG.info(f'Default configuration used: emma.json')
 
     # built-in ZES.1 configuration
     elif file_name in ('zes1.json',):
         with open(os.path.join(os.path.dirname(__file__), file_name)) as f_builtin:
             user = json.load(f_builtin)
+        _LOG.info(f'Built-in ZES.1 configuration used: zes1.json')
 
     # custom (partial) configuration
     else:
@@ -45,9 +47,13 @@ def load_config(file_name: str = None, wd: str = None) -> dict:
         except FileNotFoundError:
             _LOG.warning(f'Custom configuration file not found: \"{file}\".')
             user = {}
+        else:
+            _LOG.info(f'Custom configuration file used: file')
 
     # merge configurations
     default.update(user)
+    if user:
+        _LOG.warning(f'Default configuration replaced: {user}')
 
     # return configuration
     return default
