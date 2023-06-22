@@ -65,10 +65,29 @@ class TestProcessTimeSeries:
 
     def test_grain_size_estimation(self):
         """Estimation of grain sizes based on the median flow velocity with default values of the optional arguments:
-        critical Shields parameter (`shields=.03`), Chezy coefficient (`chezy=60`), and relative density
+        critical Shields parameter (`shields=.07`), Chezy coefficient (`chezy=50`), and relative density
         (`r_density=1.58`).
         """
         truth = np.array([0, 3616.6365280289324])
-        output = pre.grain_size_estimation(np.array([0, 1]))
+        output = pre.grain_size_estimation(np.array([0, 1]), shields=.07, chezy=50, r_density=1.58)
+        for t, o in zip(truth, output):
+            assert pytest.approx(t) == o
+
+    def test_grain_size_estimation_custom(self):
+        """Estimation of grain sizes based on the median flow velocity with custom values of the optional arguments:
+        critical Shields parameter (`shields=.07`), Chezy coefficient (`chezy=50`), and relative density
+        (`r_density=1.58`).
+        """
+        truth = np.array([0, 5860.29067042])
+        output = pre.grain_size_estimation(np.array([0, 1]), shields=.03, chezy=60, r_density=1.58)
+        for t, o in zip(truth, output):
+            assert pytest.approx(t) == o
+
+    def test_grain_size_estimation_mod(self):
+        """Estimation of grain sizes based on the median flow velocity with EMMA's calibrated, grouped friction
+        parameter (`c_friction=1300`).
+        """
+        truth = np.array([0, 1300])
+        output = pre.grain_size_estimation(np.array([0, 1]), c_friction=1300)
         for t, o in zip(truth, output):
             assert pytest.approx(t) == o
