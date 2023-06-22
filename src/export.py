@@ -3,9 +3,12 @@ Export ecotope-map.
 
 Author: Gijs G. Hendrickx
 """
+import logging
 import os
 
 import typing
+
+_LOG = logging.getLogger(__name__)
 
 
 def _file_extension(file_name: str, file_ext: str) -> str:
@@ -56,6 +59,9 @@ def export2csv(x: typing.Sized, y: typing.Sized, ecotopes: typing.Sized, file_na
     with open(file, mode='w') as f:
         for xi, yi, ei in zip(x, y, ecotopes):
             f.write(f'{xi},{yi},{ei}\n')
+
+    # logging
+    _LOG.info(f'Ecotope-data exported: {file}')
 
 
 def export2nc(data: dict, file_name: str, wd: str = None) -> None:
