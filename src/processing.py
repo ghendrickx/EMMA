@@ -52,7 +52,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     c_friction: float = kwargs.get('friction_coefficient')
     # >> calibrated `c_friction`-value
     if f_config in (None, 'emma.json') and substratum_1 == 'soft':
-        c_friction = 1300
+        c_friction = c_friction or 1300
 
     # > tidal characteristics
     mlws: float = kwargs.get('mlws')
