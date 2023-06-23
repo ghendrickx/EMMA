@@ -10,8 +10,7 @@ refers to an ecosystem as it can be mapped.
 This simple `python`-interface allows to map ecotopes (or habitats) based on the abiotic output from an hydrodynamic 
 model. It does so by a modified version of the [ZES.1](https://edepot.wur.nl/174540) classification system. The
 hydrodynamic model must contain the following hydrodynamic parameters:
--   water depth;
--   water level;
+-   water depth (and level);
 -   flow velocity; and
 -   salinity.
 
@@ -23,3 +22,72 @@ Gijs G. Hendrickx
 (Delft University of Technology).
 
 Contact: [G.G.Hendrickx@tudelft.nl](mailto:G.G.Hendrickx@tudelft.nl?subject=[GitHub]%20ANNESI: ).
+
+## Requirements
+This repository has the following requirements (see also [`requirements.txt`](requirements.txt)):
+- `numpy>=1.19.4`
+- `netCDF>=1.5.7`
+
+## Basic usage
+The basic usage of `EMMA` requires calling the `map_ecotopes()`-function:
+```python
+from src.processing import map_ecotopes
+
+dict_ecotopes = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/directory>')
+```
+By default, `EMMA` expects the relevant variables to be named as stated by [`dfm2d.json`](config/dfm2d.json). In case
+these key-words differ in the provided `netCDF`-file, provide a custom (partially overwriting) `*.json`-file with the
+same key-words as in [`dfm2d.json`](config/dfm2d.json):
+```python
+from src.processing import map_ecotopes
+
+dict_ecotopes = map_ecotopes(
+    '<hydrodynamic_output_data_file>.nc', wd='<working/directory>',
+    f_map_config='<map-configuration>.json'
+)
+```
+where `<map-configuration>.json` is formatted as follows:
+```json
+{
+  "x-coordinates": "<key-word>",
+  "y-coordinates": "<key-word>",
+  "water-depth": "<key-word>",
+  "x-velocity": "<key-word>",
+  "y-velocity": "<key-word>",
+  "salinity": "<key-word>"
+}
+```
+
+## Structure
+The main features of `EMMA` is located in the [`src`](src)-directory, and the built-in configurations are grouped in the
+[`config`](config)-directory:
+```
++-- .github/
+|   +-- workflows/
+|   |   +-- tests.yml
++-- config/
+|   +-- __init__.py
+|   +-- config_file.py
+|   +-- dfm2d.json
+|   +-- emma.json
+|   +-- zes1.json
++-- src/
+|   +-- __init__.py
+|   +-- export.py
+|   +-- labelling.py
+|   +-- performance.py
+|   +-- preprocessing.py
+|   +-- processing.py
++-- tests/
+|   +-- __init__.py
+|   +-- test_config.py
+|   +-- test_labelling.py
+|   +-- test_preprocessing.py
++-- .gitignore
++-- LICENSE
++-- README.md
++-- requirements.txt
+```
+
+## License
+This repository is licensed under [`Apache License 2.0`](LICENSE).

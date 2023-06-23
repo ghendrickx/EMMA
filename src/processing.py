@@ -21,14 +21,52 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     :param file_name: file name of hydrodynamic model output data (*.nc)
     :param wd: working directory, defaults to None
     :param kwargs: optional arguments
+        chezy: Chezy coefficient, defaults to 50
+        export_log: export log-file, defaults to None
+        f_eco_config: file name of ecotopes configuration file, defaults to None
+        f_export: file name for exporting ecotope map(s), defaults to None
+        f_map_config: file name of mapping configuration file, defaults to None
+        friction_coefficient: proxy friction coefficient combining `shields`, `chezy`, and `relative_density`,
+            defaults to None
+        lat: lowest astronomical tide, defaults to None
+        log_level: level of log-statements printed/filed, defaults to 'warning'
+        mhwn: mean high water, neap tide, defaults to None
+        mlws: mean low water, spring tide, defaults to None
+        model_sediment: sediment data is included in model output data, defaults to False [not implemented]
+        relative_density: relative density of sediment w.r.t. (sea) water, defaults to 1.58
+        return_ecotopes: return a dictionary with the ecotopes using (x,y)-coordinates as keys, defaults to True
+        shields: critical Shields parameter, defaults to 0.07
+        substratum_1: definition of substratum {None, 'soft', 'hard'}, defaults to None
+        time_axis: time-axis in model output data, defaults to 0
+        wd_config: working directory of configuration file(s), defaults to None
+        wd_export: working directory for exporting ecotope map(s), defaults to None
 
     :type file_name: str
     :type wd: str, optional
     :type kwargs: optional
-
-    # TODO: Update documentation that includes all optional arguments (i.e., `kwargs`)
+        chezy: float
+        export_log: bool, str
+        f_eco_config: str
+        f_export: str
+        f_map_config: str
+        friction_coefficient: float
+        lat: float
+        log_level: str
+        mhwn: float
+        mlws: float
+        model_sediment: bool
+        relative_density: float
+        return_ecotopes: bool
+        shields: float
+        substratum_1: str
+        time_axis: int
+        wd_config: str
+        wd_export: str
 
     :return: spatial distribution of ecotopes (optional)
+    :rtype: dict, None
+
+    :raise AssertionError: if `substratum_1` not in {None, 'soft', 'hard'}
     """
     # start time
     t0 = time.perf_counter()
@@ -43,12 +81,12 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     map_config: str = kwargs.get('f_map_config')
 
     # > export ecotope-data
-    f_export: str = kwargs.get('f_export')
     wd_export: str = kwargs.get('wd_export')
+    f_export: str = kwargs.get('f_export')
     return_ecotopes: bool = kwargs.get('return_ecotopes', True)
 
     # > set logging configuration
-    export_log: bool = kwargs.get('export_log', True)
+    export_log: typing.Union[bool, str] = kwargs.get('export_log', wd_export is not None)
     if export_log:
         log_file = export_log if isinstance(export_log, str) else None
         exp.export2log(kwargs.get('log_level', 'warning'), file_name=log_file, wd=wd_export)
