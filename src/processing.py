@@ -26,6 +26,8 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     :type wd: str, optional
     :type kwargs: optional
 
+    # TODO: Update documentation that includes all optional arguments (i.e., `kwargs`)
+
     :return: spatial distribution of ecotopes (optional)
     """
     # start time
@@ -36,15 +38,16 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     model_sediment: bool = kwargs.get('model_sediment', False)
 
     # > configuration file
-    f_config: str = kwargs.get('config_file')
-    wd_config: str = kwargs.get('config_wd')
+    wd_config: str = kwargs.get('wd_config')
+    eco_config: str = kwargs.get('f_eco_config')
+    map_config: str = kwargs.get('f_map_config')
 
     # > export ecotope-data
     f_export: str = kwargs.get('f_export')
     wd_export: str = kwargs.get('wd_export')
     return_ecotopes: bool = kwargs.get('return_ecotopes', True)
 
-    # set logging configuration
+    # > set logging configuration
     export_log: bool = kwargs.get('export_log', True)
     if export_log:
         log_file = export_log if isinstance(export_log, str) else None
@@ -53,7 +56,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     # > substratum 1
     substratum_1: str = kwargs.get('substratum_1')
     assert substratum_1 in (None, 'soft', 'hard')
-    _LOG.warning(f'`substratum 1` is uniformly applied: \"{substratum_1}\".')
+    _LOG.warning(f'`substratum_1` is uniformly applied: \"{substratum_1}\"')
 
     # > substratum 2
     shields: float = kwargs.get('shields', .07)
@@ -61,27 +64,28 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     r_density: float = kwargs.get('relative_density', 1.58)
     c_friction: float = kwargs.get('friction_coefficient')
     # >> calibrated `c_friction`-value
-    if f_config in (None, 'emma.json') and substratum_1 == 'soft':
+    if eco_config in (None, 'emma.json') and substratum_1 == 'soft':
         c_friction = c_friction or 1300
 
     # > tidal characteristics
     mlws: float = kwargs.get('mlws')
     mhwn: float = kwargs.get('mhwn')
     if mlws is None or mhwn is None:
-        _LOG.warning(
-            f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]. '
-            f'If not provided, the hard-coded values in the configuration-file ({f_config or "emma.json"}) are used.'
-        )
+        _LOG.warning(f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]')
+        _LOG.info(f'the hard-coded values in the configuration-file ({eco_config or "emma.json"}) are used')
     lat: float = kwargs.get('lat')
-    if lat is None and f_config not in ('zes1.json',):
+    if lat is None and eco_config not in ('zes1.json',):
         _LOG.warning(
             f'Lowest astronomical tide (LAT) not provided (`lat={lat}` [m])`; '
-            f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance`.'
+            f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance`'
         )
         lat = mlws
 
-    # set configuration
-    lab.CONFIG = config_file.load_config(f_config, wd_config)
+    # set configurations
+    # > ecotope configuration
+    lab.CONFIG = config_file.load_config('emma.json', eco_config, wd_config)
+    # > map configuration
+    pre.CONFIG = config_file.load_config('dfm2d.json', map_config, wd_config)
 
     # extract model data
     data = pre.MapData(file_name, wd=wd)
@@ -91,7 +95,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     velocity = data.velocity
     salinity = data.salinity
     if model_sediment:
-        _LOG.warning('Retrieving grain sizes from the model not implemented.')
+        _LOG.warning('Retrieving grain sizes from the model not implemented')
         grain_sizes = data.grain_size
     else:
         grain_sizes = None

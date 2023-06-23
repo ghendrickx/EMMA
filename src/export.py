@@ -31,7 +31,7 @@ def _file_name(default: str, extension: str = None) -> callable:
             """Wrapper function."""
             # export settings
             file_name = _default_file_name(kwargs.pop('file_name', None), default=default, extension=extension)
-            wd = kwargs.pop('wd', os.getcwd())
+            wd = kwargs.pop('wd', None) or os.getcwd()
 
             # function execution
             func(*args, file_name=file_name, wd=wd, **kwargs)

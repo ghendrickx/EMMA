@@ -12,6 +12,8 @@ import numpy as np
 
 _LOG = logging.getLogger(__name__)
 
+CONFIG = dict()
+
 
 class MapData:
     """Interface to open, read, and close a netCDF-file with built-in functions to extract the relevant data and
@@ -32,6 +34,9 @@ class MapData:
         self._velocity = None
 
         _LOG.info(f'Map-file loaded: {self.file}')
+
+        if not CONFIG:
+            _LOG.critical(f'No map-configuration defined when initialising {self.__class__.__name__}')
 
     @property
     def data(self) -> netCDF4.Dataset:
@@ -77,7 +82,7 @@ class MapData:
         :return: x-coordinates
         :rtype: numpy.ndarray
         """
-        return self.get_variable('FlowElem_xcc')
+        return self.get_variable(CONFIG['x-coordinates'])
 
     @property
     def y_coordinates(self) -> np.ndarray:
@@ -85,7 +90,7 @@ class MapData:
         :return: y-coordinates
         :rtype: numpy.ndarray
         """
-        return self.get_variable('FlowElem_ycc')
+        return self.get_variable(CONFIG['y-coordinates'])
 
     @property
     def water_depth(self) -> np.ndarray:
@@ -93,7 +98,7 @@ class MapData:
         :return: water levels [m]
         :rtype: numpy.ndarray
         """
-        return self.get_variable('waterdepth')
+        return self.get_variable(CONFIG['water-depth'])
 
     @property
     def velocity(self) -> np.ndarray:
@@ -102,7 +107,9 @@ class MapData:
         :rtype: numpy.ndarray
         """
         if self._velocity is None:
-            self._velocity = np.sqrt(self.get_variable('ucx') ** 2 + self.get_variable('ucy') ** 2)
+            self._velocity = np.sqrt(
+                self.get_variable(CONFIG['x-velocity']) ** 2 + self.get_variable(CONFIG['y-velocity']) ** 2
+            )
 
         return self._velocity
 
@@ -112,10 +119,7 @@ class MapData:
         :return: depth-averaged salinity [psu]
         :rtype: numpy.ndarray
         """
-        try:
-            return self.get_variable('salinity')
-        except IndexError:
-            return self.get_variable('sa1')
+        return self.get_variable(CONFIG['salinity'])
 
     @property
     def grain_size(self) -> typing.Optional[np.ndarray]:
