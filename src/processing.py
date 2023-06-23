@@ -54,7 +54,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     # > substratum 1
     substratum_1: str = kwargs.get('substratum_1')
     assert substratum_1 in (None, 'soft', 'hard')
-    _LOG.warning(f'`substratum 1` is uniformly applied: \"{substratum_1}\".')
+    _LOG.warning(f'`substratum_1` is uniformly applied: \"{substratum_1}\"')
 
     # > substratum 2
     shields: float = kwargs.get('shields', .07)
@@ -69,15 +69,13 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     mlws: float = kwargs.get('mlws')
     mhwn: float = kwargs.get('mhwn')
     if mlws is None or mhwn is None:
-        _LOG.warning(
-            f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]. '
-            f'If not provided, the hard-coded values in the configuration-file ({eco_config or "emma.json"}) are used.'
-        )
+        _LOG.warning(f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]')
+        _LOG.info(f'the hard-coded values in the configuration-file ({eco_config or "emma.json"}) are used')
     lat: float = kwargs.get('lat')
     if lat is None and eco_config not in ('zes1.json',):
         _LOG.warning(
             f'Lowest astronomical tide (LAT) not provided (`lat={lat}` [m])`; '
-            f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance`.'
+            f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance`'
         )
         lat = mlws
 
@@ -95,7 +93,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     velocity = data.velocity
     salinity = data.salinity
     if model_sediment:
-        _LOG.warning('Retrieving grain sizes from the model not implemented.')
+        _LOG.warning('Retrieving grain sizes from the model not implemented')
         grain_sizes = data.grain_size
     else:
         grain_sizes = None

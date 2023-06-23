@@ -47,7 +47,7 @@ def load_config(f_default: str, f_user: str = None, wd: str = None) -> dict:
             with open(file) as f_user:
                 user = json.load(f_user)
         except FileNotFoundError:
-            _LOG.warning(f'Custom configuration file not found: {file}.')
+            _LOG.warning(f'Custom configuration file not found: {file}')
             user = {}
         else:
             _LOG.info(f'Custom configuration file used: {file}')
