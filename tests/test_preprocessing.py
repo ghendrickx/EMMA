@@ -7,7 +7,11 @@ import pytest
 
 import numpy as np
 
+from config import config_file
 from src import preprocessing as pre
+
+"""Set configuration file"""
+pre.CONFIG = config_file.load_config('dfm2d.json')
 
 """pytest.fixtures"""
 
