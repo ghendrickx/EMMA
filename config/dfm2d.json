@@ -1,0 +1,8 @@
+{
+  "x-coordinates": "FlowElem_xcc",
+  "y-coordinates": "FlowElem_ycc",
+  "water-depth": "waterdepth",
+  "x-velocity": "ucx",
+  "y-velocity": "ucy",
+  "salinity": "sa1"
+}
