@@ -35,6 +35,9 @@ class MapData:
 
         _LOG.info(f'Map-file loaded: {self.file}')
 
+        if not CONFIG:
+            _LOG.critical(f'No map-configuration defined when initialising {self.__class__.__name__}')
+
     @property
     def data(self) -> netCDF4.Dataset:
         """
