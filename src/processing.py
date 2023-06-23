@@ -26,6 +26,8 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     :type wd: str, optional
     :type kwargs: optional
 
+    # TODO: Update documentation that includes all optional arguments (i.e., `kwargs`)
+
     :return: spatial distribution of ecotopes (optional)
     """
     # start time
