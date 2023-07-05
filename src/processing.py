@@ -87,9 +87,12 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
 
     # > set logging configuration
     export_log: typing.Union[bool, str] = kwargs.get('export_log', wd_export is not None)
+    log_level: str = kwargs.get('log_level', 'warning')
     if export_log:
         log_file = export_log if isinstance(export_log, str) else None
-        exp.export2log(kwargs.get('log_level', 'warning'), file_name=log_file, wd=wd_export)
+        exp.export2log(log_level, file_name=log_file, wd=wd_export)
+    else:
+        logging.basicConfig(level=log_level.upper())
 
     # > substratum 1
     substratum_1: str = kwargs.get('substratum_1')
