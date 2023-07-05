@@ -130,6 +130,11 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     x_coordinates = data.x_coordinates
     y_coordinates = data.y_coordinates
     water_depth = data.water_depth
+    if np.mean(water_depth) < 0:
+        _LOG.warning(
+            'Average water depth is negative, while water depth is considered positive downwards. '
+            'Check the model configuration and update the configuration file accordingly.'
+        )
     velocity = data.velocity
     salinity = data.salinity
     if model_sediment:
