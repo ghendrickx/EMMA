@@ -87,9 +87,12 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
 
     # > set logging configuration
     export_log: typing.Union[bool, str] = kwargs.get('export_log', wd_export is not None)
+    log_level: str = kwargs.get('log_level', 'warning')
     if export_log:
         log_file = export_log if isinstance(export_log, str) else None
-        exp.export2log(kwargs.get('log_level', 'warning'), file_name=log_file, wd=wd_export)
+        exp.export2log(log_level, file_name=log_file, wd=wd_export)
+    else:
+        logging.basicConfig(level=log_level.upper())
 
     # > substratum 1
     substratum_1: str = kwargs.get('substratum_1')
@@ -110,7 +113,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     mhwn: float = kwargs.get('mhwn')
     if mlws is None or mhwn is None:
         _LOG.warning(f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]')
-        _LOG.info(f'the hard-coded values in the configuration-file ({eco_config or "emma.json"}) are used')
+        _LOG.info(f'Hard-coded values in the configuration-file ({eco_config or "emma.json"}) are used')
     lat: float = kwargs.get('lat')
     if lat is None and eco_config not in ('zes1.json',):
         _LOG.warning(
@@ -130,6 +133,11 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     x_coordinates = data.x_coordinates
     y_coordinates = data.y_coordinates
     water_depth = data.water_depth
+    if np.mean(water_depth) < 0:
+        _LOG.warning(
+            'Average water depth is negative, while water depth is considered positive downwards. '
+            'Check the model configuration and update the configuration file accordingly.'
+        )
     velocity = data.velocity
     salinity = data.salinity
     if model_sediment:
@@ -151,7 +159,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
 
     # ecotope-labelling
     char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
-    #       noinspection PyTypeChecker
+    # noinspection PyTypeChecker
     char_2 = np.full_like(char_1, lab.substratum_1_code(substratum_1), dtype=str)
     char_3 = np.vectorize(lab.depth_1_code)(mean_depth, lat, mhwn)
     char_4 = np.vectorize(lab.hydrodynamics_code)(max_velocity, char_3)

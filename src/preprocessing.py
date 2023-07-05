@@ -74,7 +74,16 @@ class MapData:
         # return data
         return data
 
-    # TODO: Validate compatibility of naming conventions; consider including these names in a configuration file as well
+    @property
+    def _depth_sign(self) -> int:
+        """Convert the sign of the water depth as written to the map-file by the hydrodynamic model to be positive
+        downward---and vice versa.
+
+        :return: sign of water depth
+        :rtype: int
+        """
+        assert CONFIG['depth-sign'] in ('+', '-')
+        return +1 if CONFIG['depth-sign'] == '+' else -1
 
     @property
     def x_coordinates(self) -> np.ndarray:
@@ -98,7 +107,7 @@ class MapData:
         :return: water levels [m]
         :rtype: numpy.ndarray
         """
-        return self.get_variable(CONFIG['water-depth'])
+        return self._depth_sign * self.get_variable(CONFIG['water-depth'])
 
     @property
     def velocity(self) -> np.ndarray:
