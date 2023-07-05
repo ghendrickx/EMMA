@@ -4,5 +4,6 @@
   "water-depth": "waterdepth",
   "x-velocity": "ucx",
   "y-velocity": "ucy",
-  "salinity": "sa1"
+  "salinity": "sa1",
+  "z-direction": "up"
 }
