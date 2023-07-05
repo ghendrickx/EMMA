@@ -46,7 +46,7 @@ dict_ecotopes = map_ecotopes(
     f_map_config='<map-configuration>.json'
 )
 ```
-where `<map-configuration>.json` is formatted as follows:
+where `<map-configuration>.json` is formatted as follows (e.g., see the built-in [`dfm2d.json`](config/dfm2d.json)):
 ```json
 {
   "x-coordinates": "<key-word>",
