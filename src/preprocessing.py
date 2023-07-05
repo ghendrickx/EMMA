@@ -75,15 +75,15 @@ class MapData:
         return data
 
     @property
-    def _z_direction(self) -> int:
-        """Convert the z-direction in the hydrodynamic model output data to be positive downward, i.e. water depth is
-        positive downward.
+    def _depth_sign(self) -> int:
+        """Convert the sign of the water depth as written to the map-file by the hydrodynamic model to be positive
+        downward---and vice versa.
 
-        :return: z-direction sign
+        :return: sign of water depth
         :rtype: int
         """
-        assert CONFIG['z-direction'] in ('up', 'down')
-        return +1 if CONFIG['z-direction'] == 'up' else -1
+        assert CONFIG['depth-sign'] in ('+', '-')
+        return +1 if CONFIG['depth-sign'] == '+' else -1
 
     @property
     def x_coordinates(self) -> np.ndarray:
@@ -107,7 +107,7 @@ class MapData:
         :return: water levels [m]
         :rtype: numpy.ndarray
         """
-        return self._z_direction * self.get_variable(CONFIG['water-depth'])
+        return self._depth_sign * self.get_variable(CONFIG['water-depth'])
 
     @property
     def velocity(self) -> np.ndarray:
