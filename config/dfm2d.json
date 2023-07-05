@@ -5,5 +5,5 @@
   "x-velocity": "ucx",
   "y-velocity": "ucy",
   "salinity": "sa1",
-  "z-direction": "up"
+  "depth-sign": "+"
 }
