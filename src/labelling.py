@@ -63,8 +63,8 @@ def depth_1_code(water_depth: float, lat: float = None, mhwn: float = None) -> s
     """Determine ecotope-code in the category 'depth 1'.
 
     :param water_depth: temporal mean water depth [m]
-    :param lat: lowest astronomical tide [m], defaults to None
-    :param mhwn: mean high water, neap tide [m], defaults to None
+    :param lat: lowest astronomical tide [m] (positive upwards), defaults to None
+    :param mhwn: mean high water, neap tide [m] (positive upwards), defaults to None
 
     :type water_depth: float
     :type lat: float, optional
@@ -83,21 +83,21 @@ def depth_1_code(water_depth: float, lat: float = None, mhwn: float = None) -> s
     # static determination
     elif lat is None and mhwn is None:
         # always inundated: sub-littoral
-        if water_depth > CONFIG['depth-1']['low-water']:
+        if -water_depth < CONFIG['depth-1']['low-water']:
             return '1'
 
         # generally drained: supra-littoral
-        elif water_depth < CONFIG['depth-1']['high-water']:
+        elif -water_depth > CONFIG['depth-1']['high-water']:
             return '3'
 
     # quasi-static determination
     elif lat is not None and mhwn is not None:
         # always inundated: sub-littoral
-        if water_depth > lat:
+        if -water_depth < lat:
             return '1'
 
         # generally drained: supra-littoral
-        elif water_depth < mhwn:
+        elif -water_depth > mhwn:
             return '3'
 
     # periodically inundated: littoral
