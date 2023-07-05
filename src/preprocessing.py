@@ -83,7 +83,7 @@ class MapData:
         :rtype: int
         """
         assert CONFIG['z-direction'] in ('up', 'down')
-        return -1 if CONFIG['z-direction'] == 'up' else +1
+        return +1 if CONFIG['z-direction'] == 'up' else -1
 
     @property
     def x_coordinates(self) -> np.ndarray:
