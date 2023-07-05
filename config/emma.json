@@ -15,8 +15,8 @@
   },
   "depth-2": {
     "sub-littoral": {
-      "depth-upper": 32,
-      "depth-lower": 10,
+      "depth-deep": 32,
+      "depth-shallow": 10,
       "low-water": -2.31
     },
     "littoral": {
