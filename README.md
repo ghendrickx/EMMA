@@ -54,7 +54,8 @@ where `<map-configuration>.json` is formatted as follows (e.g., see the built-in
   "water-depth": "<key-word>",
   "x-velocity": "<key-word>",
   "y-velocity": "<key-word>",
-  "salinity": "<key-word>"
+  "salinity": "<key-word>",
+  "z-direction": "<up/down>"
 }
 ```
 
