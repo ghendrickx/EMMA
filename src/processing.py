@@ -185,3 +185,87 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
     # return ecotope-map
     if return_ecotopes:
         return {(x, y): eco for x, y, eco in zip(x_coordinates, y_coordinates, ecotopes)}
+
+
+def __determine_ecotope(file_name: str, wd: str = None, **kwargs) -> tuple:
+    # optional arguments
+    time_axis: int = kwargs.get('time_axis', 0)
+    model_sediment: bool = kwargs.get('model_sediment', False)
+
+    # > configuration file
+    wd_config: str = kwargs.get('wd_config')
+    eco_config: str = kwargs.get('f_eco_config')
+    map_config: str = kwargs.get('f_map_config')
+
+    # > substratum 1
+    substratum_1: str = kwargs.get('substratum_1')
+    assert substratum_1 in (None, 'soft', 'hard')
+    _LOG.warning(f'`substratum_1` is uniformly applied: \"{substratum_1}\"')
+
+    # > substratum 2
+    shields: float = kwargs.get('shields', .07)
+    chezy: float = kwargs.get('chezy', 50)
+    r_density: float = kwargs.get('relative_density', 1.58)
+    c_friction: float = kwargs.get('friction_coefficient')
+    # >> calibrated `c_friction`-value
+    if eco_config in (None, 'emma.json') and substratum_1 == 'soft':
+        c_friction = c_friction or 1300
+
+    # > tidal characteristics
+    mlws: float = kwargs.get('mlws')
+    mhwn: float = kwargs.get('mhwn')
+    if mlws is None or mhwn is None:
+        _LOG.warning(f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]')
+        _LOG.info(f'Hard-coded values in the configuration-file ({eco_config or "emma.json"}) are used')
+    lat: float = kwargs.get('lat')
+    if lat is None and eco_config not in ('zes1.json',):
+        _LOG.warning(
+            f'Lowest astronomical tide (LAT) not provided (`lat={lat}` [m])`; '
+            f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance`'
+        )
+        lat = mlws
+
+    # extract model data
+    data = pre.MapData(file_name, wd=wd)
+    x_coordinates = data.x_coordinates
+    y_coordinates = data.y_coordinates
+    water_depth = data.water_depth
+    if np.mean(water_depth) < 0:
+        _LOG.warning('To be copied...')
+    velocity = data.velocity
+    salinity = data.salinity
+    if model_sediment:
+        _LOG.warning('To be copied...')
+        grain_sizes = data.grain_size
+    else:
+        grain_sizes = None
+    data.close()
+
+    # pre-process model data
+    mean_salinity, std_salinity = pre.process_salinity(salinity, time_axis=time_axis)
+    mean_depth, in_duration, in_frequency = pre.process_water_depth(water_depth, time_axis=time_axis)
+    med_velocity, max_velocity = pre.process_velocity(velocity, time_axis=time_axis)
+    if grain_sizes is None:
+        grain_sizes = pre.grain_size_estimation(
+            med_velocity, shields=shields, chezy=chezy, r_density=r_density, c_friction=c_friction
+        )
+    _LOG.info('Model data pre-processed')
+
+    # ecotope-labelling
+    char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
+    # noinspection PyTypeChecker
+    char_2 = np.full_like(char_1, lab.substratum_1_code(substratum_1), dtype=str)
+    char_3 = np.vectorize(lab.depth_1_code)(mean_depth, lat, mhwn)
+    char_4 = np.vectorize(lab.hydrodynamics_code)(max_velocity, char_3)
+    char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, mean_depth, in_duration, in_frequency, mlws)
+    char_6 = np.vectorize(lab.substratum_2_code)(char_2, char_4, grain_sizes)
+
+    ecotopes = [
+        f'{c1}{c2}.{c3}{c4}{c5}{c6}'
+        for c1, c2, c3, c4, c5, c6
+        in zip(char_1, char_2, char_3, char_4, char_5, char_6)
+    ]
+    _LOG.info(f'Ecotopes defined: {len(ecotopes)} instances; {len(np.unique(ecotopes))} unique ecotopes')
+
+    # return (x,y)-coordinates and ecotopes
+    return x_coordinates, y_coordinates, ecotopes
