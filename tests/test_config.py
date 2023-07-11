@@ -55,7 +55,7 @@ class TestLoadConfig:
         """Test if all required key-words for the 'sub-littoral'-key in the 'depth 2'-key are in the configuration file:
         depth 3."""
         keys = list(self.config['depth-2']['sub-littoral'].keys())
-        for k in ('depth-upper', 'depth-lower', 'low-water'):
+        for k in ('depth-deep', 'depth-shallow', 'low-water'):
             assert k in keys
 
     def test_keys_depth_2_littoral(self):

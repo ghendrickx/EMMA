@@ -5,8 +5,8 @@
     "marine": 20
   },
   "depth-1": {
-    "low-water": 2.70,
-    "high-water": -1.85
+    "low-water": -2.70,
+    "high-water": 1.85
   },
   "hydrodynamics": {
     "stagnant": 0,
@@ -15,9 +15,9 @@
   },
   "depth-2": {
     "sub-littoral": {
-      "depth-upper": 32,
-      "depth-lower": 10,
-      "low-water": 2.31
+      "depth-deep": 32,
+      "depth-shallow": 10,
+      "low-water": -2.31
     },
     "littoral": {
       "inundation-upper": 1,
