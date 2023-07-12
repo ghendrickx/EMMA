@@ -84,11 +84,14 @@ def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Uni
     # set logging configuration
     __log_config(**kwargs)
 
+    # start ecotope-mapper
+    _LOG.info(f'Ecotope-map based on {f_map}')
+
     # optional arguments
     # > export ecotope-data
     wd_export: str = kwargs.get('wd_export')
-    f_export: str = kwargs.get('f_export')
     return_ecotopes: bool = kwargs.get('return_ecotopes', True)
+    f_export: typing.Union[bool, str, None] = kwargs.get('f_export', not return_ecotopes)
 
     # > parallel computing
     n_cores: int = kwargs.get('n_cores', 1)
@@ -116,6 +119,8 @@ def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Uni
     # export ecotope-data
     if f_export:
         _LOG.warning(f'Currently, only exporting to a *.csv-file is supported.')
+        if isinstance(f_export, bool):
+            f_export = None
         exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
 
     # computation time
