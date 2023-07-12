@@ -17,14 +17,16 @@ from src import labelling as lab, preprocessing as pre, export as exp
 _LOG = logging.getLogger(__name__)
 
 
-def __log_config(**kwargs):
+def __log_config(part_id: int = None, **kwargs):
     """Set logging configuration.
 
+    :param part_id: partition ID (only for parallel computations), defaults to None
     :param kwargs: optional arguments
         export_log: export log-file, defaults to None
         log_level: level of log-statements printed/filed, defaults to 'warning'
         wd_export: working directory for exporting ecotope map(s), defaults to None
 
+    :type part_id: int, optional
     :type kwargs: optional
         export_log: bool, str
         log_level: str
@@ -36,8 +38,17 @@ def __log_config(**kwargs):
     export_log: typing.Union[bool, str] = kwargs.get('export_log', wd_export is not None)
 
     # set logging configuration
+    # logging.shutdown()
+    logger = logging.getLogger()
+    while logger.hasHandlers():
+        logger.removeHandler(logger.handlers[0])
     if export_log:
         log_file = export_log if isinstance(export_log, str) else None
+        if part_id is not None:
+            if log_file is None:
+                log_file = f'emma_{part_id:04d}'
+            else:
+                log_file = f'{log_file.split(".")[0]}_{part_id:04d}'
         exp.export2log(log_level, file_name=log_file, wd=wd_export)
     else:
         logging.basicConfig(level=log_level.upper())
@@ -169,8 +180,12 @@ def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
 
     :raise AssertionError: if `substratum_1` not in {None, 'soft', 'hard'}
     """
+    # partition ID
+    _map_files: list = kwargs.pop('_map_files', False)
+    part_id = _map_files.index(file_name) if _map_files else None
+
     # set logging configuration
-    __log_config(**kwargs)
+    __log_config(part_id, **kwargs)
 
     # optional arguments
     wd = kwargs.get('wd')
@@ -260,6 +275,9 @@ def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
         in zip(char_1, char_2, char_3, char_4, char_5, char_6)
     ]
     _LOG.info(f'Ecotopes defined: {len(ecotopes)} instances; {len(np.unique(ecotopes))} unique ecotopes')
+
+    # reset logging
+    logging.shutdown()
 
     # return (x,y)-coordinates and ecotopes
     return x_coordinates, y_coordinates, ecotopes
