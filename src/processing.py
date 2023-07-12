@@ -99,60 +99,16 @@ def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Uni
     # start time
     t0 = time.perf_counter()
 
-    # optional arguments
-    time_axis: int = kwargs.get('time_axis', 0)
-    model_sediment: bool = kwargs.get('model_sediment', False)
-
-    # > configuration file
-    wd_config: str = kwargs.get('wd_config')
-    eco_config: str = kwargs.get('f_eco_config')
-    map_config: str = kwargs.get('f_map_config')
     # set logging configuration
     __log_config(**kwargs)
 
+    # optional arguments
     # > export ecotope-data
     wd_export: str = kwargs.get('wd_export')
     f_export: str = kwargs.get('f_export')
     return_ecotopes: bool = kwargs.get('return_ecotopes', True)
 
-    # > set logging configuration
-    export_log: typing.Union[bool, str] = kwargs.get('export_log', wd_export is not None)
-    log_level: str = kwargs.get('log_level', 'warning')
-    if export_log:
-        log_file = export_log if isinstance(export_log, str) else None
-        exp.export2log(log_level, file_name=log_file, wd=wd_export)
-    else:
-        logging.basicConfig(level=log_level.upper())
-
-    # > substratum 1
-    substratum_1: str = kwargs.get('substratum_1')
-    assert substratum_1 in (None, 'soft', 'hard')
-    _LOG.warning(f'`substratum_1` is uniformly applied: \"{substratum_1}\"')
-
-    # > substratum 2
-    shields: float = kwargs.get('shields', .07)
-    chezy: float = kwargs.get('chezy', 50)
-    r_density: float = kwargs.get('relative_density', 1.58)
-    c_friction: float = kwargs.get('friction_coefficient')
-    # >> calibrated `c_friction`-value
-    if eco_config in (None, 'emma.json') and substratum_1 == 'soft':
-        c_friction = c_friction or 1300
-
-    # > tidal characteristics
-    mlws: float = kwargs.get('mlws')
-    mhwn: float = kwargs.get('mhwn')
-    if mlws is None or mhwn is None:
-        _LOG.warning(f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]')
-        _LOG.info(f'Hard-coded values in the configuration-file ({eco_config or "emma.json"}) are used')
-    lat: float = kwargs.get('lat')
-    if lat is None and eco_config not in ('zes1.json',):
-        _LOG.warning(
-            f'Lowest astronomical tide (LAT) not provided (`lat={lat}` [m])`; '
-            f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance`'
-        )
-        lat = mlws
-
-    # optional arguments: parallel computing
+    # > parallel computing
     n_cores: int = kwargs.get('n_cores', 1)
     _LOG.info(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
 
@@ -175,7 +131,7 @@ def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Uni
         _LOG.warning(f'Currently, only exporting to a *.csv-file is supported.')
         exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
 
-    # logging
+    # computation time
     t1 = time.perf_counter()
     _LOG.info(f'Ecotope-map generated in {t1 - t0:.4f} seconds')
 
@@ -249,16 +205,6 @@ def __determine_ecotope(file_name: str, **kwargs) -> tuple:
     wd_config: str = kwargs.get('wd_config')
     eco_config: str = kwargs.get('f_eco_config')
     map_config: str = kwargs.get('f_map_config')
-
-    # > set logging configuration
-    wd_export: str = kwargs.get('wd_export')
-    export_log: typing.Union[bool, str] = kwargs.get('export_log', wd_export is not None)
-    log_level: str = kwargs.get('log_level', 'warning')
-    if export_log:
-        log_file = export_log if isinstance(export_log, str) else None
-        exp.export2log(log_level, file_name=log_file, wd=wd_export)
-    else:
-        logging.basicConfig(level=log_level.upper())
 
     # > substratum 1
     substratum_1: str = kwargs.get('substratum_1')
