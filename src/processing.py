@@ -17,6 +17,32 @@ from src import labelling as lab, preprocessing as pre, export as exp
 _LOG = logging.getLogger(__name__)
 
 
+def __log_config(**kwargs):
+    """Set logging configuration.
+
+    :param kwargs: optional arguments
+        export_log: export log-file, defaults to None
+        log_level: level of log-statements printed/filed, defaults to 'warning'
+        wd_export: working directory for exporting ecotope map(s), defaults to None
+
+    :type kwargs: optional
+        export_log: bool, str
+        log_level: str
+        wd_export: str
+    """
+    # optional arguments
+    log_level: str = kwargs.get('log_level', 'warning')
+    wd_export: str = kwargs.get('wd_export')
+    export_log: typing.Union[bool, str] = kwargs.get('export_log', wd_export is not None)
+
+    # set logging configuration
+    if export_log:
+        log_file = export_log if isinstance(export_log, str) else None
+        exp.export2log(log_level, file_name=log_file, wd=wd_export)
+    else:
+        logging.basicConfig(level=log_level.upper())
+
+
 def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Union[dict, None]:
     """Map ecotopes from hydrodynamic model data.
 
@@ -81,6 +107,8 @@ def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Uni
     wd_config: str = kwargs.get('wd_config')
     eco_config: str = kwargs.get('f_eco_config')
     map_config: str = kwargs.get('f_map_config')
+    # set logging configuration
+    __log_config(**kwargs)
 
     # > export ecotope-data
     wd_export: str = kwargs.get('wd_export')
@@ -157,6 +185,9 @@ def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Uni
 
 
 def __determine_ecotope(file_name: str, **kwargs) -> tuple:
+    # set logging configuration
+    __log_config(**kwargs)
+
     # optional arguments
     wd = kwargs.get('wd')
     time_axis: int = kwargs.get('time_axis', 0)
