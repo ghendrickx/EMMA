@@ -86,6 +86,8 @@ def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Uni
     # extract model data
     if isinstance(f_map, str) or len(f_map) == 1:
         _LOG.info(f'CPUs used: 1 / {mp.cpu_count()}')
+        if not isinstance(f_map, str):
+            f_map = f_map[0]
         x_coordinates, y_coordinates, ecotopes = __determine_ecotopes(f_map, **kwargs)
     else:
         n_files = len(f_map)
