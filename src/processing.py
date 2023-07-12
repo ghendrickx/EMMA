@@ -187,8 +187,9 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
         return {(x, y): eco for x, y, eco in zip(x_coordinates, y_coordinates, ecotopes)}
 
 
-def __determine_ecotope(file_name: str, wd: str = None, **kwargs) -> tuple:
+def __determine_ecotope(file_name: str, **kwargs) -> tuple:
     # optional arguments
+    wd = kwargs.get('wd')
     time_axis: int = kwargs.get('time_axis', 0)
     model_sediment: bool = kwargs.get('model_sediment', False)
 
@@ -196,6 +197,16 @@ def __determine_ecotope(file_name: str, wd: str = None, **kwargs) -> tuple:
     wd_config: str = kwargs.get('wd_config')
     eco_config: str = kwargs.get('f_eco_config')
     map_config: str = kwargs.get('f_map_config')
+
+    # > set logging configuration
+    wd_export: str = kwargs.get('wd_export')
+    export_log: typing.Union[bool, str] = kwargs.get('export_log', wd_export is not None)
+    log_level: str = kwargs.get('log_level', 'warning')
+    if export_log:
+        log_file = export_log if isinstance(export_log, str) else None
+        exp.export2log(log_level, file_name=log_file, wd=wd_export)
+    else:
+        logging.basicConfig(level=log_level.upper())
 
     # > substratum 1
     substratum_1: str = kwargs.get('substratum_1')
@@ -225,17 +236,26 @@ def __determine_ecotope(file_name: str, wd: str = None, **kwargs) -> tuple:
         )
         lat = mlws
 
+    # set configurations
+    # > ecotope configuration
+    lab.CONFIG = config_file.load_config('emma.json', eco_config, wd_config)
+    # > map configuration
+    pre.CONFIG = config_file.load_config('dfm2d.json', map_config, wd_config)
+
     # extract model data
     data = pre.MapData(file_name, wd=wd)
     x_coordinates = data.x_coordinates
     y_coordinates = data.y_coordinates
     water_depth = data.water_depth
     if np.mean(water_depth) < 0:
-        _LOG.warning('To be copied...')
+        _LOG.warning(
+            'Average water depth is negative, while water depth is considered positive downwards. '
+            'Check the model configuration and update the configuration file accordingly.'
+        )
     velocity = data.velocity
     salinity = data.salinity
     if model_sediment:
-        _LOG.warning('To be copied...')
+        _LOG.warning('Retrieving grain sizes from the model not implemented')
         grain_sizes = data.grain_size
     else:
         grain_sizes = None
