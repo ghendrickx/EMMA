@@ -38,13 +38,12 @@ def __log_config(part_id: int = None, **kwargs):
     export_log: typing.Union[bool, str] = kwargs.get('export_log', wd_export is not None)
 
     # set logging configuration
-    # logging.shutdown()
-    logger = logging.getLogger()
-    while logger.hasHandlers():
-        logger.removeHandler(logger.handlers[0])
     if export_log:
         log_file = export_log if isinstance(export_log, str) else None
         if part_id is not None:
+            logger = logging.getLogger()
+            while logger.hasHandlers():
+                logger.removeHandler(logger.handlers[0])
             if log_file is None:
                 log_file = f'emma_{part_id:04d}'
             else:
@@ -54,7 +53,7 @@ def __log_config(part_id: int = None, **kwargs):
         logging.basicConfig(level=log_level.upper())
 
 
-def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Union[dict, None]:
+def map_ecotopes(f_map: typing.Union[str, typing.Collection], **kwargs) -> typing.Union[dict, None]:
     """Map ecotopes from hydrodynamic model data.
 
     :param f_map: file name of hydrodynamic model output data (*.nc)
@@ -99,21 +98,28 @@ def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Uni
 
     # extract model data
     if isinstance(f_map, str) or len(f_map) == 1:
+        # single `*_map.nc`-file
         _LOG.info(f'CPUs used: 1 / {mp.cpu_count()}')
         if not isinstance(f_map, str):
             f_map = f_map[0]
-        x_coordinates, y_coordinates, ecotopes = __determine_ecotopes(f_map, **kwargs)
+        x_coordinates, y_coordinates, ecotopes = __determine_ecotopes(f_map, init_log=False, **kwargs)
     else:
+        # multiple `*_map.nc`-files
         n_files = len(f_map)
         n_processes = min(n_cores, n_files)
         _LOG.info(f'CPUs used: {n_processes} / {mp.cpu_count()}')
         _LOG.info(f'CPUs required: {n_files} / {n_processes}')
 
-        kwargs.update({'_map_files': list(f_map)})
+        # parallel computation
+        if n_processes > 1:
+            with mp.Pool(processes=n_processes) as p:
+                results = p.map(functools.partial(__determine_ecotopes, _map_files=list(f_map), **kwargs), f_map)
 
-        with mp.Pool(processes=n_processes) as p:
-            results = p.map(functools.partial(__determine_ecotopes, **kwargs), f_map)
+        # serial computation
+        else:
+            results = [__determine_ecotopes(f, init_log=False, **kwargs) for f in f_map]
 
+        # collapse output data
         x_coordinates, y_coordinates, ecotopes = [np.concatenate(arrays) for arrays in zip(*results)]
 
     # export ecotope-data
@@ -186,11 +192,12 @@ def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
     :raise AssertionError: if `substratum_1` not in {None, 'soft', 'hard'}
     """
     # partition ID
-    _map_files: list = kwargs.pop('_map_files', False)
+    _map_files: list = kwargs.pop('_map_files', [])
     part_id = _map_files.index(file_name) if _map_files else None
 
     # set logging configuration
-    __log_config(part_id, **kwargs)
+    if kwargs.get('init_log', True):
+        __log_config(part_id, **kwargs)
 
     # optional arguments
     wd = kwargs.get('wd')
