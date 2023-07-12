@@ -37,7 +37,8 @@ def _file_name(default: str, extension: str = None) -> callable:
             func(*args, file_name=file_name, wd=wd, **kwargs)
 
             # logging
-            _LOG.info(f'Data exported: {os.path.join(wd, file_name)}')
+            if not file_name.endswith('.log'):
+                _LOG.info(f'Data exported: {os.path.join(wd, file_name)}')
 
         # return wrapper function
         return wrapper
