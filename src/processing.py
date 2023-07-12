@@ -3,7 +3,9 @@ Processing of output data of hydrodynamic model by labelling the ecotopes.
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
+import functools
 import logging
+import multiprocessing as mp
 import time
 
 import numpy as np
@@ -15,11 +17,10 @@ from src import labelling as lab, preprocessing as pre, export as exp
 _LOG = logging.getLogger(__name__)
 
 
-def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict, None]:
+def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Union[dict, None]:
     """Map ecotopes from hydrodynamic model data.
 
-    :param file_name: file name of hydrodynamic model output data (*.nc)
-    :param wd: working directory, defaults to None
+    :param f_map: file name of hydrodynamic model output data (*.nc)
     :param kwargs: optional arguments
         chezy: Chezy coefficient, defaults to 50
         export_log: export log-file, defaults to None
@@ -38,11 +39,11 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
         shields: critical Shields parameter, defaults to 0.07
         substratum_1: definition of substratum {None, 'soft', 'hard'}, defaults to None
         time_axis: time-axis in model output data, defaults to 0
+        wd: working directory, defaults to None
         wd_config: working directory of configuration file(s), defaults to None
         wd_export: working directory for exporting ecotope map(s), defaults to None
 
-    :type file_name: str
-    :type wd: str, optional
+    :type f_map: str, typing.Sized
     :type kwargs: optional
         chezy: float
         export_log: bool, str
@@ -60,6 +61,7 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
         shields: float
         substratum_1: str
         time_axis: int
+        wd: str
         wd_config: str
         wd_export: str
 
@@ -122,56 +124,23 @@ def map_ecotopes(file_name: str, wd: str = None, **kwargs) -> typing.Union[dict,
         )
         lat = mlws
 
-    # set configurations
-    # > ecotope configuration
-    lab.CONFIG = config_file.load_config('emma.json', eco_config, wd_config)
-    # > map configuration
-    pre.CONFIG = config_file.load_config('dfm2d.json', map_config, wd_config)
+    # optional arguments: parallel computing
+    n_cores: int = kwargs.get('n_cores', 1)
+    _LOG.info(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
 
     # extract model data
-    data = pre.MapData(file_name, wd=wd)
-    x_coordinates = data.x_coordinates
-    y_coordinates = data.y_coordinates
-    water_depth = data.water_depth
-    if np.mean(water_depth) < 0:
-        _LOG.warning(
-            'Average water depth is negative, while water depth is considered positive downwards. '
-            'Check the model configuration and update the configuration file accordingly.'
-        )
-    velocity = data.velocity
-    salinity = data.salinity
-    if model_sediment:
-        _LOG.warning('Retrieving grain sizes from the model not implemented')
-        grain_sizes = data.grain_size
+    if isinstance(f_map, str) or len(f_map) == 1:
+        _LOG.info(f'CPUs used: 1 / {mp.cpu_count()}')
+        x_coordinates, y_coordinates, ecotopes = __determine_ecotope(f_map, **kwargs)
     else:
-        grain_sizes = None
-    data.close()
+        n_files = len(f_map)
+        n_processes = min(n_cores, n_files)
+        _LOG.info(f'CPUs used: {n_processes} / {mp.cpu_count()}')
 
-    # pre-process model data
-    mean_salinity, std_salinity = pre.process_salinity(salinity, time_axis=time_axis)
-    mean_depth, in_duration, in_frequency = pre.process_water_depth(water_depth, time_axis=time_axis)
-    med_velocity, max_velocity = pre.process_velocity(velocity, time_axis=time_axis)
-    if grain_sizes is None:
-        grain_sizes = pre.grain_size_estimation(
-            med_velocity, shields=shields, chezy=chezy, r_density=r_density, c_friction=c_friction
-        )
-    _LOG.info(f'Model data pre-processed')
+        with mp.Pool(processes=n_processes) as p:
+            results = p.map(functools.partial(__determine_ecotope, **kwargs), f_map)
 
-    # ecotope-labelling
-    char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
-    # noinspection PyTypeChecker
-    char_2 = np.full_like(char_1, lab.substratum_1_code(substratum_1), dtype=str)
-    char_3 = np.vectorize(lab.depth_1_code)(mean_depth, lat, mhwn)
-    char_4 = np.vectorize(lab.hydrodynamics_code)(max_velocity, char_3)
-    char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, mean_depth, in_duration, in_frequency, mlws)
-    char_6 = np.vectorize(lab.substratum_2_code)(char_2, char_4, grain_sizes)
-
-    ecotopes = [
-        f'{c1}{c2}.{c3}{c4}{c5}{c6}'
-        for c1, c2, c3, c4, c5, c6
-        in zip(char_1, char_2, char_3, char_4, char_5, char_6)
-    ]
-    _LOG.info(f'Ecotopes defined: {len(ecotopes)} instances; {len(np.unique(ecotopes))} unique ecotopes')
+        x_coordinates, y_coordinates, ecotopes = [np.concatenate(arrays) for arrays in zip(*results)]
 
     # export ecotope-data
     if f_export:
