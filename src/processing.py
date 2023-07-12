@@ -86,14 +86,17 @@ def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Uni
     # extract model data
     if isinstance(f_map, str) or len(f_map) == 1:
         _LOG.info(f'CPUs used: 1 / {mp.cpu_count()}')
-        x_coordinates, y_coordinates, ecotopes = __determine_ecotope(f_map, **kwargs)
+        x_coordinates, y_coordinates, ecotopes = __determine_ecotopes(f_map, **kwargs)
     else:
         n_files = len(f_map)
         n_processes = min(n_cores, n_files)
         _LOG.info(f'CPUs used: {n_processes} / {mp.cpu_count()}')
+        _LOG.info(f'CPUs required: {n_files} / {n_processes}')
+
+        kwargs.update({'_map_files': list(f_map)})
 
         with mp.Pool(processes=n_processes) as p:
-            results = p.map(functools.partial(__determine_ecotope, **kwargs), f_map)
+            results = p.map(functools.partial(__determine_ecotopes, **kwargs), f_map)
 
         x_coordinates, y_coordinates, ecotopes = [np.concatenate(arrays) for arrays in zip(*results)]
 
@@ -111,7 +114,7 @@ def map_ecotopes(f_map: typing.Union[str, typing.Sized], **kwargs) -> typing.Uni
         return {(x, y): eco for x, y, eco in zip(x_coordinates, y_coordinates, ecotopes)}
 
 
-def __determine_ecotope(file_name: str, **kwargs) -> tuple:
+def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
     """Map ecotopes from hydrodynamic model data.
 
     :param f_map: file name of hydrodynamic model output data (*.nc)
