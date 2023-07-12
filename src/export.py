@@ -37,7 +37,8 @@ def _file_name(default: str, extension: str = None) -> callable:
             func(*args, file_name=file_name, wd=wd, **kwargs)
 
             # logging
-            _LOG.info(f'Data exported: {os.path.join(wd, file_name)}')
+            if not file_name.endswith('.log'):
+                _LOG.info(f'Data exported: {os.path.join(wd, file_name)}')
 
         # return wrapper function
         return wrapper
@@ -46,7 +47,7 @@ def _file_name(default: str, extension: str = None) -> callable:
     return decorator
 
 
-def _default_file_name(file_name: str, default: str, extension: str = None):
+def _default_file_name(file_name: typing.Union[str, None], default: str, extension: str = None):
     """Use default file name if none is defined. The extension is based on the default file name provided if not stated
     explicitly.
 
