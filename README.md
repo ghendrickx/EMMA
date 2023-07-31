@@ -65,6 +65,9 @@ value when the bottom is _**below**_ the reference level (e.g. mean sea level); 
 **Note** that the tide-related key-words in the ecotope configuration file (e.g. [`emma.json`](config/emma.json)) 
 consider the `z`-axis to be defined positive upwards. Thus, high water level is _**greater**_ than low water level.
 
+In the [`examples`](examples)-folder, a collection of examples are included on how to use `EMMA` including some 
+additional features.
+
 ## Structure
 The main features of `EMMA` is located in the [`src`](src)-directory, and the built-in configurations are grouped in the
 [`config`](config)-directory:
@@ -78,6 +81,16 @@ The main features of `EMMA` is located in the [`src`](src)-directory, and the bu
 |   +-- dfm2d.json
 |   +-- emma.json
 |   +-- zes1.json
++-- examples/
+|   +-- ex_map_data/
+|   |   +-- __init__.py
+|   +-- 1_basic.py
+|   +-- 2_parallel.py
+|   +-- 3_settings.py
+|   +-- 4_export.py
+|   +-- 5_config.py
+|   +-- __init__.py
+|   +-- _example_plot.py
 +-- src/
 |   +-- __init__.py
 |   +-- export.py
