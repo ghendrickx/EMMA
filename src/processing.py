@@ -94,18 +94,17 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[dict, None]:
 
     # > parallel computing
     n_cores: int = kwargs.get('n_cores', 1)
-    _LOG.info(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
+    n_files = len(f_map)
 
     # extract model data
-    if len(f_map) == 1:
+    if n_files == 1:
         # single `*_map.nc`-file
-        _LOG.info(f'CPUs used: 1 / {mp.cpu_count()}')
-        _LOG.info('CPUs required: 1 / 1')
         x_coordinates, y_coordinates, ecotopes = __determine_ecotopes(f_map[0], init_log=False, **kwargs)
+
     else:
         # multiple `*_map.nc`-files
-        n_files = len(f_map)
         n_processes = min(n_cores, n_files)
+        _LOG.info(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
         _LOG.info(f'CPUs used: {n_processes} / {mp.cpu_count()}')
         _LOG.info(f'CPUs required: {n_files} / {n_processes}')
 
