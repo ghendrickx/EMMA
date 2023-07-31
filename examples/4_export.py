@@ -5,7 +5,7 @@ data is either exported (1) with the default file-name (`f_export=True`), or (2)
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
-from examples.example_plot import create_figure
+from examples._example_plot import create_figure
 from src.processing import map_ecotopes
 
 # map ecotopes based on hydrodynamic output data: 'file-name_map.nc'

@@ -3,7 +3,7 @@ Example 2: Analysing a multiple files with hydrodynamic output data in parallel.
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
-from examples.example_plot import create_figure
+from examples._example_plot import create_figure
 from src.processing import map_ecotopes
 
 # map ecotopes based on hydrodynamic output data: 'file-name-0_map.nc', 'file-name-1_map.nc'
