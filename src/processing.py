@@ -142,13 +142,15 @@ def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
     mlws: float = kwargs.get('mlws')
     mhwn: float = kwargs.get('mhwn')
     if mlws is None or mhwn is None:
-        _LOG.warning(f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]')
-        _LOG.info(f'Hard-coded values in the configuration-file ({eco_config or "emma.json"}) are used')
+        _LOG.warning(
+            f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]; '
+            f'hard-coded values in the configuration-file ({eco_config or "emma.json"}) are used'
+        )
     lat: float = kwargs.get('lat')
     if lat is None and eco_config not in ('zes1.json',):
         _LOG.warning(
-            f'Lowest astronomical tide (LAT) not provided (`lat={lat}` [m])`; '
-            f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance`'
+            f'Lowest astronomical tide (LAT) not provided (`lat={lat}` [m]); '
+            f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance'
         )
         lat = mlws
 
@@ -246,8 +248,8 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[dict, None]:
     # optional arguments
     # > export ecotope-data
     wd_export: str = kwargs.get('wd_export')
+    f_export: typing.Union[bool, str, None] = kwargs.get('f_export', wd_export is not None)
     return_ecotopes: bool = kwargs.get('return_ecotopes', True)
-    f_export: typing.Union[bool, str, None] = kwargs.get('f_export', not return_ecotopes)
 
     # > parallel computing
     n_cores: int = kwargs.get('n_cores', 1)
@@ -286,7 +288,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[dict, None]:
 
     # computation time
     t1 = time.perf_counter()
-    _LOG.info(f'Ecotope-map generated in {t1 - t0:.4f} seconds')
+    _LOG.info(f'Ecotope-map generated in {t1 - t0:.1f} seconds')
 
     # return ecotope-map
     if return_ecotopes:
