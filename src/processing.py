@@ -53,10 +53,10 @@ def __log_config(part_id: int = None, **kwargs):
         logging.basicConfig(level=log_level.upper())
 
 
-def map_ecotopes(f_map: typing.Union[str, typing.Collection], **kwargs) -> typing.Union[dict, None]:
+def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[dict, None]:
     """Map ecotopes from hydrodynamic model data.
 
-    :param f_map: file name of hydrodynamic model output data (*.nc)
+    :param f_map: file name(s) of hydrodynamic model output data (*.nc)
     :param kwargs: optional arguments
         f_export: file name for exporting ecotope map(s), defaults to None
         n_cores: number of cores available for parallel computations, defaults to 1
@@ -65,7 +65,7 @@ def map_ecotopes(f_map: typing.Union[str, typing.Collection], **kwargs) -> typin
         optional arguments to `.__log_config()`
         optional arguments to `.__determine_ecotopes()`
 
-    :type f_map: str, typing.Sized
+    :type f_map: str
     :type kwargs: optional
         f_export: str
         n_cores: int
@@ -97,12 +97,11 @@ def map_ecotopes(f_map: typing.Union[str, typing.Collection], **kwargs) -> typin
     _LOG.info(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
 
     # extract model data
-    if isinstance(f_map, str) or len(f_map) == 1:
+    if len(f_map) == 1:
         # single `*_map.nc`-file
         _LOG.info(f'CPUs used: 1 / {mp.cpu_count()}')
-        if not isinstance(f_map, str):
-            f_map = f_map[0]
-        x_coordinates, y_coordinates, ecotopes = __determine_ecotopes(f_map, init_log=False, **kwargs)
+        _LOG.info('CPUs required: 1 / 1')
+        x_coordinates, y_coordinates, ecotopes = __determine_ecotopes(f_map[0], init_log=False, **kwargs)
     else:
         # multiple `*_map.nc`-files
         n_files = len(f_map)
@@ -119,7 +118,7 @@ def map_ecotopes(f_map: typing.Union[str, typing.Collection], **kwargs) -> typin
         else:
             results = [__determine_ecotopes(f, init_log=False, **kwargs) for f in f_map]
 
-        # collapse output data
+        # concatenate output data
         x_coordinates, y_coordinates, ecotopes = [np.concatenate(arrays) for arrays in zip(*results)]
 
     # export ecotope-data
