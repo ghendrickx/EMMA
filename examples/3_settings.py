@@ -1,6 +1,6 @@
 """
-Basic usage of EMMA: Analysing a single file with hydrodynamic output data with more accurate results by providing
-additional information about the modelled area:
+Example 3: Analysing a single file with hydrodynamic output data with more accurate results by providing additional
+information about the modelled area:
  -  `substratum_1`: The substratum in the area is either 'soft' or 'hard'.
  -  Tidal characteristics:
      *  `mlws`: Mean-Low-Water-Spring-tide, the MLWS representative for the area.

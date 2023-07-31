@@ -1,6 +1,6 @@
 """
-Basic usage of EMMA: Analysing a single file with hydrodynamic output data, and export the ecotope-data to a `*.csv`-
-file. The data is either exported (1) with the default file-name (`f_export=True`), or (2) with a custom file-name
+Example 4: Analysing a single file with hydrodynamic output data, and export the ecotope-data to a `*.csv`-file. The
+data is either exported (1) with the default file-name (`f_export=True`), or (2) with a custom file-name
 (`f_export='custom-file-name'`).
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
