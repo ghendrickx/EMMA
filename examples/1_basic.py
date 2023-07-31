@@ -1,5 +1,5 @@
 """
-Basic usage of EMMA: Analysing a single file with hydrodynamic output data.
+Example 1: Analysing a single file with hydrodynamic output data.
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
