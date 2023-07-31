@@ -11,13 +11,13 @@ from src.processing import map_ecotopes
 # map ecotopes based on hydrodynamic output data: 'file-name_map.nc'
 # > option 1: export with default file-name
 results = map_ecotopes(
-    'file-name_map.nc',
+    'file-name_map.nc', wd='directory/to/output/files',
     f_export=True, wd_export='output/directory'
 )
 
 # # > option 2: specify custom output file-name (*.csv-file)
 # results = map_ecotopes(
-#     'file-name_map.nc',
+#     'file-name_map.nc', wd='directory/to/output/files',
 #     f_export='custom-file-name', wd_export='output/directory'
 # )
 

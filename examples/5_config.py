@@ -16,19 +16,19 @@ from src.processing import map_ecotopes
 # map ecotopes based on hydrodynamic output data: 'file-name_map.nc'
 # > option 1: built-in configuration (ZES.1)
 results = map_ecotopes(
-    'file-name_map.nc',
+    'file-name_map.nc', wd='directory/to/output/files',
     f_eco_config='zes1.json'
 )
 
 # # > option 2: custom configuration ('custom.json')
 # results = map_ecotopes(
-#     'file-name_map.nc',
+#     'file-name_map.nc', wd='directory/to/output/files',
 #     f_eco_config='custom.json', wd_config='directory/to/configuration'
 # )
 
 # # > option 3: custom map-configuration ('custom-map.json')
 # results = map_ecotopes(
-#     'file-name_map.nc',
+#     'file-name_map.nc', wd='directory/to/output/files',
 #     f_map_config='custom-map.json', wd_config='directory/to/configuration'
 # )
 

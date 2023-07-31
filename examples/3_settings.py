@@ -15,7 +15,7 @@ from src.processing import map_ecotopes
 
 # map ecotopes based on hydrodynamic output data: 'file-name_map.nc'
 results = map_ecotopes(
-    'file-name_map.nc',
+    'file-name_map.nc', wd='directory/to/output/files',
     substratum_1='soft', mlws=-2.31, mhwn=1.85, lat=-2.7
 )
 
