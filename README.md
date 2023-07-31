@@ -10,7 +10,7 @@ refers to an ecosystem as it can be mapped.
 This simple `python`-interface allows to map ecotopes (or habitats) based on the abiotic output from an hydrodynamic 
 model. It does so by a modified version of the [ZES.1](https://edepot.wur.nl/174540) classification system. The
 hydrodynamic model must contain the following hydrodynamic parameters:
--   water depth (and level);
+-   water depth (or, bottom and water level);
 -   flow velocity; and
 -   salinity.
 
