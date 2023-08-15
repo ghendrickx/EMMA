@@ -23,3 +23,6 @@ To work with the examples, a [dummy output-file](ex_map_data) is included in thi
 _parallel, multi-file usage_-example, there is no enhanced computation time for single-file usage due to the 
 implementation of parallel computing, which is file-based. Nevertheless, the use-case described in 
 [_parallel, multi-file usage_](2_parallel.py) also works with a single map-file.
+
+**Note** that the data in the [dummy output-file](ex_map_data) is _dummy_ data, provided to aid in familiarising with
+`EMMA`. As such, it should not be used for any official analysis and alike.
