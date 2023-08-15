@@ -83,15 +83,17 @@ where `<map-configuration>.json` is formatted as follows (see the built-in [`dfm
   "depth-sign": "<+/->"
 }
 ```
-**Note** that the `depth-sign` key-word reflects the sign used to describe the water depth in the output map-file, which may
-be different from the direction of the `z`-axis. `"depth-sign": "+"` means that the water depth is defined as a positive
-value when the bottom is _**below**_ the reference level (e.g. mean sea level); and vice versa. 
+**Note** that the `depth-sign` key-word reflects the sign used to describe the water depth in the output map-file, which 
+may be different from the direction of the `z`-axis. `"depth-sign": "+"` means that the water depth is defined as a 
+positive value when the bottom is _**below**_ the reference level (e.g. mean sea level); and vice versa. 
 
 **Note** that the tide-related key-words in the ecotope configuration file (e.g. [`emma.json`](config/emma.json)) 
 consider the `z`-axis to be defined positive upwards. Thus, high water level is _**greater**_ than low water level.
 
 In the [`examples`](examples)-folder, a collection of examples are provided on how to use `EMMA` including some of her 
-additional features.
+additional features. A [dummy output-file](examples/ex_map_data) is added that can be used to test the examples. For the
+examples, there is also an additional [`README`](examples/README.md) in the [`examples`](examples)-folder to provide
+some background to the examples, where needed.
 
 ## Structure
 The main features of `EMMA` is located in the [`src`](src)-directory, and the built-in configurations are grouped in the
@@ -109,6 +111,7 @@ The main features of `EMMA` is located in the [`src`](src)-directory, and the bu
 +-- examples/
 |   +-- ex_map_data/
 |   |   +-- __init__.py
+|   |   +-- output_map.nc
 |   +-- 1_basic.py
 |   +-- 2_parallel.py
 |   +-- 3_settings.py
