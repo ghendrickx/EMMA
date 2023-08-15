@@ -152,8 +152,8 @@ def process_salinity(salinity: np.ndarray, time_axis: int = 0) -> typing.Tuple[n
     :rtype: tuple
     """
     # collapse time axis
-    mean_salinity = np.mean(salinity, axis=time_axis)
-    std_salinity = np.std(salinity, axis=time_axis)
+    mean_salinity = np.ma.mean(salinity, axis=time_axis)
+    std_salinity = np.ma.std(salinity, axis=time_axis)
 
     # logging
     _LOG.info('Salinity-data pre-processed')
@@ -177,9 +177,9 @@ def process_water_depth(
     :rtype: tuple
     """
     # collapse time axis
-    mean_depth = np.mean(water_depth, axis=time_axis)
-    duration = np.sum(water_depth > 0, axis=time_axis) / water_depth.shape[time_axis]
-    sign_changes = np.diff(np.sign(water_depth), axis=time_axis)
+    mean_depth = np.ma.mean(water_depth, axis=time_axis)
+    duration = np.ma.sum(water_depth > 0, axis=time_axis) / water_depth.shape[time_axis]
+    sign_changes = np.ma.diff(np.sign(water_depth), axis=time_axis)
     frequency = np.count_nonzero(sign_changes, axis=time_axis) / 2
 
     # logging
@@ -202,8 +202,8 @@ def process_velocity(velocity: np.ndarray, time_axis: int = 0) -> typing.Tuple[n
     :rtype: tuple
     """
     # collapse time axis
-    median_velocity = np.median(velocity, axis=time_axis)
-    max_velocity = np.max(velocity, axis=time_axis)
+    median_velocity = np.ma.median(velocity, axis=time_axis)
+    max_velocity = np.ma.max(velocity, axis=time_axis)
 
     # logging
     _LOG.info('Flow velocity-data pre-processed')
