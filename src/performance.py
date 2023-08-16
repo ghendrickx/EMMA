@@ -107,7 +107,7 @@ class Comparison:
         """
         return self._model
 
-    def exec(self, level: int, **kwargs) -> typing.Dict[typing.Tuple[float, float], bool]:
+    def exec(self, level: typing.Union[int, None], **kwargs) -> typing.Dict[typing.Tuple[float, float], bool]:
         """Execute the comparison up to a given level of detail. This level of detail reflects the number of label-
         components (i.e., letters or numbers) to assess, starting from the left. Note that this excludes any dots (.) in
         the labels. In case the `specific_label` is enabled, `level` reflects the index of the label-component to
@@ -118,7 +118,7 @@ class Comparison:
         label. Thus, 'Z2.222f' and 'Z2.222x' are considered a match. This type of assessment can be disabled by setting
         the optional argument `enable_wild_card=False` (default: True).
 
-        :param level: level of assessment
+        :param level: level of assessment, when `None` full assessment is executed
         :param kwargs: optional arguments
             enable_wild_card: the wild card character reflects a match, defaults to True
             specific_label: assess a specific label only (defined by `level`), defaults to False
@@ -139,6 +139,10 @@ class Comparison:
         # optional arguments
         enable_wild_card: bool = kwargs.get('enable_wild_card', True)
         specific_label: bool = kwargs.get('specific_label', False)
+
+        # full assessment
+        if level is None:
+            level = 7
 
         # check validity `level`-argument
         if specific_label and not (0 <= level <= 6):
