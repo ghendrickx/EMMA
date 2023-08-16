@@ -101,12 +101,12 @@ class Comparison:
 
         # full assessment
         if level is None:
-            level = 7
+            level = 6
 
         # check validity `level`-argument
-        if specific_label and not (0 <= level <= 6):
+        if specific_label and not (0 <= level <= 5):
             msg = f'Ecotope-labels consists of six (6) items; ' \
-                f'specific label comparison at {level} is out of range'
+                f'specific label comparison at index {level} is out of range'
             raise ValueError(msg)
         if level < 0:
             msg = f'Level of comparison must be positive, negative value given: {level}'
