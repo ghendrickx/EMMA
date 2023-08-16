@@ -175,9 +175,9 @@ class Comparison:
         # compare labels
         wild_card = self.wild_card if enable_wild_card else False
         if specific_label:
-            result = np.all((data[:, :level] == model[:, :level]) | (data[:, :level] == wild_card), axis=1)
-        else:
             result = (data[:, level] == model[:, level]) | (data[:, level] == wild_card)
+        else:
+            result = np.all((data[:, :level] == model[:, :level]) | (data[:, :level] == wild_card), axis=1)
 
         # return spatial performance
         return {k: v for k, v in zip(xy, result)}
