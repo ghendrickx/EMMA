@@ -37,7 +37,7 @@ When using this repository, please cite accordingly:
     doi: [TBD]().
     
 This repository has been featured in the following publication:
- -  Brunink, S., and
+ 1. Brunink, S., and
     [Hendrickx, G.G.](https://orcid.org/0000-0001-9523-7657)
     (2023).
     {title}.
