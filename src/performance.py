@@ -64,9 +64,9 @@ class Comparison:
         data = np.array(data).view('U1').reshape(len(data), -1)
         model = np.array(model).view('U1').reshape(len(model), -1)
 
-        # remove dot from labels
-        data = np.delete(data, 2, axis=1)
-        model = np.delete(model, 2, axis=1)
+        # remove dot from labels (if present)
+        data = data[:, ~np.all(data == '.', axis=0)]
+        model = model[:, ~np.all(model == '.', axis=0)]
 
         # compare labels
         wild_card = self.wild_card if enable_wild_card else False
