@@ -6,23 +6,28 @@ Authors: Soesja Brunink & Gijs G. Hendrickx
 import logging
 
 import numpy as np
+import typing
+
+from src.processing import __TYPE_XY_LABEL
 
 _LOG = logging.getLogger(__name__)
 
 
 # TODO: Translation from polygon data to model's grid points
-def polygon2grid(polygon, grid) -> dict: pass
+def polygon2grid(polygon, grid) -> __TYPE_XY_LABEL:
 
 
 class Comparison:
-    def __init__(self, data: dict, model: dict, **kwargs) -> None:
 
+    __TYPE_XY_LABEL = __TYPE_XY_LABEL
+
+    def __init__(self, data: __TYPE_XY_LABEL, model: __TYPE_XY_LABEL, **kwargs) -> None:
         # initiate required arguments
         self._data = data
         self._model = model
 
         # initiate optional arguments
-        self.wild_card = kwargs.get('wild_card', 'x')
+        self.wild_card: str = kwargs.get('wild_card', 'x')
 
         # non-overlapping data
         if not all(k in data for k in model):
@@ -31,14 +36,14 @@ class Comparison:
             _LOG.warning('Not all (x,y)-coordinates in `data` are present in `model`')
 
     @property
-    def data(self) -> dict:
+    def data(self) -> __TYPE_XY_LABEL:
         return self._data
 
     @property
-    def model(self) -> dict:
+    def model(self) -> __TYPE_XY_LABEL:
         return self._model
 
-    def exec(self, level: int, **kwargs) -> dict:
+    def exec(self, level: int, **kwargs) -> typing.Dict[typing.Tuple[float, float], bool]:
         # optional arguments
         label: int = kwargs.get('specific_label')
         enable_wild_card: bool = kwargs.get('enable_wild_card', True)
