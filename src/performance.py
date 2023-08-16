@@ -44,14 +44,17 @@ class Comparison:
         enable_wild_card: bool = kwargs.get('enable_wild_card', True)
 
         # check validity optional arguments
-        if label is not None and not (0 <= label <= 5):
-            msg = f'Ecotope-labels consists of five (5) items; ' \
+        if label is not None and not (0 <= label <= 6):
+            msg = f'Ecotope-labels consists of six (6) items; ' \
                 f'specific label comparison at {label} is out of range'
             raise ValueError(msg)
 
         # check validity `level`-argument
-        if level > 5:
-            msg = f'Maximum level of comparison is 5 (full comparison); {level} given'
+        if level < 0:
+            msg = f'Level of comparison must be positive, negative value given: {level}'
+            raise ValueError(msg)
+        if level > 6:
+            msg = f'Maximum level of comparison is six (6) (full comparison); {level} given'
             raise ValueError(msg)
 
         # filter data: only matching (x,y)-coordinates
