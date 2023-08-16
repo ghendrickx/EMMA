@@ -76,12 +76,18 @@ class Comparison:
         data = data[:, ~np.all(data == '.', axis=0)]
         model = model[:, ~np.all(model == '.', axis=0)]
 
+        # append empty string to match label-sizes (if required)
+        if data.shape < model.shape:
+            data = np.append(data, np.empty((len(data), 1), dtype=str), axis=1)
+        elif data.shape > model.shape:
+            model = np.append(model, np.empty((len(model), 1), dtype=str), axis=1)
+
         # compare labels
         wild_card = self.wild_card if enable_wild_card else False
-        if label is None:
+        if specific_label:
             result = np.all((data[:, :level] == model[:, :level]) | (data[:, :level] == wild_card), axis=1)
         else:
-            result = (data[:, label] == model[:, label]) | (data[:, label] == wild_card)
+            result = (data[:, level] == model[:, level]) | (data[:, level] == wild_card)
 
         # return spatial performance
         return {k: v for k, v in zip(xy, result)}
