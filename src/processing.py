@@ -15,6 +15,7 @@ from config import config_file
 from src import labelling as lab, preprocessing as pre, export as exp
 
 _LOG = logging.getLogger(__name__)
+__TYPE_XY_LABEL = typing.TypeAlias(typing.Dict[typing.Tuple[float, float], str])
 
 
 def __log_config(part_id: int = None, **kwargs) -> None:
@@ -212,7 +213,7 @@ def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
     return x_coordinates, y_coordinates, ecotopes
 
 
-def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[dict, None]:
+def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[__TYPE_XY_LABEL, None]:
     """Map ecotopes from hydrodynamic model data.
 
     :param f_map: file name(s) of hydrodynamic model output data (*.nc)
@@ -232,7 +233,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[dict, None]:
         wd_export: str
 
     :return: spatial distribution of ecotopes (optional)
-    :rtype: dict, None
+    :rtype: dict[tuple[float, float], str], None
 
     :raise AssertionError: if `substratum_1` not in {None, 'soft', 'hard'}
     """
