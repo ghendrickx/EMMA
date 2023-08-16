@@ -15,7 +15,6 @@ from config import config_file
 from src import labelling as lab, preprocessing as pre, export as exp
 
 _LOG = logging.getLogger(__name__)
-_TYPE_XY_LABEL = typing.Dict[typing.Tuple[float, float], str]
 
 
 def __log_config(part_id: int = None, **kwargs) -> None:
@@ -213,7 +212,7 @@ def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
     return x_coordinates, y_coordinates, ecotopes
 
 
-def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[_TYPE_XY_LABEL, None]:
+def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[pre._TYPE_XY_LABEL, None]:
     """Map ecotopes from hydrodynamic model data.
 
     :param f_map: file name(s) of hydrodynamic model output data (*.nc)

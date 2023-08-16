@@ -9,6 +9,7 @@ import typing
 
 import netCDF4
 import numpy as np
+_TYPE_XY_LABEL = typing.Dict[typing.Tuple[float, float], str]
 
 _LOG = logging.getLogger(__name__)
 
