@@ -8,13 +8,13 @@ import logging
 import numpy as np
 import typing
 
-from src.processing import __TYPE_XY_LABEL
+from src.processing import _TYPE_XY_LABEL
 
 _LOG = logging.getLogger(__name__)
 
 
 # TODO: Translation from polygon data to model's grid points
-def polygon2grid(polygon, grid) -> __TYPE_XY_LABEL:
+def polygon2grid(polygon, grid) -> _TYPE_XY_LABEL:
     """Project polygon data (i.e., ecotope-map(s)) to model's grid points for comparison.
 
     :param polygon: polygon data
@@ -26,15 +26,41 @@ def polygon2grid(polygon, grid) -> __TYPE_XY_LABEL:
     :return: gridded data
     :rtype: dict
     """
+    from shapely import geometry
+
+
+def csv2grid(file: str) -> _TYPE_XY_LABEL:
+    """Transform *.csv-file with (x, y, label)-data to {(x, y): label}-formatted data.
+
+    :param file: *.csv-file
+    :type file: str
+
+    :return: spatial distribution of ecotope-labels
+    :rtype: dict[tuple[float, float], str]
+    """
+    # read file
+    with open(file, mode='r') as f:
+        data = [line.rstrip().split(',') for line in f.readlines()]
+
+    # check file content
+    if not len(data[0]) == 3:
+        msg = f'CSV-file must contain three (3) columns (x, y, label); {len(data[0])} given'
+        raise ValueError(msg)
+
+    # transform data
+    result = {(p[0], p[1]): p[2] for p in data}
+
+    # return transformed data
+    return result
 
 
 class Comparison:
     """Compare ecotope-map(s) considered as ground-truth to the map(s) as predicted by `EMMA` from hydrodynamic model
     results.
     """
-    __TYPE_XY_LABEL = __TYPE_XY_LABEL
+    _TYPE_XY_LABEL = _TYPE_XY_LABEL
 
-    def __init__(self, data: __TYPE_XY_LABEL, model: __TYPE_XY_LABEL, **kwargs) -> None:
+    def __init__(self, data: _TYPE_XY_LABEL, model: _TYPE_XY_LABEL, **kwargs) -> None:
         """Both `data` and `model` must be formatted as follows: (x,y)-coordinates as key, and the ecotope-label as
         value (`str`). This corresponds with the formatting of the returned `dict` by `map_ecotopes()` (from
         `src.processing`).
@@ -66,7 +92,7 @@ class Comparison:
             _LOG.warning('Not all (x,y)-coordinates in `data` are present in `model`')
 
     @property
-    def data(self) -> __TYPE_XY_LABEL:
+    def data(self) -> _TYPE_XY_LABEL:
         """
         :return: ground-truth ecotope-labels
         :rtype: dict[tuple[float, float], str]
@@ -74,7 +100,7 @@ class Comparison:
         return self._data
 
     @property
-    def model(self) -> __TYPE_XY_LABEL:
+    def model(self) -> _TYPE_XY_LABEL:
         """
         :return: predicted ecotope-labels
         :rtype: dict[tuple[float, float], str]
