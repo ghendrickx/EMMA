@@ -10,6 +10,10 @@ import numpy as np
 _LOG = logging.getLogger(__name__)
 
 
+# TODO: Translation from polygon data to model's grid points
+def polygon2grid(polygon, grid) -> dict: pass
+
+
 class Comparison:
 
     def __init__(self, measurements: dict, predictions: dict, **kwargs) -> None:
