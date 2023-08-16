@@ -141,15 +141,13 @@ class Comparison:
         specific_label: bool = kwargs.get('specific_label', False)
 
         # check validity `level`-argument
-        if specific_label and not (0 <= level <= 5):
+        if specific_label and not (0 <= level <= 6):
             msg = f'Ecotope-labels consists of six (6) items; ' \
                 f'specific label comparison at {level} is out of range'
             raise ValueError(msg)
         if level < 0:
             msg = f'Level of comparison must be positive, negative value given: {level}'
             raise ValueError(msg)
-        if level > 5:
-            _LOG.debug(f'Maximum level of comparison is five (5) (full comparison); {level} given')
 
         # filter and pack data: only (x,y)-coordinates present in data
         filtered = [(k, v, self.model[k]) for k, v in self.data.items() if k in self.model]
