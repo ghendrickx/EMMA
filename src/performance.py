@@ -15,28 +15,28 @@ def polygon2grid(polygon, grid) -> dict: pass
 
 
 class Comparison:
+    def __init__(self, data: dict, model: dict, **kwargs) -> None:
 
-    def __init__(self, measurements: dict, predictions: dict, **kwargs) -> None:
         # initiate required arguments
-        self._measurements = measurements
-        self._predictions = predictions
+        self._data = data
+        self._model = model
 
         # initiate optional arguments
         self.wild_card = kwargs.get('wild_card', 'x')
 
         # non-overlapping data
-        if not all(k in measurements for k in predictions):
-            _LOG.warning('Not all (x,y)-coordinates in `predictions` are present in `measurements`')
-        if not all(k in predictions for k in measurements):
-            _LOG.warning('Not all (x,y)-coordinates in `measurements` are present in `predictions`')
+        if not all(k in data for k in model):
+            _LOG.warning('Not all (x,y)-coordinates in `model` are present in `data`')
+        if not all(k in model for k in data):
+            _LOG.warning('Not all (x,y)-coordinates in `data` are present in `model`')
 
     @property
-    def measurements(self) -> dict:
-        return self._measurements
+    def data(self) -> dict:
+        return self._data
 
     @property
-    def predictions(self) -> dict:
-        return self._predictions
+    def model(self) -> dict:
+        return self._model
 
     def exec(self, level: int, **kwargs) -> dict:
         # optional arguments
@@ -55,7 +55,7 @@ class Comparison:
             raise ValueError(msg)
 
         # filter data: only matching (x,y)-coordinates
-        filtered = [(k, v, self.predictions[k]) for k, v in self.measurements.items() if k in self.predictions]
+        filtered = [(k, v, self.model[k]) for k, v in self.data.items() if k in self.model]
 
         # unpack filtered data
         xy, data, model = zip(*filtered)
