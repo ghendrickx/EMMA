@@ -15,13 +15,43 @@ _LOG = logging.getLogger(__name__)
 
 # TODO: Translation from polygon data to model's grid points
 def polygon2grid(polygon, grid) -> __TYPE_XY_LABEL:
+    """Project polygon data (i.e., ecotope-map(s)) to model's grid points for comparison.
+
+    :param polygon: polygon data
+    :param grid: model's grid points
+
+    :type polygon:
+    :type grid:
+
+    :return: gridded data
+    :rtype: dict
+    """
 
 
 class Comparison:
-
+    """Compare ecotope-map(s) considered as ground-truth to the map(s) as predicted by `EMMA` from hydrodynamic model
+    results.
+    """
     __TYPE_XY_LABEL = __TYPE_XY_LABEL
 
     def __init__(self, data: __TYPE_XY_LABEL, model: __TYPE_XY_LABEL, **kwargs) -> None:
+        """Both `data` and `model` must be formatted as follows: (x,y)-coordinates as key, and the ecotope-label as
+        value (`str`). This corresponds with the formatting of the returned `dict` by `map_ecotopes()` (from
+        `src.processing`).
+        >>> data = {
+        ...     (0, 0): 'Z2.222f',
+        ... }
+
+        :param data: ground-truth ecotope-labels
+        :param model: predicted ecotope-labels
+        :param kwargs: optional arguments
+            wild_card: wild-card character in ecotope-labels, defaults to 'x'
+
+        :type data: dict[tuple[float, float], str]
+        :type model: dict[tuple[float, float], str]
+        :type kwargs: optional
+            wild_card: str
+        """
         # initiate required arguments
         self._data = data
         self._model = model
@@ -37,13 +67,49 @@ class Comparison:
 
     @property
     def data(self) -> __TYPE_XY_LABEL:
+        """
+        :return: ground-truth ecotope-labels
+        :rtype: dict[tuple[float, float], str]
+        """
         return self._data
 
     @property
     def model(self) -> __TYPE_XY_LABEL:
+        """
+        :return: predicted ecotope-labels
+        :rtype: dict[tuple[float, float], str]
+        """
         return self._model
 
     def exec(self, level: int, **kwargs) -> typing.Dict[typing.Tuple[float, float], bool]:
+        """Execute the comparison up to a given level of detail. This level of detail reflects the number of label-
+        components (i.e., letters or numbers) to assess, starting from the left. Note that this excludes any dots (.) in
+        the labels. In case the `specific_label` is enabled, `level` reflects the index of the label-component to
+        assess. Thus, with `specific_label` disabled (default), the labels are assessed as `label[:level]`; and with
+        `specific_label` enabled, the labels are assessed as `label[level]`.
+
+        Ecotope-labels may contain wild cards (default: 'x'), which may represent any letter or number of the ecotope-
+        label. Thus, 'Z2.222f' and 'Z2.222x' are considered a match. This type of assessment can be disabled by setting
+        the optional argument `enable_wild_card=False` (default: True).
+
+        :param level: level of assessment
+        :param kwargs: optional arguments
+            enable_wild_card: the wild card character reflects a match, defaults to True
+            specific_label: assess a specific label only (defined by `level`), defaults to False
+
+        :type level: int
+        :type kwargs: optional
+            enable_wild_card: bool
+            specific_label: bool
+
+        :return: spatial distribution of matching ecotope-labels
+        :rtype: dict[tuple[float, float], bool]
+
+        :raises ValueError: if `level` exceeds ecotope-label components (if `specific_label=True`)
+        :raises ValueError: if `level` is negative
+        :raises AssertionError: if (x,y)-coordinates, ground-truth ecotope-labels, and predicted ecotope-labels have
+            mismatching sizes
+        """
         # optional arguments
         enable_wild_card: bool = kwargs.get('enable_wild_card', True)
         specific_label: bool = kwargs.get('specific_label', False)
