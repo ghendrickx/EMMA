@@ -45,28 +45,28 @@ class Comparison:
 
     def exec(self, level: int, **kwargs) -> typing.Dict[typing.Tuple[float, float], bool]:
         # optional arguments
-        label: int = kwargs.get('specific_label')
         enable_wild_card: bool = kwargs.get('enable_wild_card', True)
-
-        # check validity optional arguments
-        if label is not None and not (0 <= label <= 6):
-            msg = f'Ecotope-labels consists of six (6) items; ' \
-                f'specific label comparison at {label} is out of range'
-            raise ValueError(msg)
+        specific_label: bool = kwargs.get('specific_label', False)
 
         # check validity `level`-argument
+        if specific_label and not (0 <= level <= 5):
+            msg = f'Ecotope-labels consists of six (6) items; ' \
+                f'specific label comparison at {level} is out of range'
+            raise ValueError(msg)
         if level < 0:
             msg = f'Level of comparison must be positive, negative value given: {level}'
             raise ValueError(msg)
-        if level > 6:
-            msg = f'Maximum level of comparison is six (6) (full comparison); {level} given'
-            raise ValueError(msg)
+        if level > 5:
+            _LOG.debug(f'Maximum level of comparison is five (5) (full comparison); {level} given')
 
-        # filter data: only matching (x,y)-coordinates
+        # filter and pack data: only (x,y)-coordinates present in data
         filtered = [(k, v, self.model[k]) for k, v in self.data.items() if k in self.model]
 
         # unpack filtered data
         xy, data, model = zip(*filtered)
+        assert len(xy) == len(data) == len(model), \
+            f'Sizes of (x,y)-coordinates, ground-truth ecotope-labels, and predicted ecotope-labels must be equal; ' \
+            f'respective sizes are {len(xy)}, {len(data)}, and {len(model)}'
 
         # decompose labels
         data = np.array(data).view('U1').reshape(len(data), -1)
