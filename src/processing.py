@@ -12,7 +12,8 @@ import numpy as np
 import typing
 
 from config import config_file
-from src import _globals as glob, \
+from src import \
+    _globals as glob, \
     export as exp, \
     labelling as lab, \
     preprocessing as pre
