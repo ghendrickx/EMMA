@@ -50,8 +50,9 @@ This repository is licensed under [`Apache License 2.0`](LICENSE).
 
 ## Requirements
 This repository has the following requirements (see also [`requirements.txt`](requirements.txt)):
- -  `numpy>=1.19.4`
- -  `netCDF>=1.5.7`
+ -  `shapely`
+ -  `numpy`
+ -  `netCDF`
 
 ## Basic usage
 The basic usage of `EMMA` requires calling the `map_ecotopes()`-function:
@@ -130,6 +131,7 @@ The main features of `EMMA` is located in the [`src`](src)-directory, and the bu
 |   +-- __init__.py
 |   +-- test_config.py
 |   +-- test_labelling.py
+|   +-- test_performance.py
 |   +-- test_preprocessing.py
 +-- .gitignore
 +-- LICENSE
