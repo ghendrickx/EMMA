@@ -8,6 +8,8 @@ from config.config_file import load_config
 """TestClasses"""
 
 
+# TODO: Add a file-level variable (e.g., `TEST_CONFIG`) in which to load the configuration once, and use it in all
+#  subsequent tests.
 class TestLoadConfig:
     """Tests for `load_config()`."""
 
