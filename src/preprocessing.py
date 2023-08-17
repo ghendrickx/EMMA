@@ -21,7 +21,7 @@ _LOG = logging.getLogger(__name__)
 CONFIG = dict()
 
 
-"""Pre-processing of hydrodynamic data"""
+"""Pre-processing of hydrodynamic model data"""
 
 
 class MapData:
