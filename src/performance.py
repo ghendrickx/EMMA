@@ -8,7 +8,7 @@ import logging
 import numpy as np
 import typing
 
-from src._globals import _TypeXYLabel
+from src import _globals as glob
 
 _LOG = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ class Comparison:
     """Compare ecotope-map(s) considered as ground-truth to the map(s) as predicted by `EMMA` from hydrodynamic model
     results.
     """
-    _TypeXYLabel = _TypeXYLabel
+    _TypeXYLabel = glob.TypeXYLabel
 
     def __init__(self, data: _TypeXYLabel, model: _TypeXYLabel, **kwargs) -> None:
         """Both `data` and `model` must be formatted as follows: (x,y)-coordinates as key, and the ecotope-label as
