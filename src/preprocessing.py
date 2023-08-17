@@ -3,16 +3,25 @@ Pre-processing of output data of hydrodynamic model.
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
+import functools
+import json
 import logging
+import multiprocessing as mp
 import os
 import typing
 
 import netCDF4
 import numpy as np
+from shapely import geometry
+
+_TYPE_XY_LABEL = typing.Dict[typing.Tuple[float, float], str]
 
 _LOG = logging.getLogger(__name__)
 
 CONFIG = dict()
+
+
+"""Pre-processing of hydrodynamic model data"""
 
 
 class MapData:
@@ -239,3 +248,143 @@ def grain_size_estimation(
     if c_friction is None:
         c_friction = 1e6 / (shields * r_density * chezy ** 2)
     return c_friction * median_velocity ** 2
+
+
+"""Pre-processing of polygon-data"""
+
+
+def csv2grid(file: str) -> _TYPE_XY_LABEL:
+    """Transform *.csv-file with (x, y, label)-data to {(x, y): label}-formatted data.
+
+    :param file: *.csv-file
+    :type file: str
+
+    :return: spatial distribution of ecotope-labels
+    :rtype: dict[tuple[float, float], str]
+    """
+    # read file
+    with open(file, mode='r') as f:
+        data = [line.rstrip().split(',') for line in f.readlines()]
+
+    # check file content
+    if not len(data[0]) == 3:
+        msg = f'CSV-file must contain three (3) columns (x, y, label); {len(data[0])} given'
+        raise ValueError(msg)
+
+    # transform data
+    result = {(p[0], p[1]): p[2] for p in data}
+
+    # return transformed data
+    return result
+
+
+def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], **kwargs) -> dict:
+    # optional arguments
+    quick_check: bool = kwargs.get('quick_check_grid_in_polygon', False)
+    grid: dict = kwargs.get('grid')
+    assert quick_check == bool(grid), \
+        f'Both or neither `quick_check` and/nor `grid` should be `True`: ' \
+        f'`quick_check={quick_check}` and `bool(grid)={bool(grid)}`'
+
+    # extract polygons
+    polygons = feature['geometry']['coordinates']
+
+    # initiate output
+    result = dict()
+
+    # skip if none of the grid points is within the polygon
+    if quick_check:
+        # grid coordinates
+        grid_x, grid_y = np.array([*grid.keys()]).T
+
+        # loop over polygons
+        grid_in_polygon = False
+        for polygon in polygons:
+            if len(polygon[0]) == 2:
+                # polygon definition
+                x, y = zip(*polygon)
+            else:
+                # multi-polygon definition
+                _polygon = []
+                for sub_polygon in polygon:
+                    _polygon.extend(sub_polygon)
+                x, y = zip(*_polygon)
+
+            # any grid-point in square-shaped polygon
+            if np.any(((grid_x > min(x)) & (grid_x < max(x))) & ((grid_y > min(y)) & (grid_y < max(y)))):
+                grid_in_polygon = True
+                break
+
+        # return empty dict if no grid-point in square-shaped polygon
+        if not grid_in_polygon:
+            return result
+
+    # extract ecotope-label
+    label = feature['properties']['zes_code']
+    if label == 'overig':
+        label = 'xx.xxx'
+
+    # create `shapely.geometry.Polygon`-objects
+    polygons = [geometry.Polygon(polygon) for polygon in polygons]
+
+    # determine if points are in stacked polygons
+    for point in points:
+        # point in separate polygons
+        inside_separate = [polygon.contains(point) for polygon in polygons]
+        # point in stacked polygons
+        inside_stacked = functools.reduce(lambda a, b: a ^ b, inside_separate)
+        # append point to result (if in stacked polygons)
+        if inside_stacked:
+            result[(point.x, point.y)] = label
+
+    # return labeled feature
+    return result
+
+
+def polygon2grid(f_polygon: str, f_grid: str = None, grid: dict = None, **kwargs) -> dict:
+    # optional arguments
+    n_cores: int = kwargs.get('n_cores', 1)
+    quick_check: bool = kwargs.get('quick_check_grid_in_polygon', False)
+
+    # either `f_grid` or `grid` must be defined
+    if not (bool(f_grid) ^ bool(grid)):
+        msg = f'Either `f_grid` or `grid` must be defined: `f_grid={f_grid}` and `grid={grid}`'
+        raise ValueError(msg)
+
+    # open polygon data
+    with open(f_polygon, mode='r') as f:
+        data = json.load(f)
+
+    # open grid data
+    if f_grid:
+        grid = csv2grid(f_grid)
+
+    # grid to `shapely.geometry.Point`-objects
+    points = [geometry.Point(xy) for xy in grid]
+
+    # extract features
+    features = data['features']
+
+    # add `grid` to `kwargs`
+    if quick_check:
+        kwargs['grid'] = grid
+
+    # parallel computing: settings
+    n_features = data['totalFeatures']
+    n_processes = min(n_cores, n_features)
+    _LOG.info(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
+    _LOG.info(f'CPUs used: {n_processes} / {mp.cpu_count()}')
+    _LOG.info(f'CPUs required: {n_features} / {n_processes}')
+
+    # parallel computing: translation
+    if n_processes == 1:
+        lst_results = [points_in_feature(feature, points, **kwargs) for feature in features]
+    else:
+        with mp.Pool(processes=n_processes) as p:
+            lst_results = p.map(functools.partial(points_in_feature, points=points, **kwargs), features)
+
+    # compress results
+    result = {k: v for d in lst_results for k, v in d.items()}
+
+    # return results
+    return result

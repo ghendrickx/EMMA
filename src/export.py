@@ -11,6 +11,28 @@ import typing
 _LOG = logging.getLogger(__name__)
 
 
+def file_dir(file_name: str, wd: str = None) -> str:
+    """Determine file name and directory.
+
+    :param file_name: file name
+    :param wd: working directory, defaults to None
+
+    :type file_name: str
+    :type wd: str, optional
+
+    :return: file directory
+    :rtype: str
+    """
+    # file name contains (home) directory
+    start_dir = file_name.split(os.sep)[0]
+    if start_dir.endswith(':') or start_dir in ('', '~'):
+        return file_name
+
+    # file name does not contain a (home) directory
+    wd = wd or os.getcwd()
+    return os.path.join(wd, file_name)
+
+
 def _file_name(default: str, extension: str = None) -> callable:
     """Decorator to define default file name and log the file-location of the exported data.
 
@@ -91,7 +113,7 @@ def export2log(level: str, *, file_name: str = None, wd: str = None) -> None:
     :type wd: str, optional
     """
     # remove previous log-file
-    file = os.path.join(wd, file_name)
+    file = file_dir(file_name, wd)
     if os.path.exists(file):
         os.remove(file)
 
@@ -127,7 +149,7 @@ def export2csv(
     assert len(x) == len(y) == len(ecotopes)
 
     # file specifications
-    file = os.path.join(wd, file_name)
+    file = file_dir(file_name, wd)
 
     # export data
     with open(file, mode='w') as f:
@@ -136,7 +158,7 @@ def export2csv(
 
 
 @_file_name(default='ecotopes.nc')
-def export2nc(data: dict, *, file_name: str, wd: str = None) -> None:
+def export2nc(data: dict, *, file_name: str = None, wd: str = None) -> None:
     """Export ecotope-map data to a netCDF-file, containing x-, y-, and ecotope-data.
 
     :param data:
@@ -144,4 +166,6 @@ def export2nc(data: dict, *, file_name: str, wd: str = None) -> None:
     :param wd:
     :return:
     """
-    return NotImplemented
+    # file directory
+    file = file_dir(file_name, wd)
+    raise NotImplementedError(f'Data {data} not exported to {file}')
