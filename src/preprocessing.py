@@ -14,7 +14,7 @@ import netCDF4
 import numpy as np
 from shapely import geometry
 
-from src._globals import CONFIG, _TypeXYLabel
+from src import _globals as glob
 
 _LOG = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class MapData:
 
         _LOG.info(f'Map-file loaded: {self.file}')
 
-        if not CONFIG:
+        if not glob.MODEL_CONFIG:
             _LOG.critical(f'No map-configuration defined when initialising {self.__class__.__name__}')
 
     @property
@@ -89,8 +89,8 @@ class MapData:
         :return: sign of water depth
         :rtype: int
         """
-        assert CONFIG['depth-sign'] in ('+', '-')
-        return +1 if CONFIG['depth-sign'] == '+' else -1
+        assert glob.MODEL_CONFIG['depth-sign'] in ('+', '-')
+        return +1 if glob.MODEL_CONFIG['depth-sign'] == '+' else -1
 
     @property
     def x_coordinates(self) -> np.ndarray:
@@ -98,7 +98,7 @@ class MapData:
         :return: x-coordinates
         :rtype: numpy.ndarray
         """
-        return self.get_variable(CONFIG['x-coordinates'])
+        return self.get_variable(glob.MODEL_CONFIG['x-coordinates'])
 
     @property
     def y_coordinates(self) -> np.ndarray:
@@ -106,7 +106,7 @@ class MapData:
         :return: y-coordinates
         :rtype: numpy.ndarray
         """
-        return self.get_variable(CONFIG['y-coordinates'])
+        return self.get_variable(glob.MODEL_CONFIG['y-coordinates'])
 
     @property
     def water_depth(self) -> np.ndarray:
@@ -114,7 +114,7 @@ class MapData:
         :return: water levels [m]
         :rtype: numpy.ndarray
         """
-        return self._depth_sign * self.get_variable(CONFIG['water-depth'])
+        return self._depth_sign * self.get_variable(glob.MODEL_CONFIG['water-depth'])
 
     @property
     def velocity(self) -> np.ndarray:
@@ -124,7 +124,8 @@ class MapData:
         """
         if self._velocity is None:
             self._velocity = np.sqrt(
-                self.get_variable(CONFIG['x-velocity']) ** 2 + self.get_variable(CONFIG['y-velocity']) ** 2
+                self.get_variable(glob.MODEL_CONFIG['x-velocity']) ** 2 +
+                self.get_variable(glob.MODEL_CONFIG['y-velocity']) ** 2
             )
 
         return self._velocity
@@ -135,7 +136,7 @@ class MapData:
         :return: depth-averaged salinity [psu]
         :rtype: numpy.ndarray
         """
-        return self.get_variable(CONFIG['salinity'])
+        return self.get_variable(glob.MODEL_CONFIG['salinity'])
 
     @property
     def grain_size(self) -> typing.Optional[np.ndarray]:
@@ -251,14 +252,16 @@ def grain_size_estimation(
 """Pre-processing of polygon-data"""
 
 
-def csv2grid(file: str) -> _TypeXYLabel:
+def csv2grid(file: str) -> glob.TypeXYLabel:
     """Transform *.csv-file with (x, y, label)-data to {(x, y): label}-formatted data.
 
     :param file: *.csv-file
     :type file: str
 
     :return: spatial distribution of ecotope-labels
-    :rtype: dict[tuple[float, float], str]
+    :rtype: src._globals.TypeXYLabel
+
+    :raises ValueError: if *.csv-file does not contain three (3) columns: x, y, label
     """
     # read file
     with open(file, mode='r') as f:
@@ -278,8 +281,8 @@ def csv2grid(file: str) -> _TypeXYLabel:
 
 def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], **kwargs) -> dict:
     # optional arguments
-    quick_check: bool = kwargs.get('quick_check_grid_in_polygon', False)
-    grid: dict = kwargs.get('grid')
+    quick_check: bool = kwargs.get('quick_check', False)
+    grid: glob.TypeXY = kwargs.get('grid')
     assert quick_check == bool(grid), \
         f'Both or neither `quick_check` and/nor `grid` should be `True`: ' \
         f'`quick_check={quick_check}` and `bool(grid)={bool(grid)}`'
@@ -293,7 +296,7 @@ def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], 
     # skip if none of the grid points is within the polygon
     if quick_check:
         # grid coordinates
-        grid_x, grid_y = np.array([*grid.keys()]).T
+        grid_x, grid_y = np.array([*grid]).T
 
         # loop over polygons
         grid_in_polygon = False
