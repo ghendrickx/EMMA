@@ -4,7 +4,7 @@ model output data to ecotopes.
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
-__all__ = ['src.processing']
+__all__ = ['config', 'examples', 'src']
 
 __version__ = '0.1'
 __author__ = 'Soesja Brunink & Gijs G. Hendrickx'
