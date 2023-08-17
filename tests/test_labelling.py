@@ -7,7 +7,7 @@ from config import config_file
 from src import labelling as lab
 
 """Set configuration file"""
-lab.CONFIG = config_file.load_config('emma.json')
+lab.glob.LABEL_CONFIG = config_file.load_config('emma.json')
 
 """TestClasses"""
 
