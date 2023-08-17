@@ -124,6 +124,7 @@ The main features of `EMMA` is located in the [`src`](src)-directory, and the bu
 |   +-- _example_plot.py
 +-- src/
 |   +-- __init__.py
+|   +-- _globals.py
 |   +-- export.py
 |   +-- labelling.py
 |   +-- performance.py
@@ -136,7 +137,9 @@ The main features of `EMMA` is located in the [`src`](src)-directory, and the bu
 |   +-- test_performance.py
 |   +-- test_preprocessing.py
 +-- .gitignore
++-- __init__.py
 +-- LICENSE
 +-- README.md
 +-- requirements.txt
++-- setup.py
 ```
