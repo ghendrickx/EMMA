@@ -14,11 +14,9 @@ import netCDF4
 import numpy as np
 from shapely import geometry
 
-_TYPE_XY_LABEL = typing.Dict[typing.Tuple[float, float], str]
+from src import _globals as glob
 
 _LOG = logging.getLogger(__name__)
-
-CONFIG = dict()
 
 
 """Pre-processing of hydrodynamic model data"""
@@ -44,7 +42,7 @@ class MapData:
 
         _LOG.info(f'Map-file loaded: {self.file}')
 
-        if not CONFIG:
+        if not glob.MODEL_CONFIG:
             _LOG.critical(f'No map-configuration defined when initialising {self.__class__.__name__}')
 
     @property
@@ -91,8 +89,8 @@ class MapData:
         :return: sign of water depth
         :rtype: int
         """
-        assert CONFIG['depth-sign'] in ('+', '-')
-        return +1 if CONFIG['depth-sign'] == '+' else -1
+        assert glob.MODEL_CONFIG['depth-sign'] in ('+', '-')
+        return +1 if glob.MODEL_CONFIG['depth-sign'] == '+' else -1
 
     @property
     def x_coordinates(self) -> np.ndarray:
@@ -100,7 +98,7 @@ class MapData:
         :return: x-coordinates
         :rtype: numpy.ndarray
         """
-        return self.get_variable(CONFIG['x-coordinates'])
+        return self.get_variable(glob.MODEL_CONFIG['x-coordinates'])
 
     @property
     def y_coordinates(self) -> np.ndarray:
@@ -108,7 +106,7 @@ class MapData:
         :return: y-coordinates
         :rtype: numpy.ndarray
         """
-        return self.get_variable(CONFIG['y-coordinates'])
+        return self.get_variable(glob.MODEL_CONFIG['y-coordinates'])
 
     @property
     def water_depth(self) -> np.ndarray:
@@ -116,7 +114,7 @@ class MapData:
         :return: water levels [m]
         :rtype: numpy.ndarray
         """
-        return self._depth_sign * self.get_variable(CONFIG['water-depth'])
+        return self._depth_sign * self.get_variable(glob.MODEL_CONFIG['water-depth'])
 
     @property
     def velocity(self) -> np.ndarray:
@@ -126,7 +124,8 @@ class MapData:
         """
         if self._velocity is None:
             self._velocity = np.sqrt(
-                self.get_variable(CONFIG['x-velocity']) ** 2 + self.get_variable(CONFIG['y-velocity']) ** 2
+                self.get_variable(glob.MODEL_CONFIG['x-velocity']) ** 2 +
+                self.get_variable(glob.MODEL_CONFIG['y-velocity']) ** 2
             )
 
         return self._velocity
@@ -137,7 +136,7 @@ class MapData:
         :return: depth-averaged salinity [psu]
         :rtype: numpy.ndarray
         """
-        return self.get_variable(CONFIG['salinity'])
+        return self.get_variable(glob.MODEL_CONFIG['salinity'])
 
     @property
     def grain_size(self) -> typing.Optional[np.ndarray]:
@@ -253,14 +252,16 @@ def grain_size_estimation(
 """Pre-processing of polygon-data"""
 
 
-def csv2grid(file: str) -> _TYPE_XY_LABEL:
+def csv2grid(file: str) -> glob.TypeXYLabel:
     """Transform *.csv-file with (x, y, label)-data to {(x, y): label}-formatted data.
 
     :param file: *.csv-file
     :type file: str
 
     :return: spatial distribution of ecotope-labels
-    :rtype: dict[tuple[float, float], str]
+    :rtype: src._globals.TypeXYLabel
+
+    :raises ValueError: if *.csv-file does not contain three (3) columns: x, y, label
     """
     # read file
     with open(file, mode='r') as f:
@@ -278,13 +279,27 @@ def csv2grid(file: str) -> _TYPE_XY_LABEL:
     return result
 
 
-def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], **kwargs) -> dict:
+def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], **kwargs) -> glob.TypeXYLabel:
+    """Determine per feature if the grid-points are within the feature's polygon. If so, assign the ecotope-label of the
+    feature to these grid-points. A collection of the grid-points that are within the feature's polygon (incl. the
+    feature's ecotope-label) are returned.
+
+    :param feature: polygon-based description of spatial distribution of an ecotope
+    :param points: grid-points from the hydrodynamic model as a collection of `shapely.geometry.Point`-objects
+    :param kwargs: optional arguments
+        quick_check: perform a crude check if the grid-points can be within the polygon by drawing a rectangle around
+            the polygon, defaults to False
+
+    :type feature: dict
+    :type points: collection[shapely.geometry.Point]
+    :type kwargs: optional
+        quick_check: bool
+
+    :return: labeled grid-points in feature
+    :rtype: src._globals.TypeXYLabel
+    """
     # optional arguments
-    quick_check: bool = kwargs.get('quick_check_grid_in_polygon', False)
-    grid: dict = kwargs.get('grid')
-    assert quick_check == bool(grid), \
-        f'Both or neither `quick_check` and/nor `grid` should be `True`: ' \
-        f'`quick_check={quick_check}` and `bool(grid)={bool(grid)}`'
+    quick_check: bool = kwargs.get('quick_check', False)
 
     # extract polygons
     polygons = feature['geometry']['coordinates']
@@ -295,7 +310,8 @@ def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], 
     # skip if none of the grid points is within the polygon
     if quick_check:
         # grid coordinates
-        grid_x, grid_y = np.array([*grid.keys()]).T
+        grid_x = np.array([p.x for p in points])
+        grid_y = np.array([p.y for p in points])
 
         # loop over polygons
         grid_in_polygon = False
@@ -341,10 +357,33 @@ def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], 
     return result
 
 
-def polygon2grid(f_polygon: str, f_grid: str = None, grid: dict = None, **kwargs) -> dict:
+def polygons2grid(f_polygons: str, f_grid: str = None, grid: glob.TypeXY = None, **kwargs) -> glob.TypeXYLabel:
+    """Transform polygon data to grid-points by determining which grid-points are within every polygon.
+
+    :param f_polygons: file name of polygon-data
+    :param f_grid: file name of grid-data, defaults to None
+    :param grid: grid-data, defaults to None
+    :param kwargs: optional arguments
+        n_cores: number of cores available for parallel computing, defaults to 1
+        quick_check: perform a crude check if the grid-points can be within a polygon by drawing a rectangle around the
+            polygon, defaults to False
+
+    :type f_polygons: str
+    :type f_grid: str, optional
+    :type grid: src._globals.TypeXY, optional
+    :type kwargs: optional
+        n_cores: int
+        quick_check: bool
+
+    :return: spatial distribution of ecotope-labels
+    :rtype: src._globals.TypeXYLabel
+
+    :raises ValueError: if both or none of `f_grid` and `grid` are defined
+    """
     # optional arguments
     n_cores: int = kwargs.get('n_cores', 1)
-    quick_check: bool = kwargs.get('quick_check_grid_in_polygon', False)
+    quick_check: bool = kwargs.get('quick_check', False)
+    _LOG.debug(f'Quick-check executed: {quick_check}')
 
     # either `f_grid` or `grid` must be defined
     if not (bool(f_grid) ^ bool(grid)):
@@ -352,7 +391,7 @@ def polygon2grid(f_polygon: str, f_grid: str = None, grid: dict = None, **kwargs
         raise ValueError(msg)
 
     # open polygon data
-    with open(f_polygon, mode='r') as f:
+    with open(f_polygons, mode='r') as f:
         data = json.load(f)
 
     # open grid data
@@ -364,10 +403,6 @@ def polygon2grid(f_polygon: str, f_grid: str = None, grid: dict = None, **kwargs
 
     # extract features
     features = data['features']
-
-    # add `grid` to `kwargs`
-    if quick_check:
-        kwargs['grid'] = grid
 
     # parallel computing: settings
     n_features = data['totalFeatures']

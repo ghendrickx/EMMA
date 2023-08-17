@@ -1,17 +1,18 @@
 """
-Tests for `preprocessing.py`.
+Tests for `src/preprocessing.py`.
 
 Author: Gijs G. Hendrickx
 """
 import pytest
 
 import numpy as np
+from shapely.geometry import Point
 
 from config import config_file
 from src import preprocessing as pre
 
 """Set configuration file"""
-pre.CONFIG = config_file.load_config('dfm2d.json')
+pre.glob.MODEL_CONFIG = config_file.load_config('dfm2d.json')
 
 """pytest.fixtures"""
 
@@ -20,6 +21,24 @@ pre.CONFIG = config_file.load_config('dfm2d.json')
 def dummy_time_series():
     """Create a random array to test the order of its statistics."""
     return np.random.random((100, 100))
+
+
+@pytest.fixture
+def dummy_feature():
+    """Create a representative feature for testing."""
+    return dict(
+        geometry=dict(
+            coordinates=[[
+                [0, 0],
+                [0, 5],
+                [5, 5],
+                [5, 0]
+            ]]
+        ),
+        properties=dict(
+            zes_code='Z2.222f'
+        )
+    )
 
 
 """TestsClasses"""
@@ -95,3 +114,35 @@ class TestProcessTimeSeries:
         output = pre.grain_size_estimation(np.array([0, 1]), c_friction=1300)
         for t, o in zip(truth, output):
             assert pytest.approx(t) == o
+
+
+class TestPointsInFeature:
+    """Tests for `points_in_feature()`."""
+
+    def test_single_point_inside(self, dummy_feature):
+        out = pre.points_in_feature(dummy_feature, [Point(2, 2)])
+        assert len(out) == 1
+
+    def test_single_point_outside(self, dummy_feature):
+        out = pre.points_in_feature(dummy_feature, [Point(7, 7)])
+        assert len(out) == 0
+
+    def test_multi_point_inside(self, dummy_feature):
+        out = pre.points_in_feature(dummy_feature, [Point(1, 1), Point(2, 2), Point(3, 3)])
+        assert len(out) == 3
+
+    def test_multi_point_mixed(self, dummy_feature):
+        out = pre.points_in_feature(dummy_feature, [Point(2, 2), Point(7, 7)])
+        assert len(out) == 1
+
+    def test_assign_zes_code(self, dummy_feature):
+        out = pre.points_in_feature(dummy_feature, [Point(1, 1), Point(2, 2), Point(3, 3)])
+        assert all(v == 'Z2.222f' for v in out.values())
+
+    def test_quick_check_outside(self, dummy_feature):
+        out = pre.points_in_feature(dummy_feature, [Point(7, 7)], quick_check=True)
+        assert len(out) == 0
+
+    def test_quick_check_inside(self, dummy_feature):
+        out = pre.points_in_feature(dummy_feature, [Point(2, 2)], quick_check=True)
+        assert len(out) == 1

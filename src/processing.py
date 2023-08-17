@@ -12,7 +12,10 @@ import numpy as np
 import typing
 
 from config import config_file
-from src import labelling as lab, preprocessing as pre, export as exp
+from src import _globals as glob, \
+    export as exp, \
+    labelling as lab, \
+    preprocessing as pre
 
 _LOG = logging.getLogger(__name__)
 
@@ -53,7 +56,7 @@ def __log_config(part_id: int = None, **kwargs) -> None:
         logging.basicConfig(level=log_level.upper())
 
 
-def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
+def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, np.ndarray, list]:
     """Map ecotopes from hydrodynamic model data.
 
     :param f_map: file name of hydrodynamic model output data (*.nc)
@@ -156,9 +159,9 @@ def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
 
     # set configurations
     # > ecotope configuration
-    lab.CONFIG = config_file.load_config('emma.json', eco_config, wd_config)
+    glob.LABEL_CONFIG = config_file.load_config('emma.json', eco_config, wd_config)
     # > map configuration
-    pre.CONFIG = config_file.load_config('dfm2d.json', map_config, wd_config)
+    glob.MODEL_CONFIG = config_file.load_config('dfm2d.json', map_config, wd_config)
 
     # extract model data
     data = pre.MapData(file_name, wd=wd)
@@ -198,6 +201,7 @@ def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
     char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, mean_depth, in_duration, in_frequency, mlws)
     char_6 = np.vectorize(lab.substratum_2_code)(char_2, char_4, grain_sizes)
 
+    # construct ecotope-labels
     ecotopes = [
         f'{c1}{c2}.{c3}{c4}{c5}{c6}'
         for c1, c2, c3, c4, c5, c6
@@ -205,14 +209,11 @@ def __determine_ecotopes(file_name: str, **kwargs) -> tuple:
     ]
     _LOG.info(f'Ecotopes defined: {len(ecotopes)} instances; {len(np.unique(ecotopes))} unique ecotopes')
 
-    # reset logging
-    logging.shutdown()
-
-    # return (x,y)-coordinates and ecotopes
+    # return (x,y)-coordinates and ecotope-labels
     return x_coordinates, y_coordinates, ecotopes
 
 
-def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[pre._TYPE_XY_LABEL, None]:
+def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
     """Map ecotopes from hydrodynamic model data.
 
     :param f_map: file name(s) of hydrodynamic model output data (*.nc)
@@ -232,7 +233,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[pre._TYPE_XY_LABEL, None
         wd_export: str
 
     :return: spatial distribution of ecotopes (optional)
-    :rtype: dict[tuple[float, float], str], None
+    :rtype: src._globals.TypeXYLabel, None
 
     :raise AssertionError: if `substratum_1` not in {None, 'soft', 'hard'}
     """
