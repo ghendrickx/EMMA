@@ -3,7 +3,7 @@ Labelling of ecotopes.
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
-CONFIG = dict()
+from src import _globals as glob
 
 
 def salinity_code(salinity_mean: float, salinity_std: float) -> str:
@@ -23,15 +23,15 @@ def salinity_code(salinity_mean: float, salinity_std: float) -> str:
         return 'x'
 
     # salinity label: variable
-    if CONFIG['salinity']['variable'] * salinity_std > salinity_mean:
+    if glob.LABEL_CONFIG['salinity']['variable'] * salinity_std > salinity_mean:
         return 'V'
 
     # salinity label: fresh
-    elif salinity_mean < CONFIG['salinity']['fresh']:
+    elif salinity_mean < glob.LABEL_CONFIG['salinity']['fresh']:
         return 'F'
 
     # salinity label: marine
-    elif salinity_mean > CONFIG['salinity']['marine']:
+    elif salinity_mean > glob.LABEL_CONFIG['salinity']['marine']:
         return 'Z'
 
     # salinity label: brackish
@@ -83,11 +83,11 @@ def depth_1_code(water_depth: float, lat: float = None, mhwn: float = None) -> s
     # static determination
     elif lat is None and mhwn is None:
         # always inundated: sub-littoral
-        if -water_depth < CONFIG['depth-1']['low-water']:
+        if -water_depth < glob.LABEL_CONFIG['depth-1']['low-water']:
             return '1'
 
         # generally drained: supra-littoral
-        elif -water_depth > CONFIG['depth-1']['high-water']:
+        elif -water_depth > glob.LABEL_CONFIG['depth-1']['high-water']:
             return '3'
 
     # quasi-static determination
@@ -121,15 +121,15 @@ def hydrodynamics_code(velocity: float, code_depth_1: str) -> str:
         return 'x'
 
     # no flow: stagnant
-    elif velocity == CONFIG['hydrodynamics']['stagnant']:
+    elif velocity == glob.LABEL_CONFIG['hydrodynamics']['stagnant']:
         return '3'
 
     # sub-littoral flow
     elif code_depth_1 == '1':
-        return '1' if velocity > CONFIG['hydrodynamics']['sub-littoral'] else '2'
+        return '1' if velocity > glob.LABEL_CONFIG['hydrodynamics']['sub-littoral'] else '2'
 
     # littoral flow
-    return '1' if velocity > CONFIG['hydrodynamics']['littoral'] else '2'
+    return '1' if velocity > glob.LABEL_CONFIG['hydrodynamics']['littoral'] else '2'
 
 
 def depth_2_code(
@@ -156,7 +156,7 @@ def depth_2_code(
     :rtype: str
     """
     # optional arguments
-    mlws = mlws or CONFIG['depth-2']['sub-littoral']['low-water']
+    mlws = mlws or glob.LABEL_CONFIG['depth-2']['sub-littoral']['low-water']
 
     # hard substratum: no depth 2 label/code
     if code_substratum_1 == '1':
@@ -168,27 +168,27 @@ def depth_2_code(
 
     # sub-littoral: water depth
     elif code_depth_1 == '1':
-        if water_depth >= CONFIG['depth-2']['sub-littoral']['depth-deep']:
+        if water_depth >= glob.LABEL_CONFIG['depth-2']['sub-littoral']['depth-deep']:
             return '1'
-        elif water_depth < CONFIG['depth-2']['sub-littoral']['depth-shallow'] + mlws:
+        elif water_depth < glob.LABEL_CONFIG['depth-2']['sub-littoral']['depth-shallow'] + mlws:
             return '3'
         return '2'
 
     # littoral: inundation time
     elif code_depth_1 == '2':
-        if inundated >= CONFIG['depth-2']['littoral']['inundation-upper']:
+        if inundated >= glob.LABEL_CONFIG['depth-2']['littoral']['inundation-upper']:
             return '1'
-        elif inundated <= CONFIG['depth-2']['littoral']['inundation-lower']:
+        elif inundated <= glob.LABEL_CONFIG['depth-2']['littoral']['inundation-lower']:
             return '3'
         return '2'
 
     # supra-littoral: flood frequency
     elif code_depth_1 == '3':
-        if frequency > CONFIG['depth-2']['supra-littoral']['frequency-1']:
+        if frequency > glob.LABEL_CONFIG['depth-2']['supra-littoral']['frequency-1']:
             return '1'
-        elif frequency > CONFIG['depth-2']['supra-littoral']['frequency-2']:
+        elif frequency > glob.LABEL_CONFIG['depth-2']['supra-littoral']['frequency-2']:
             return '2'
-        elif frequency > CONFIG['depth-2']['supra-littoral']['frequency-3']:
+        elif frequency > glob.LABEL_CONFIG['depth-2']['supra-littoral']['frequency-3']:
             return '3'
         return '4'
 
@@ -227,10 +227,10 @@ def substratum_2_code(code_substratum_1: str, code_hydrodynamics: str, grain_siz
     elif code_substratum_1 == '2':
         if grain_size is None:
             return 'x'
-        elif grain_size <= CONFIG['substratum-2']['soft']['silt']:
+        elif grain_size <= glob.LABEL_CONFIG['substratum-2']['soft']['silt']:
             return 's'
-        elif grain_size <= CONFIG['substratum-2']['soft']['fines']:
+        elif grain_size <= glob.LABEL_CONFIG['substratum-2']['soft']['fines']:
             return 'f'
-        elif grain_size <= CONFIG['substratum-2']['soft']['sand']:
+        elif grain_size <= glob.LABEL_CONFIG['substratum-2']['soft']['sand']:
             return 'z'
         return 'g'

@@ -9,10 +9,13 @@ refers to an ecosystem as it can be mapped.
 
 This simple `python`-interface allows to map ecotopes (or habitats) based on the abiotic output from an hydrodynamic 
 model. It does so by a modified version of the [ZES.1](https://edepot.wur.nl/174540) classification system. The
-hydrodynamic model must contain the following hydrodynamic parameters:
--   water depth (and level);
--   flow velocity; and
--   salinity.
+hydrodynamic model must contain the following three hydrodynamic parameters:
+ 1. water depth (or, bottom and water level);
+ 1. flow velocity; and
+ 1. salinity.
+ 
+Some basic usage of EMMA is presented below ([Basic usage](#basic-usage)). A more complete overview of use-cases are
+grouped in the [examples](examples)-folder.
 
 ## Authors
 Soesja Brunink (Arcadis).
@@ -23,10 +26,33 @@ Gijs G. Hendrickx
 
 Contact: [G.G.Hendrickx@tudelft.nl](mailto:G.G.Hendrickx@tudelft.nl?subject=[GitHub]%20ANNESI: ).
 
+## References
+When using this repository, please cite accordingly:
+>   Brunink, S., and 
+    Hendrickx, G.G. 
+    (2023). 
+    EMMA: Ecotope-map maker based on abiotics.
+    4TU.ResearchData.
+    Software.
+    doi: [TBD]().
+    
+This repository has been featured in the following publication:
+ 1. Brunink, S., and
+    [Hendrickx, G.G.](https://orcid.org/0000-0001-9523-7657)
+    (2023).
+    {title}.
+    _Nature-Based Solutions_,
+    {vol}({issue}):{pages}.
+    doi: [TBD]().
+
+## License
+This repository is licensed under [`Apache License 2.0`](LICENSE).
+
 ## Requirements
 This repository has the following requirements (see also [`requirements.txt`](requirements.txt)):
-- `numpy>=1.19.4`
-- `netCDF>=1.5.7`
+ -  `shapely`
+ -  `numpy`
+ -  `netCDF`
 
 ## Basic usage
 The basic usage of `EMMA` requires calling the `map_ecotopes()`-function:
@@ -46,7 +72,7 @@ dict_ecotopes = map_ecotopes(
     f_map_config='<map-configuration>.json'
 )
 ```
-where `<map-configuration>.json` is formatted as follows (e.g., see the built-in [`dfm2d.json`](config/dfm2d.json)):
+where `<map-configuration>.json` is formatted as follows (see the built-in [`dfm2d.json`](config/dfm2d.json)):
 ```json
 {
   "x-coordinates": "<key-word>",
@@ -58,12 +84,17 @@ where `<map-configuration>.json` is formatted as follows (e.g., see the built-in
   "depth-sign": "<+/->"
 }
 ```
-**Note** that the `depth-sign` key-word reflects the sign used to describe the water depth in the output map-file, which may
-be different from the direction of the `z`-axis. `"depth-sign": "+"` means that the water depth is defined as a positive
-value when the bottom is _**below**_ the reference level (e.g. mean sea level); and vice versa. 
+**Note** that the `depth-sign` key-word reflects the sign used to describe the water depth in the output map-file, which 
+may be different from the direction of the `z`-axis. `"depth-sign": "+"` means that the water depth is defined as a 
+positive value when the bottom is _**below**_ the reference level (e.g. mean sea level); and vice versa. 
 
 **Note** that the tide-related key-words in the ecotope configuration file (e.g. [`emma.json`](config/emma.json)) 
 consider the `z`-axis to be defined positive upwards. Thus, high water level is _**greater**_ than low water level.
+
+In the [`examples`](examples)-folder, a collection of examples are provided on how to use `EMMA` including some of her 
+additional features. A [dummy output-file](examples/ex_map_data) is added that can be used to test the examples. For the
+examples, there is also an additional [`README`](examples/README.md) in the [`examples`](examples)-folder to provide
+some background to the examples, where needed.
 
 ## Structure
 The main features of `EMMA` is located in the [`src`](src)-directory, and the built-in configurations are grouped in the
@@ -78,6 +109,17 @@ The main features of `EMMA` is located in the [`src`](src)-directory, and the bu
 |   +-- dfm2d.json
 |   +-- emma.json
 |   +-- zes1.json
++-- examples/
+|   +-- ex_map_data/
+|   |   +-- __init__.py
+|   |   +-- output_map.nc
+|   +-- 1_basic.py
+|   +-- 2_parallel.py
+|   +-- 3_settings.py
+|   +-- 4_export.py
+|   +-- 5_config.py
+|   +-- __init__.py
+|   +-- _example_plot.py
 +-- src/
 |   +-- __init__.py
 |   +-- export.py
@@ -89,12 +131,10 @@ The main features of `EMMA` is located in the [`src`](src)-directory, and the bu
 |   +-- __init__.py
 |   +-- test_config.py
 |   +-- test_labelling.py
+|   +-- test_performance.py
 |   +-- test_preprocessing.py
 +-- .gitignore
 +-- LICENSE
 +-- README.md
 +-- requirements.txt
 ```
-
-## License
-This repository is licensed under [`Apache License 2.0`](LICENSE).
