@@ -279,7 +279,30 @@ def csv2grid(file: str) -> glob.TypeXYLabel:
     return result
 
 
-def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], **kwargs) -> dict:
+def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], **kwargs) -> glob.TypeXYLabel:
+    """Determine per feature if the grid-points are within the feature's polygon. If so, assign the ecotope-label of the
+    feature to these grid-points. A collection of the grid-points that are within the feature's polygon (incl. the
+    feature's ecotope-label) are returned.
+
+    :param feature: polygon-based description of spatial distribution of an ecotope
+    :param points: grid-points from the hydrodynamic model as a collection of `shapely.geometry.Point`-objects
+    :param kwargs: optional arguments
+        quick_check: perform a crude check if the grid-points can be within the polygon by drawing a rectangle around
+            the polygon, defaults to False
+        grid: hydrodynamic model grid-points as a collection of floats (x,y), or a dictionary with floats (x,y) as keys,
+            defaults to None
+
+    :type feature: dict
+    :type points: collection[shapely.geometry.Point]
+    :type kwargs: optional
+        quick_check: bool
+        grid: src._globals.TypeXY
+
+    :return: labeled grid-points in feature
+    :rtype: src._globals.TypeXYLabel
+
+    :raises AssertionError: if `quick_check` and `grid` are not both defined, or undefined
+    """
     # optional arguments
     quick_check: bool = kwargs.get('quick_check', False)
     grid: glob.TypeXY = kwargs.get('grid')
@@ -342,7 +365,29 @@ def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], 
     return result
 
 
-def polygon2grid(f_polygon: str, f_grid: str = None, grid: dict = None, **kwargs) -> _TypeXYLabel:
+def polygons2grid(f_polygons: str, f_grid: str = None, grid: glob.TypeXY = None, **kwargs) -> glob.TypeXYLabel:
+    """Transform polygon data to grid-points by determining which grid-points are within every polygon.
+
+    :param f_polygons: file name of polygon-data
+    :param f_grid: file name of grid-data, defaults to None
+    :param grid: grid-data, defaults to None
+    :param kwargs: optional arguments
+        n_cores: number of cores available for parallel computing, defaults to 1
+        quick_check: perform a crude check if the grid-points can be within a polygon by drawing a rectangle around the
+            polygon, defaults to False
+
+    :type f_polygons: str
+    :type f_grid: str, optional
+    :type grid: src._globals.TypeXY, optional
+    :type kwargs: optional
+        n_cores: int
+        quick_check: bool
+
+    :return: spatial distribution of ecotope-labels
+    :rtype: src._globals.TypeXYLabel
+
+    :raises ValueError: if both or none of `f_grid` and `grid` are defined
+    """
     # optional arguments
     n_cores: int = kwargs.get('n_cores', 1)
     quick_check: bool = kwargs.get('quick_check_grid_in_polygon', False)
@@ -353,7 +398,7 @@ def polygon2grid(f_polygon: str, f_grid: str = None, grid: dict = None, **kwargs
         raise ValueError(msg)
 
     # open polygon data
-    with open(f_polygon, mode='r') as f:
+    with open(f_polygons, mode='r') as f:
         data = json.load(f)
 
     # open grid data
