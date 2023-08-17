@@ -14,11 +14,9 @@ import netCDF4
 import numpy as np
 from shapely import geometry
 
-_TYPE_XY_LABEL = typing.Dict[typing.Tuple[float, float], str]
+from src._globals import CONFIG, _TypeXYLabel
 
 _LOG = logging.getLogger(__name__)
-
-CONFIG = dict()
 
 
 """Pre-processing of hydrodynamic model data"""
@@ -253,7 +251,7 @@ def grain_size_estimation(
 """Pre-processing of polygon-data"""
 
 
-def csv2grid(file: str) -> _TYPE_XY_LABEL:
+def csv2grid(file: str) -> _TypeXYLabel:
     """Transform *.csv-file with (x, y, label)-data to {(x, y): label}-formatted data.
 
     :param file: *.csv-file
@@ -341,7 +339,7 @@ def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], 
     return result
 
 
-def polygon2grid(f_polygon: str, f_grid: str = None, grid: dict = None, **kwargs) -> dict:
+def polygon2grid(f_polygon: str, f_grid: str = None, grid: dict = None, **kwargs) -> _TypeXYLabel:
     # optional arguments
     n_cores: int = kwargs.get('n_cores', 1)
     quick_check: bool = kwargs.get('quick_check_grid_in_polygon', False)
