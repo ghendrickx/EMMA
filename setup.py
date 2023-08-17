@@ -20,7 +20,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=[
-        'config', 'src', 'tests',
+        'config', 'examples', 'src'
     ],
     license='Apache-2.0',
     keywords=[],
@@ -32,6 +32,7 @@ setup(
     install_requires=[
         'numpy',
         'netCDF4',
+        'shapely',
     ],
     python_requires='>=3.7'
 )
