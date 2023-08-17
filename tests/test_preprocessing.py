@@ -95,3 +95,6 @@ class TestProcessTimeSeries:
         output = pre.grain_size_estimation(np.array([0, 1]), c_friction=1300)
         for t, o in zip(truth, output):
             assert pytest.approx(t) == o
+
+
+# TODO: Add tests for pre-processing of polygon-data
