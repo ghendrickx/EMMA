@@ -289,26 +289,17 @@ def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], 
     :param kwargs: optional arguments
         quick_check: perform a crude check if the grid-points can be within the polygon by drawing a rectangle around
             the polygon, defaults to False
-        grid: hydrodynamic model grid-points as a collection of floats (x,y), or a dictionary with floats (x,y) as keys,
-            defaults to None
 
     :type feature: dict
     :type points: collection[shapely.geometry.Point]
     :type kwargs: optional
         quick_check: bool
-        grid: src._globals.TypeXY
 
     :return: labeled grid-points in feature
     :rtype: src._globals.TypeXYLabel
-
-    :raises AssertionError: if `quick_check` and `grid` are not both defined, or undefined
     """
     # optional arguments
     quick_check: bool = kwargs.get('quick_check', False)
-    grid: glob.TypeXY = kwargs.get('grid')
-    assert quick_check == bool(grid), \
-        f'Both or neither `quick_check` and/nor `grid` should be `True`: ' \
-        f'`quick_check={quick_check}` and `bool(grid)={bool(grid)}`'
 
     # extract polygons
     polygons = feature['geometry']['coordinates']
@@ -319,7 +310,8 @@ def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], 
     # skip if none of the grid points is within the polygon
     if quick_check:
         # grid coordinates
-        grid_x, grid_y = np.array([*grid]).T
+        grid_x = np.array([p.x for p in points])
+        grid_y = np.array([p.y for p in points])
 
         # loop over polygons
         grid_in_polygon = False
@@ -390,7 +382,8 @@ def polygons2grid(f_polygons: str, f_grid: str = None, grid: glob.TypeXY = None,
     """
     # optional arguments
     n_cores: int = kwargs.get('n_cores', 1)
-    quick_check: bool = kwargs.get('quick_check_grid_in_polygon', False)
+    quick_check: bool = kwargs.get('quick_check', False)
+    _LOG.debug(f'Quick-check executed: {quick_check}')
 
     # either `f_grid` or `grid` must be defined
     if not (bool(f_grid) ^ bool(grid)):
@@ -410,10 +403,6 @@ def polygons2grid(f_polygons: str, f_grid: str = None, grid: glob.TypeXY = None,
 
     # extract features
     features = data['features']
-
-    # add `grid` to `kwargs`
-    if quick_check:
-        kwargs['grid'] = grid
 
     # parallel computing: settings
     n_features = data['totalFeatures']
