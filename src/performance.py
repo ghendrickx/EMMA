@@ -66,7 +66,7 @@ class Comparison:
         """
         return self._model
 
-    def exec(self, level: typing.Union[int, None], **kwargs) -> typing.Dict[typing.Tuple[float, float], bool]:
+    def exec(self, level: typing.Union[int, None], **kwargs) -> glob.TypeXYBool:
         """Execute the comparison up to a given level of detail. This level of detail reflects the number of label-
         components (i.e., letters or numbers) to assess, starting from the left. Note that this excludes any dots (.) in
         the labels. In case the `specific_label` is enabled, `level` reflects the index of the label-component to
