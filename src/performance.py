@@ -8,7 +8,7 @@ import logging
 import numpy as np
 import typing
 
-from src.preprocessing import _TYPE_XY_LABEL
+from src._globals import _TypeXYLabel
 
 _LOG = logging.getLogger(__name__)
 
@@ -17,9 +17,9 @@ class Comparison:
     """Compare ecotope-map(s) considered as ground-truth to the map(s) as predicted by `EMMA` from hydrodynamic model
     results.
     """
-    _TYPE_XY_LABEL = _TYPE_XY_LABEL
+    _TypeXYLabel = _TypeXYLabel
 
-    def __init__(self, data: _TYPE_XY_LABEL, model: _TYPE_XY_LABEL, **kwargs) -> None:
+    def __init__(self, data: _TypeXYLabel, model: _TypeXYLabel, **kwargs) -> None:
         """Both `data` and `model` must be formatted as follows: (x,y)-coordinates as key, and the ecotope-label as
         value (`str`). This corresponds with the formatting of the returned `dict` by `map_ecotopes()` (from
         `src.processing`).
@@ -51,7 +51,7 @@ class Comparison:
             _LOG.warning('Not all (x,y)-coordinates in `data` are present in `model`')
 
     @property
-    def data(self) -> _TYPE_XY_LABEL:
+    def data(self) -> _TypeXYLabel:
         """
         :return: ground-truth ecotope-labels
         :rtype: dict[tuple[float, float], str]
@@ -59,7 +59,7 @@ class Comparison:
         return self._data
 
     @property
-    def model(self) -> _TYPE_XY_LABEL:
+    def model(self) -> _TypeXYLabel:
         """
         :return: predicted ecotope-labels
         :rtype: dict[tuple[float, float], str]
