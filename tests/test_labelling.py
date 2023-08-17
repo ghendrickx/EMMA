@@ -1,5 +1,5 @@
 """
-Tests for `labelling.py`.
+Tests for `src/labelling.py`.
 
 Author: Gijs G. Hendrickx
 """

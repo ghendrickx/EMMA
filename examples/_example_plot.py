@@ -6,12 +6,14 @@ Authors: Soesja Brunink & Gijs G. Hendrickx
 """
 import matplotlib.pyplot as plt
 
+from src import _globals as glob
 
-def create_figure(results: dict) -> None:
+
+def create_figure(results: glob.TypeXYLabel) -> None:
     """Create a figure displaying the ecotope-map.
 
     :param results: mapped ecotope-data
-    :type results: dict
+    :type results: src._globals.TypeXYLabel
     """
     # re-structure results
     ecotopes = dict()

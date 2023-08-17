@@ -1,5 +1,5 @@
 """
-Tests for `config_file.py`.
+Tests for `config/config_file.py`.
 
 Author: Gijs G. Hendrickx
 """

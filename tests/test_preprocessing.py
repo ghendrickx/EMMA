@@ -1,5 +1,5 @@
 """
-Tests for `preprocessing.py`.
+Tests for `src/preprocessing.py`.
 
 Author: Gijs G. Hendrickx
 """
