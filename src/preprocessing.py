@@ -10,8 +10,8 @@ import multiprocessing as mp
 import os
 import typing
 
-import netCDF4
 import numpy as np
+import xarray as xr
 from shapely import geometry
 
 from src import _globals as glob
@@ -37,7 +37,7 @@ class MapData:
         """
         self.file = os.path.join(wd or os.getcwd(), file_name)
 
-        self._data = netCDF4.Dataset(self.file)
+        self._data = xr.open_dataset(self.file)
         self._velocity = None
 
         _LOG.info(f'Map-file loaded: {self.file}')
@@ -46,10 +46,10 @@ class MapData:
             _LOG.critical(f'No map-configuration defined when initialising {self.__class__.__name__}')
 
     @property
-    def data(self) -> netCDF4.Dataset:
+    def data(self) -> xr.Dataset:
         """
         :return: netCDF dataset
-        :rtype: netCDF4.Dataset
+        :rtype: xarray.Dataset
         """
         return self._data
 
@@ -72,7 +72,7 @@ class MapData:
         :rtype: numpy.ndarray
         """
         # extract data
-        data = self.data[variable][:]
+        data = self.data[variable].to_masked_array()
 
         # reduce dimensions
         if len(data.shape) > max_dim:
