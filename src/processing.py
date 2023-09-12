@@ -168,23 +168,22 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     glob.MODEL_CONFIG = config_file.load_config('dfm2d.json', map_config, wd_config)
 
     # extract model data
-    data = pre.MapData(file_name, wd=wd)
-    x_coordinates = data.x_coordinates
-    y_coordinates = data.y_coordinates
-    water_depth = data.water_depth
-    if np.mean(water_depth) < 0:
-        _LOG.warning(
-            'Average water depth is negative, while water depth is considered positive downwards. '
-            'Check the model configuration and update the configuration file accordingly.'
-        )
-    velocity = data.velocity
-    salinity = data.salinity
-    if model_sediment:
-        _LOG.warning('Retrieving grain sizes from the model not implemented')
-        grain_sizes = data.grain_size
-    else:
-        grain_sizes = None
-    data.close()
+    with pre.MapData(file_name, wd=wd) as data:
+        x_coordinates = data.x_coordinates
+        y_coordinates = data.y_coordinates
+        water_depth = data.water_depth
+        if np.mean(water_depth) < 0:
+            _LOG.warning(
+                'Average water depth is negative, while water depth is considered positive downwards. '
+                'Check the model configuration and update the configuration file accordingly.'
+            )
+        velocity = data.velocity
+        salinity = data.salinity
+        if model_sediment:
+            _LOG.warning('Retrieving grain sizes from the model not implemented')
+            grain_sizes = data.grain_size
+        else:
+            grain_sizes = None
 
     # pre-process model data
     mean_salinity, std_salinity = pre.process_salinity(salinity, time_axis=time_axis)
