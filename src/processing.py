@@ -221,7 +221,8 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
 
     :param f_map: file name(s) of hydrodynamic model output data (*.nc)
     :param kwargs: optional arguments
-        f_export: file name for exporting ecotope map(s), defaults to None
+        f_export: file name for exporting ecotope map(s) (or `True` to use default output-file), defaults to None
+            supported file-types: {'*.csv',}
         n_cores: number of cores available for parallel computations, defaults to 1
         return_ecotopes: return a dictionary with the ecotopes using (x,y)-coordinates as keys, defaults to True
         wd_export: working directory for exporting ecotope map(s), defaults to None
@@ -230,7 +231,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
 
     :type f_map: str
     :type kwargs: optional
-        f_export: str
+        f_export: str, bool
         n_cores: int
         return_ecotopes: bool
         wd_export: str
@@ -238,7 +239,8 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
     :return: spatial distribution of ecotopes (optional)
     :rtype: src._globals.TypeXYLabel, None
 
-    :raise AssertionError: if `substratum_1` not in {None, 'soft', 'hard'}
+    :raise ValueError: if `substratum_1` not in {None, 'soft', 'hard'}
+    :raise NotImplementedError: if `f_export` requested an unsupported file-type
     """
     # start time
     t0 = time.perf_counter()
@@ -285,10 +287,18 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
 
     # export ecotope-data
     if f_export:
-        _LOG.warning(f'Currently, only exporting to a *.csv-file is supported.')
+        # default settings
         if isinstance(f_export, bool):
             f_export = None
-        exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
+
+        # export as *.csv-file
+        if f_export.endswith('.csv') or f_export is None:
+            exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
+
+        # unsupported file-type
+        else:
+            msg = f'Currently, only exporting to a *.csv-file is supported; {f_export} not supported'
+            raise NotImplementedError(msg)
 
     # computation time
     t1 = time.perf_counter()
