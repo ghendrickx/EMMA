@@ -57,6 +57,25 @@ class MapData:
         """Exit (or close) context manager."""
         self.close()
 
+    def __getitem__(self, item: str) -> np.ndarray:
+        """Get item (i.e., variable data) from dataset.
+
+        First, check if the item is an attribute of the object, i.e., defined as quick-access variable; second, use the
+        `.get_variable()`-method to get the variable's data.
+
+        :param item: variable name
+        :type item: str
+
+        :return: variable data
+        :rtype: numpy.ndarray
+        """
+        # as quick-access defined
+        if hasattr(self, item):
+            return getattr(self, item)
+
+        # not as quick-access defined
+        return self.get_variable(item)
+
     @property
     def data(self) -> xr.Dataset:
         """
