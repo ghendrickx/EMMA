@@ -57,7 +57,7 @@ def __log_config(part_id: int = None, **kwargs) -> None:
         logging.basicConfig(level=log_level.upper())
 
 
-def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, np.ndarray, list]:
+def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Map ecotopes from hydrodynamic model data.
 
     :param f_map: file name of hydrodynamic model output data (*.nc)
@@ -105,21 +105,21 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
         wd_config: str
         wd_export: str
 
-    :return: spatial distribution of ecotopes (optional)
-    :rtype: dict, None
+    :return: spatial distribution of ecotopes
+    :rtype: tuple
 
-    :raise AssertionError: if `substratum_1` not in {None, 'soft', 'hard'}
+    :raise ValueError: if `substratum_1` not in {None, 'soft', 'hard'}
     """
     # partition ID
     _map_files: list = kwargs.pop('_map_files', [])
-    part_id = _map_files.index(file_name) if _map_files else None
+    part_id: int = _map_files.index(file_name) if _map_files else None
 
     # set logging configuration
     if kwargs.get('init_log', True):
         __log_config(part_id, **kwargs)
 
     # optional arguments
-    wd = kwargs.get('wd')
+    wd: str = kwargs.get('wd')
     time_axis: int = kwargs.get('time_axis', 0)
     model_sediment: bool = kwargs.get('model_sediment', False)
 
@@ -130,7 +130,10 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
 
     # > substratum 1
     substratum_1: str = kwargs.get('substratum_1')
-    assert substratum_1 in (None, 'soft', 'hard')
+    sub_1_options = None, 'soft', 'hard'
+    if substratum_1 not in sub_1_options:
+        msg = f'`substratum_1` must be one of {sub_1_options}; {substratum_1} is given.'
+        raise ValueError(msg)
     _LOG.warning(f'`substratum_1` is uniformly applied: \"{substratum_1}\"')
 
     # > substratum 2
@@ -165,23 +168,22 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     glob.MODEL_CONFIG = config_file.load_config('dfm2d.json', map_config, wd_config)
 
     # extract model data
-    data = pre.MapData(file_name, wd=wd)
-    x_coordinates = data.x_coordinates
-    y_coordinates = data.y_coordinates
-    water_depth = data.water_depth
-    if np.mean(water_depth) < 0:
-        _LOG.warning(
-            'Average water depth is negative, while water depth is considered positive downwards. '
-            'Check the model configuration and update the configuration file accordingly.'
-        )
-    velocity = data.velocity
-    salinity = data.salinity
-    if model_sediment:
-        _LOG.warning('Retrieving grain sizes from the model not implemented')
-        grain_sizes = data.grain_size
-    else:
-        grain_sizes = None
-    data.close()
+    with pre.MapData(file_name, wd=wd) as data:
+        x_coordinates = data.x_coordinates
+        y_coordinates = data.y_coordinates
+        water_depth = data.water_depth
+        if np.mean(water_depth) < 0:
+            _LOG.warning(
+                'Average water depth is negative, while water depth is considered positive downwards. '
+                'Check the model configuration and update the configuration file accordingly.'
+            )
+        velocity = data.velocity
+        salinity = data.salinity
+        if model_sediment:
+            _LOG.warning('Retrieving grain sizes from the model not implemented')
+            grain_sizes = data.grain_size
+        else:
+            grain_sizes = None
 
     # pre-process model data
     mean_salinity, std_salinity = pre.process_salinity(salinity, time_axis=time_axis)
@@ -195,19 +197,18 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
 
     # ecotope-labelling
     char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
-    # noinspection PyTypeChecker
-    char_2 = np.full_like(char_1, lab.substratum_1_code(substratum_1), dtype=str)
+    char_2 = np.full(char_1.shape, lab.substratum_1_code(substratum_1), dtype=str)
     char_3 = np.vectorize(lab.depth_1_code)(mean_depth, lat, mhwn)
     char_4 = np.vectorize(lab.hydrodynamics_code)(max_velocity, char_3)
     char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, mean_depth, in_duration, in_frequency, mlws)
     char_6 = np.vectorize(lab.substratum_2_code)(char_2, char_4, grain_sizes)
 
     # construct ecotope-labels
-    ecotopes = [
+    ecotopes = np.array([
         f'{c1}{c2}.{c3}{c4}{c5}{c6}'
         for c1, c2, c3, c4, c5, c6
         in zip(char_1, char_2, char_3, char_4, char_5, char_6)
-    ]
+    ])
     _LOG.info(f'Ecotopes defined: {len(ecotopes)} instances; {len(np.unique(ecotopes))} unique ecotopes')
 
     # return (x,y)-coordinates and ecotope-labels
@@ -219,7 +220,8 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
 
     :param f_map: file name(s) of hydrodynamic model output data (*.nc)
     :param kwargs: optional arguments
-        f_export: file name for exporting ecotope map(s), defaults to None
+        f_export: file name for exporting ecotope map(s) (or `True` to use default output-file), defaults to None
+            supported file-types: {'*.csv',}
         n_cores: number of cores available for parallel computations, defaults to 1
         return_ecotopes: return a dictionary with the ecotopes using (x,y)-coordinates as keys, defaults to True
         wd_export: working directory for exporting ecotope map(s), defaults to None
@@ -228,7 +230,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
 
     :type f_map: str
     :type kwargs: optional
-        f_export: str
+        f_export: str, bool
         n_cores: int
         return_ecotopes: bool
         wd_export: str
@@ -236,7 +238,8 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
     :return: spatial distribution of ecotopes (optional)
     :rtype: src._globals.TypeXYLabel, None
 
-    :raise AssertionError: if `substratum_1` not in {None, 'soft', 'hard'}
+    :raise ValueError: if `substratum_1` not in {None, 'soft', 'hard'}
+    :raise NotImplementedError: if `f_export` requested an unsupported file-type
     """
     # start time
     t0 = time.perf_counter()
@@ -283,10 +286,18 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
 
     # export ecotope-data
     if f_export:
-        _LOG.warning(f'Currently, only exporting to a *.csv-file is supported.')
+        # default settings
         if isinstance(f_export, bool):
             f_export = None
-        exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
+
+        # export as *.csv-file
+        if f_export.endswith('.csv') or f_export is None:
+            exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
+
+        # unsupported file-type
+        else:
+            msg = f'Currently, only exporting to a *.csv-file is supported; {f_export} not supported'
+            raise NotImplementedError(msg)
 
     # computation time
     t1 = time.perf_counter()

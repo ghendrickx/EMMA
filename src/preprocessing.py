@@ -10,8 +10,8 @@ import multiprocessing as mp
 import os
 import typing
 
-import netCDF4
 import numpy as np
+import xarray as xr
 from shapely import geometry
 
 from src import _globals as glob
@@ -37,7 +37,7 @@ class MapData:
         """
         self.file = os.path.join(wd or os.getcwd(), file_name)
 
-        self._data = netCDF4.Dataset(self.file)
+        self._data = xr.open_dataset(self.file)
         self._velocity = None
 
         _LOG.info(f'Map-file loaded: {self.file}')
@@ -45,11 +45,42 @@ class MapData:
         if not glob.MODEL_CONFIG:
             _LOG.critical(f'No map-configuration defined when initialising {self.__class__.__name__}')
 
+    def __enter__(self) -> 'MapData':
+        """Open context manager.
+
+        :return: dataset
+        :rtype: src.preprocessing.MapData
+        """
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        """Exit (i.e., close) context manager."""
+        self.close()
+
+    def __getitem__(self, item: str) -> np.ndarray:
+        """Get item (i.e., variable data) from dataset.
+
+        First, check if the item is an attribute of the object, i.e., defined as quick-access variable; second, use the
+        `.get_variable()`-method to get the variable's data.
+
+        :param item: variable name
+        :type item: str
+
+        :return: variable data
+        :rtype: numpy.ndarray
+        """
+        # as quick-access defined
+        if hasattr(self, item):
+            return getattr(self, item)
+
+        # not as quick-access defined
+        return self.get_variable(item)
+
     @property
-    def data(self) -> netCDF4.Dataset:
+    def data(self) -> xr.Dataset:
         """
         :return: netCDF dataset
-        :rtype: netCDF4.Dataset
+        :rtype: xarray.Dataset
         """
         return self._data
 
@@ -72,7 +103,7 @@ class MapData:
         :rtype: numpy.ndarray
         """
         # extract data
-        data = self.data[variable][:]
+        data = self.data[variable].to_masked_array()
 
         # reduce dimensions
         if len(data.shape) > max_dim:
