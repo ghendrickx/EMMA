@@ -45,6 +45,18 @@ class MapData:
         if not glob.MODEL_CONFIG:
             _LOG.critical(f'No map-configuration defined when initialising {self.__class__.__name__}')
 
+    def __enter__(self) -> 'MapData':
+        """Open context manager.
+
+        :return: dataset
+        :rtype: src.preprocessing.MapData
+        """
+        return self
+
+    def __exit__(self) -> None:
+        """Exit (or close) context manager."""
+        self.close()
+
     @property
     def data(self) -> xr.Dataset:
         """
