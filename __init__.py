@@ -6,6 +6,6 @@ Authors: Soesja Brunink & Gijs G. Hendrickx
 """
 __all__ = ['config', 'examples', 'src']
 
-__version__ = '0.1'
+__version__ = '1.0'
 __author__ = 'Soesja Brunink & Gijs G. Hendrickx'
 __description__ = 'Ecotope map maker based on abiotic characteristics'

@@ -36,7 +36,7 @@ When using this repository, please cite accordingly:
     EMMA: Ecotope-map maker based on abiotics.
     4TU.ResearchData.
     Software.
-    doi: [TBD](https://doi.org/10.4121/0100fc5a-a99c-4002-9864-3faade3899e3).
+    doi: [10.4121/0100fc5a-a99c-4002-9864-3faade3899e3](https://doi.org/10.4121/0100fc5a-a99c-4002-9864-3faade3899e3).
     
 This repository has been featured in the following publication:
  1. [Brunink, S.](https://orcid.org/0009-0007-4626-8909), and
