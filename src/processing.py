@@ -108,18 +108,18 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     :return: spatial distribution of ecotopes (optional)
     :rtype: dict, None
 
-    :raise AssertionError: if `substratum_1` not in {None, 'soft', 'hard'}
+    :raise ValueError: if `substratum_1` not in {None, 'soft', 'hard'}
     """
     # partition ID
     _map_files: list = kwargs.pop('_map_files', [])
-    part_id = _map_files.index(file_name) if _map_files else None
+    part_id: int = _map_files.index(file_name) if _map_files else None
 
     # set logging configuration
     if kwargs.get('init_log', True):
         __log_config(part_id, **kwargs)
 
     # optional arguments
-    wd = kwargs.get('wd')
+    wd: str = kwargs.get('wd')
     time_axis: int = kwargs.get('time_axis', 0)
     model_sediment: bool = kwargs.get('model_sediment', False)
 
@@ -130,7 +130,10 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
 
     # > substratum 1
     substratum_1: str = kwargs.get('substratum_1')
-    assert substratum_1 in (None, 'soft', 'hard')
+    sub_1_options = None, 'soft', 'hard'
+    if substratum_1 not in sub_1_options:
+        msg = f'`substratum_1` must be one of {sub_1_options}; {substratum_1} is given.'
+        raise ValueError(msg)
     _LOG.warning(f'`substratum_1` is uniformly applied: \"{substratum_1}\"')
 
     # > substratum 2
@@ -195,8 +198,7 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
 
     # ecotope-labelling
     char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
-    # noinspection PyTypeChecker
-    char_2 = np.full_like(char_1, lab.substratum_1_code(substratum_1), dtype=str)
+    char_2 = np.full(char_1.shape, lab.substratum_1_code(substratum_1), dtype=str)
     char_3 = np.vectorize(lab.depth_1_code)(mean_depth, lat, mhwn)
     char_4 = np.vectorize(lab.hydrodynamics_code)(max_velocity, char_3)
     char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, mean_depth, in_duration, in_frequency, mlws)
