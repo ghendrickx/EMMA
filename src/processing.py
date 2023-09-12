@@ -57,7 +57,7 @@ def __log_config(part_id: int = None, **kwargs) -> None:
         logging.basicConfig(level=log_level.upper())
 
 
-def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, np.ndarray, list]:
+def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Map ecotopes from hydrodynamic model data.
 
     :param f_map: file name of hydrodynamic model output data (*.nc)
@@ -105,8 +105,8 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
         wd_config: str
         wd_export: str
 
-    :return: spatial distribution of ecotopes (optional)
-    :rtype: dict, None
+    :return: spatial distribution of ecotopes
+    :rtype: tuple
 
     :raise ValueError: if `substratum_1` not in {None, 'soft', 'hard'}
     """
@@ -205,11 +205,11 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     char_6 = np.vectorize(lab.substratum_2_code)(char_2, char_4, grain_sizes)
 
     # construct ecotope-labels
-    ecotopes = [
+    ecotopes = np.array([
         f'{c1}{c2}.{c3}{c4}{c5}{c6}'
         for c1, c2, c3, c4, c5, c6
         in zip(char_1, char_2, char_3, char_4, char_5, char_6)
-    ]
+    ])
     _LOG.info(f'Ecotopes defined: {len(ecotopes)} instances; {len(np.unique(ecotopes))} unique ecotopes')
 
     # return (x,y)-coordinates and ecotope-labels
