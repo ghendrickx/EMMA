@@ -53,8 +53,8 @@ class MapData:
         """
         return self
 
-    def __exit__(self) -> None:
-        """Exit (or close) context manager."""
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        """Exit (i.e., close) context manager."""
         self.close()
 
     def __getitem__(self, item: str) -> np.ndarray:
