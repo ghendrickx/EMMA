@@ -90,8 +90,8 @@ examples, there is also an additional [`README`](examples/README.md) in the [`ex
 some background to the examples, where needed.
 
 ## Structure
-The main features of `EMMA` is located in the [`src`](src)-directory, and the built-in configurations are grouped in the
-[`config`](config)-directory:
+The main features of `EMMA` are located in the [`src`](src)-directory, and the built-in configurations are grouped in 
+the [`config`](config)-directory:
 ```
 +-- .github/
 |   +-- workflows/
