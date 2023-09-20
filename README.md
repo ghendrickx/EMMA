@@ -30,22 +30,13 @@ Contact: [G.G.Hendrickx@tudelft.nl](mailto:G.G.Hendrickx@tudelft.nl?subject=[Git
 
 ## References
 When using this repository, please cite accordingly:
->   Brunink, S., and 
-    Hendrickx, G.G. 
+>   Hendrickx, G.G., and 
+    Brunink, S. 
     (2023). 
     EMMA: Ecotope-map maker based on abiotics.
     4TU.ResearchData.
     Software.
     doi: [10.4121/0100fc5a-a99c-4002-9864-3faade3899e3](https://doi.org/10.4121/0100fc5a-a99c-4002-9864-3faade3899e3).
-    
-This repository has been featured in the following publication:
- 1. [Brunink, S.](https://orcid.org/0009-0007-4626-8909), and
-    [Hendrickx, G.G.](https://orcid.org/0000-0001-9523-7657)
-    (2023).
-    {title}.
-    _Nature-Based Solutions_,
-    {vol}({issue}):{pages}.
-    doi: [TBD]().
 
 ## License
 This repository is licensed under [`Apache License 2.0`](LICENSE).
