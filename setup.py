@@ -10,7 +10,7 @@ with open('README.md', mode='r') as f:
 
 setup(
     name='EMMA',
-    version='0.1',
+    version='1.0',
     authors=[
         'Soesja Brunink',
         'Gijs G. Hendrickx',

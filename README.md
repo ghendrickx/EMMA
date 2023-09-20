@@ -18,7 +18,9 @@ Some basic usage of EMMA is presented below ([Basic usage](#basic-usage)). A mor
 grouped in the [examples](examples)-folder.
 
 ## Authors
-Soesja Brunink (Arcadis).
+Soesja Brunink
+[![alt text](https://camo.githubusercontent.com/e1ec0e2167b22db46b0a5d60525c3e4a4f879590a04c370fef77e6a7e00eb234/68747470733a2f2f696e666f2e6f726369642e6f72672f77702d636f6e74656e742f75706c6f6164732f323031392f31312f6f726369645f31367831362e706e67) 0009-0007-4626-8909](https://orcid.org/0009-0007-4626-8909) 
+(Arcadis).
 
 Gijs G. Hendrickx 
 [![alt text](https://camo.githubusercontent.com/e1ec0e2167b22db46b0a5d60525c3e4a4f879590a04c370fef77e6a7e00eb234/68747470733a2f2f696e666f2e6f726369642e6f72672f77702d636f6e74656e742f75706c6f6164732f323031392f31312f6f726369645f31367831362e706e67) 0000-0001-9523-7657](https://orcid.org/0000-0001-9523-7657)
@@ -28,22 +30,13 @@ Contact: [G.G.Hendrickx@tudelft.nl](mailto:G.G.Hendrickx@tudelft.nl?subject=[Git
 
 ## References
 When using this repository, please cite accordingly:
->   Brunink, S., and 
-    Hendrickx, G.G. 
+>   Hendrickx, G.G., and 
+    Brunink, S. 
     (2023). 
     EMMA: Ecotope-map maker based on abiotics.
     4TU.ResearchData.
     Software.
-    doi: [TBD]().
-    
-This repository has been featured in the following publication:
- 1. Brunink, S., and
-    [Hendrickx, G.G.](https://orcid.org/0000-0001-9523-7657)
-    (2023).
-    {title}.
-    _Nature-Based Solutions_,
-    {vol}({issue}):{pages}.
-    doi: [TBD]().
+    doi: [10.4121/0100fc5a-a99c-4002-9864-3faade3899e3](https://doi.org/10.4121/0100fc5a-a99c-4002-9864-3faade3899e3).
 
 ## License
 This repository is licensed under [`Apache License 2.0`](LICENSE).
@@ -122,6 +115,7 @@ The main features of `EMMA` is located in the [`src`](src)-directory, and the bu
 |   +-- _example_plot.py
 +-- src/
 |   +-- __init__.py
+|   +-- _globals.py
 |   +-- export.py
 |   +-- labelling.py
 |   +-- performance.py
@@ -134,7 +128,9 @@ The main features of `EMMA` is located in the [`src`](src)-directory, and the bu
 |   +-- test_performance.py
 |   +-- test_preprocessing.py
 +-- .gitignore
++-- __init__.py
 +-- LICENSE
 +-- README.md
 +-- requirements.txt
++-- setup.py
 ```

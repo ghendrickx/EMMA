@@ -1,3 +1,3 @@
+numpy
 shapely
-numpy==1.19.4
-netCDF4==1.5.7
+xarray
