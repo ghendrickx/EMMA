@@ -165,10 +165,11 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     # > ecotope configuration
     glob.LABEL_CONFIG = config_file.load_config('emma.json', eco_config, wd_config)
     # > map configuration
-    glob.MODEL_CONFIG = config_file.load_config('dfm2d.json', map_config, wd_config)
+    glob.MODEL_CONFIG = config_file.load_config('dfm4.json', map_config, wd_config)
 
     # extract model data
-    with pre.MapData(file_name, wd=wd) as data:
+    map_format = (map_config or 'dfm4.json')[:-5]
+    with pre.MapData(file_name, wd=wd, map_format=map_format) as data:
         x_coordinates = data.x_coordinates
         y_coordinates = data.y_coordinates
         water_depth = data.water_depth
@@ -268,9 +269,9 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
     else:
         # multiple `*_map.nc`-files
         n_processes = min(n_cores, n_files)
-        _LOG.info(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
-        _LOG.info(f'CPUs used: {n_processes} / {mp.cpu_count()}')
-        _LOG.info(f'CPUs required: {n_files} / {n_processes}')
+        _LOG.debug(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
+        _LOG.debug(f'CPUs used: {n_processes} / {mp.cpu_count()}')
+        _LOG.debug(f'CPUs required: {n_files} / {n_processes}')
 
         # parallel computation
         if n_processes > 1:
@@ -291,7 +292,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
             f_export = None
 
         # export as *.csv-file
-        if f_export.endswith('.csv') or f_export is None:
+        if f_export is None or f_export.endswith('.csv'):
             exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
 
         # unsupported file-type

@@ -1,0 +1,9 @@
+{
+  "x-coordinates": "mesh2d_face_x",
+  "y-coordinates": "mesh2d_face_y",
+  "water-depth": "mesh2d_waterdepth",
+  "x-velocity": "mesh2d_ucx",
+  "y-velocity": "mesh2d_ucy",
+  "salinity": "mesh2d_sa1",
+  "depth-sign": "+"
+}

@@ -33,18 +33,11 @@ def load_config(f_default: str, f_user: str = None, wd: str = None) -> dict:
         _LOG.info(f'Default configuration used: {f_default}')
         return default
 
-    # built-in ZES.1 configuration
-    elif f_user in ('zes1.json',):
+    # built-in configurations
+    elif f_user in ('emma.json', 'zes1.json', 'dfm1.json', 'dfm4.json'):
         with open(os.path.join(os.path.dirname(__file__), f_user)) as f:
             built_in = json.load(f)
-
-        if f_user == 'zes1.json':
-            name_built_in = 'ZES.1'
-        else:
-            msg = f'Unknown name of built-in configuration: {f_user}'
-            raise NotImplementedError(msg)
-
-        _LOG.info(f'Built-in {name_built_in} configuration used: {f_user}')
+        _LOG.info(f'Built-in configuration used: {f_user}')
         return built_in
 
     # custom (partial) configuration
@@ -56,7 +49,7 @@ def load_config(f_default: str, f_user: str = None, wd: str = None) -> dict:
                 user = json.load(f_user)
         except FileNotFoundError:
             _LOG.warning(f'Custom configuration file not found: {file}')
-            load_config(f_default, f_user=None, wd=wd)
+            return load_config(f_default, f_user=None, wd=wd)
         else:
             _LOG.info(f'Custom configuration file used: {file}')
 

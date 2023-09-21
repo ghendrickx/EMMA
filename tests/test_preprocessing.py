@@ -12,7 +12,7 @@ from config import config_file
 from src import preprocessing as pre
 
 """Set configuration file"""
-pre.glob.MODEL_CONFIG = config_file.load_config('dfm2d.json')
+pre.glob.MODEL_CONFIG = config_file.load_config('dfm1.json')
 
 """pytest.fixtures"""
 

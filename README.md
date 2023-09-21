@@ -54,9 +54,9 @@ from src.processing import map_ecotopes
 
 dict_ecotopes = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/directory>')
 ```
-By default, `EMMA` expects the relevant variables to be named as stated by [`dfm2d.json`](config/dfm2d.json). In case
+By default, `EMMA` expects the relevant variables to be named as stated by [`dfm4.json`](config/dfm4.json). In case
 these key-words differ in the provided `netCDF`-file, provide a custom (partially overwriting) `*.json`-file with the
-same key-words as in [`dfm2d.json`](config/dfm2d.json):
+same key-words as in [`dfm4.json`](config/dfm4.json):
 ```python
 from src.processing import map_ecotopes
 
@@ -65,7 +65,7 @@ dict_ecotopes = map_ecotopes(
     f_map_config='<map-configuration>.json'
 )
 ```
-where `<map-configuration>.json` is formatted as follows (see the built-in [`dfm2d.json`](config/dfm2d.json)):
+where `<map-configuration>.json` is formatted as follows (see the built-in [`dfm4.json`](config/dfm4.json)):
 ```json
 {
   "x-coordinates": "<key-word>",
@@ -84,6 +84,10 @@ positive value when the bottom is _**below**_ the reference level (e.g. mean sea
 **Note** that the tide-related key-words in the ecotope configuration file (e.g. [`emma.json`](config/emma.json)) 
 consider the `z`-axis to be defined positive upwards. Thus, high water level is _**greater**_ than low water level.
 
+**Note** that the configuration-file is expected in the same folder as from which the code is executed, i.e., it is
+considered good practice (and probably even required) to also provide the working directory of the configuration-file(s)
+using the optional argument `wd_config`.
+
 In the [`examples`](examples)-folder, a collection of examples are provided on how to use `EMMA` including some of her 
 additional features. A [dummy output-file](examples/ex_map_data) is added that can be used to test the examples. For the
 examples, there is also an additional [`README`](examples/README.md) in the [`examples`](examples)-folder to provide
@@ -99,7 +103,8 @@ the [`config`](config)-directory:
 +-- config/
 |   +-- __init__.py
 |   +-- config_file.py
-|   +-- dfm2d.json
+|   +-- dfm1.json
+|   +-- dfm4.json
 |   +-- emma.json
 |   +-- zes1.json
 +-- examples/

@@ -23,6 +23,10 @@ def file_dir(file_name: str, wd: str = None) -> str:
     :return: file directory
     :rtype: str
     """
+    # create working directory
+    if wd is not None:
+        os.makedirs(wd, exist_ok=True)
+
     # file name contains (home) directory
     start_dir = file_name.split(os.sep)[0]
     if start_dir.endswith(':') or start_dir in ('', '~'):
