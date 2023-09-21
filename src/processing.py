@@ -268,9 +268,9 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
     else:
         # multiple `*_map.nc`-files
         n_processes = min(n_cores, n_files)
-        _LOG.info(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
-        _LOG.info(f'CPUs used: {n_processes} / {mp.cpu_count()}')
-        _LOG.info(f'CPUs required: {n_files} / {n_processes}')
+        _LOG.debug(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
+        _LOG.debug(f'CPUs used: {n_processes} / {mp.cpu_count()}')
+        _LOG.debug(f'CPUs required: {n_files} / {n_processes}')
 
         # parallel computation
         if n_processes > 1:
