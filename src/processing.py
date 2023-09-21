@@ -168,7 +168,8 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     glob.MODEL_CONFIG = config_file.load_config('dfm4.json', map_config, wd_config)
 
     # extract model data
-    with pre.MapData(file_name, wd=wd) as data:
+    map_format = (map_config or 'dfm4.json')[:-5]
+    with pre.MapData(file_name, wd=wd, map_format=map_format) as data:
         x_coordinates = data.x_coordinates
         y_coordinates = data.y_coordinates
         water_depth = data.water_depth

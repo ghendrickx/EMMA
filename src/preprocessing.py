@@ -27,7 +27,7 @@ class MapData:
     compress any three-dimensional data to two-dimensional data (depth-averaged).
     """
 
-    def __init__(self, file_name: str, wd: str = None) -> None:
+    def __init__(self, file_name: str, wd: str = None, **kwargs) -> None:
         """
         :param file_name: netCDF file name with map-data
         :param wd: working directory, defaults to None
@@ -44,6 +44,8 @@ class MapData:
 
         if not glob.MODEL_CONFIG:
             _LOG.critical(f'No map-configuration defined when initialising {self.__class__.__name__}')
+
+        self._map_format: str = kwargs.get('map_format')
 
     def __enter__(self) -> 'MapData':
         """Open context manager.
@@ -108,6 +110,12 @@ class MapData:
         # reduce dimensions
         if len(data.shape) > max_dim:
             data = np.mean(data, axis=max_dim)
+
+        # partition handler
+        if self._map_format in ('dfm1', 'dfm4'):
+            data = self.partition_handler(data)
+        elif self._map_format is not None:
+            _LOG.warning(f'Unknown map-format ({self._map_format}) skipped; this may influence the results.')
 
         # return data
         return data
@@ -176,6 +184,50 @@ class MapData:
         :rtype: numpy.ndarray
         """
         return None
+
+    """partition handler"""
+
+    @property
+    def i_domain(self) -> typing.Union[np.ndarray, None]:
+        """Domain number present in DFM map-output, which labels the grid cells to the partitioning domain of which the
+        map-output is the result. Domain numbers from other partitions must be considered as ghost cells, required for
+        computational reasons.
+
+        :return: domain numbers
+        :rtype: numpy.ndarray, None
+
+        :raise NotImplementedError: if `map_format` is unknown
+        """
+        if self._map_format is None:
+            return
+        elif self._map_format == 'dfm1':
+            return self.data['FlowElemDomain'].to_masked_array()
+        elif self._map_format == 'dfm4':
+            return self.data['mesh2d_flowelem_domain'].to_masked_array()
+        raise NotImplementedError(f'No implementation for `map_format={self._map_format}`')
+
+    @property
+    def i_partition(self) -> typing.Union[int, None]:
+        """Domain number of the considered partition, i.e., the partition number.
+
+        :return: partition number
+        :rtype: int, None
+        """
+        i = str(self.file.split('_')[-2])
+        if i.isnumeric():
+            return int(i)
+
+    def partition_handler(self, data: np.ndarray) -> np.ndarray:
+        """Process data to remove ghost cells present as a result
+
+        :param data:
+        :return:
+        """
+        if self.i_partition is not None:
+            i_not_ghost = np.flatnonzero(self.i_domain == self.i_partition)
+            return data.take(i_not_ghost, axis=(len(data.shape) - 1))
+
+        return data
 
 
 def process_salinity(salinity: np.ndarray, time_axis: int = 0) -> typing.Tuple[np.ndarray, np.ndarray]:
