@@ -291,7 +291,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
             f_export = None
 
         # export as *.csv-file
-        if f_export.endswith('.csv') or f_export is None:
+        if f_export is None or f_export.endswith('.csv'):
             exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
 
         # unsupported file-type
