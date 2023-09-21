@@ -111,6 +111,12 @@ class MapData:
         if len(data.shape) > max_dim:
             data = np.mean(data, axis=max_dim)
 
+        # partition handler
+        if self._map_format in ('dfm1', 'dfm4'):
+            data = self.partition_handler(data)
+        elif self._map_format is not None:
+            _LOG.warning(f'Unknown map-format ({self._map_format}) skipped; this may influence the results.')
+
         # return data
         return data
 
