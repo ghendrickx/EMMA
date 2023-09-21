@@ -27,7 +27,7 @@ class MapData:
     compress any three-dimensional data to two-dimensional data (depth-averaged).
     """
 
-    def __init__(self, file_name: str, wd: str = None) -> None:
+    def __init__(self, file_name: str, wd: str = None, **kwargs) -> None:
         """
         :param file_name: netCDF file name with map-data
         :param wd: working directory, defaults to None
@@ -44,6 +44,8 @@ class MapData:
 
         if not glob.MODEL_CONFIG:
             _LOG.critical(f'No map-configuration defined when initialising {self.__class__.__name__}')
+
+        self._map_format: str = kwargs.get('map_format')
 
     def __enter__(self) -> 'MapData':
         """Open context manager.
