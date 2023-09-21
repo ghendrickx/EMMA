@@ -43,9 +43,9 @@ This repository is licensed under [`Apache License 2.0`](LICENSE).
 
 ## Requirements
 This repository has the following requirements (see also [`requirements.txt`](requirements.txt)):
- -  `shapely`
  -  `numpy`
- -  `netCDF`
+ -  `shapely`
+ -  `xarray`
 
 ## Basic usage
 The basic usage of `EMMA` requires calling the `map_ecotopes()`-function:
