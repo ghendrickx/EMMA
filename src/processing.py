@@ -325,3 +325,25 @@ def convert2dict(x: typing.Sequence[float], y: typing.Sequence[float], ecotope: 
     :rtype: str._globals.TypeXYLabel
     """
     return {(xi, yi): eco for xi, yi, eco in zip(x, y, ecotope)}
+
+
+def convert2tuple(xy_labels: glob.TypeXYLabel) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Convert coordinate-based dictionary to tuple of arrays:
+        `{(float, float): str} -> (float, float, str)`
+
+    :param xy_labels: spatial distribution of ecotopes
+    :type xy_labels: src._globals.TypeXYLabel
+
+    return: x-, y-coordinates, and ecotope-labels
+    :rtype: tuple[np.ndarray]
+    """
+    # extract (x,y)-coordinates
+    x, y = zip(*xy_labels.keys())
+    x = np.array(x, dtype=float)
+    y = np.array(y, dtype=float)
+
+    # extract ecotope-labels
+    ecotope = np.array(xy_labels.values(), dtype=str)
+
+    # return arrays
+    return x, y, ecotope
