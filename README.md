@@ -56,37 +56,7 @@ dict_ecotopes = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/
 ```
 By default, `EMMA` expects the relevant variables to be named as stated by [`dfm4.json`](config/dfm4.json). In case
 these key-words differ in the provided `netCDF`-file, provide a custom (partially overwriting) `*.json`-file with the
-same key-words as in [`dfm4.json`](config/dfm4.json):
-```python
-from src.processing import map_ecotopes
-
-dict_ecotopes = map_ecotopes(
-    '<hydrodynamic_output_data_file>.nc', wd='<working/directory>',
-    f_map_config='<map-configuration>.json'
-)
-```
-where `<map-configuration>.json` is formatted as follows (see the built-in [`dfm4.json`](config/dfm4.json)):
-```json
-{
-  "x-coordinates": "<key-word>",
-  "y-coordinates": "<key-word>",
-  "water-depth": "<key-word>",
-  "x-velocity": "<key-word>",
-  "y-velocity": "<key-word>",
-  "salinity": "<key-word>",
-  "depth-sign": "<+/->"
-}
-```
-**Note** that the `depth-sign` key-word reflects the sign used to describe the water depth in the output map-file, which 
-may be different from the direction of the `z`-axis. `"depth-sign": "+"` means that the water depth is defined as a 
-positive value when the bottom is _**below**_ the reference level (e.g. mean sea level); and vice versa. 
-
-**Note** that the tide-related key-words in the ecotope configuration file (e.g. [`emma.json`](config/emma.json)) 
-consider the `z`-axis to be defined positive upwards. Thus, high water level is _**greater**_ than low water level.
-
-**Note** that the configuration-file is expected in the same folder as from which the code is executed, i.e., it is
-considered good practice (and probably even required) to also provide the working directory of the configuration-file(s)
-using the optional argument `wd_config`.
+same key-words as in [`dfm4.json`](config/dfm4.json); see [`config`](config) for more information how to do so.
 
 In the [`examples`](examples)-folder, a collection of examples are provided on how to use `EMMA` including some of her 
 additional features. A [dummy output-file](examples/ex_map_data) is added that can be used to test the examples. For the
