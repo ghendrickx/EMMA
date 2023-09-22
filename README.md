@@ -14,7 +14,7 @@ hydrodynamic model must contain the following three hydrodynamic parameters:
  1. flow velocity; and
  1. salinity.
  
-Some basic usage of EMMA is presented below ([Basic usage](#basic-usage)). A more complete overview of use-cases are
+Some basic usage of `EMMA` is presented below ([Basic usage](#basic-usage)). A more complete overview of use-cases are
 grouped in the [examples](examples)-folder.
 
 ## Authors
@@ -26,7 +26,7 @@ Soesja Brunink
 [![alt text](https://camo.githubusercontent.com/e1ec0e2167b22db46b0a5d60525c3e4a4f879590a04c370fef77e6a7e00eb234/68747470733a2f2f696e666f2e6f726369642e6f72672f77702d636f6e74656e742f75706c6f6164732f323031392f31312f6f726369645f31367831362e706e67) 0009-0007-4626-8909](https://orcid.org/0009-0007-4626-8909) 
 (Arcadis).
 
-Contact: [G.G.Hendrickx@tudelft.nl](mailto:G.G.Hendrickx@tudelft.nl?subject=[GitHub]%20ANNESI: ).
+Contact: [G.G.Hendrickx@tudelft.nl](mailto:G.G.Hendrickx@tudelft.nl?subject=[GitHub]%20EMMA:%20).
 
 ## References
 When using this repository, please cite accordingly:
@@ -52,41 +52,12 @@ The basic usage of `EMMA` requires calling the `map_ecotopes()`-function:
 ```python
 from src.processing import map_ecotopes
 
-dict_ecotopes = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/directory>')
+results = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/directory>')
 ```
-By default, `EMMA` expects the relevant variables to be named as stated by [`dfm4.json`](config/dfm4.json). In case
-these key-words differ in the provided `netCDF`-file, provide a custom (partially overwriting) `*.json`-file with the
-same key-words as in [`dfm4.json`](config/dfm4.json):
-```python
-from src.processing import map_ecotopes
-
-dict_ecotopes = map_ecotopes(
-    '<hydrodynamic_output_data_file>.nc', wd='<working/directory>',
-    f_map_config='<map-configuration>.json'
-)
-```
-where `<map-configuration>.json` is formatted as follows (see the built-in [`dfm4.json`](config/dfm4.json)):
-```json
-{
-  "x-coordinates": "<key-word>",
-  "y-coordinates": "<key-word>",
-  "water-depth": "<key-word>",
-  "x-velocity": "<key-word>",
-  "y-velocity": "<key-word>",
-  "salinity": "<key-word>",
-  "depth-sign": "<+/->"
-}
-```
-**Note** that the `depth-sign` key-word reflects the sign used to describe the water depth in the output map-file, which 
-may be different from the direction of the `z`-axis. `"depth-sign": "+"` means that the water depth is defined as a 
-positive value when the bottom is _**below**_ the reference level (e.g. mean sea level); and vice versa. 
-
-**Note** that the tide-related key-words in the ecotope configuration file (e.g. [`emma.json`](config/emma.json)) 
-consider the `z`-axis to be defined positive upwards. Thus, high water level is _**greater**_ than low water level.
-
-**Note** that the configuration-file is expected in the same folder as from which the code is executed, i.e., it is
-considered good practice (and probably even required) to also provide the working directory of the configuration-file(s)
-using the optional argument `wd_config`.
+By default, `EMMA` expects the relevant hydrodynamic variables to be named as given by [`dfm4.json`](config/dfm4.json). 
+In case these key-words differ in the provided `netCDF`-file (dependent on the hydrodynamic modelling software used), 
+provide a custom (partially overwriting) `*.json`-file with the same key-words as in [`dfm4.json`](config/dfm4.json); 
+see the [`config`](config)-folder for an elaborate explanation on how to customise the configuration of `EMMA`.
 
 In the [`examples`](examples)-folder, a collection of examples are provided on how to use `EMMA` including some of her 
 additional features. A [dummy output-file](examples/ex_map_data) is added that can be used to test the examples. For the
