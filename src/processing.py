@@ -21,6 +21,99 @@ from src import \
 _LOG = logging.getLogger(__name__)
 
 
+def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
+    """Map ecotopes from hydrodynamic model data.
+
+    :param f_map: file name(s) of hydrodynamic model output data (*.nc)
+    :param kwargs: optional arguments
+        f_export: file name for exporting ecotope map(s) (or `True` to use default output-file), defaults to None
+            supported file-types: {'*.csv',}
+        n_cores: number of cores available for parallel computations, defaults to 1
+        return_ecotopes: return a dictionary with the ecotopes using (x,y)-coordinates as keys, defaults to True
+        wd_export: working directory for exporting ecotope map(s), defaults to None
+        optional arguments to `.__log_config()`
+        optional arguments to `.__determine_ecotopes()`
+
+    :type f_map: str
+    :type kwargs: optional
+        f_export: str, bool
+        n_cores: int
+        return_ecotopes: bool
+        wd_export: str
+
+    :return: spatial distribution of ecotopes (optional)
+    :rtype: src._globals.TypeXYLabel, None
+
+    :raise ValueError: if `substratum_1` not in {None, 'soft', 'hard'}
+    :raise NotImplementedError: if `f_export` requested an unsupported file-type
+    """
+    # start time
+    t0 = time.perf_counter()
+
+    # set logging configuration
+    __log_config(**kwargs)
+
+    # start ecotope-mapper
+    _LOG.info(f'Ecotope-map based on {f_map}')
+
+    # optional arguments
+    # > export ecotope-data
+    wd_export: str = kwargs.get('wd_export')
+    f_export: typing.Union[bool, str, None] = kwargs.get('f_export', wd_export is not None)
+    return_ecotopes: bool = kwargs.get('return_ecotopes', True)
+
+    # > parallel computing
+    n_cores: int = kwargs.get('n_cores', 1)
+    n_files = len(f_map)
+
+    # extract model data
+    if n_files == 1:
+        # single `*_map.nc`-file
+        x_coordinates, y_coordinates, ecotopes = __determine_ecotopes(f_map[0], init_log=False, **kwargs)
+
+    else:
+        # multiple `*_map.nc`-files
+        n_processes = min(n_cores, n_files)
+        _LOG.debug(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
+        _LOG.debug(f'CPUs used: {n_processes} / {mp.cpu_count()}')
+        _LOG.debug(f'CPUs required: {n_files} / {n_processes}')
+
+        # parallel computation
+        if n_processes > 1:
+            with mp.Pool(processes=n_processes) as p:
+                results = p.map(functools.partial(__determine_ecotopes, _map_files=list(f_map), **kwargs), f_map)
+
+        # serial computation
+        else:
+            results = [__determine_ecotopes(f, init_log=False, **kwargs) for f in f_map]
+
+        # concatenate output data
+        x_coordinates, y_coordinates, ecotopes = [np.concatenate(arrays) for arrays in zip(*results)]
+
+    # export ecotope-data
+    if f_export:
+        # default settings
+        if isinstance(f_export, bool):
+            f_export = None
+
+        # export as *.csv-file
+        if f_export is None or f_export.endswith('.csv'):
+            exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
+
+        # unsupported file-type
+        else:
+            msg = f'Currently, only exporting to a *.csv-file is supported; {f_export} not supported'
+            raise NotImplementedError(msg)
+
+    # computation time
+    t1 = time.perf_counter()
+    _LOG.info(f'Ecotope-map generated in {t1 - t0:.1f} seconds')
+
+    # return ecotope-map
+    if return_ecotopes:
+        return {(x, y): eco for x, y, eco in zip(x_coordinates, y_coordinates, ecotopes)}
+
+
 def __log_config(part_id: int = None, **kwargs) -> None:
     """Set logging configuration.
 
@@ -214,96 +307,3 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
 
     # return (x,y)-coordinates and ecotope-labels
     return x_coordinates, y_coordinates, ecotopes
-
-
-def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
-    """Map ecotopes from hydrodynamic model data.
-
-    :param f_map: file name(s) of hydrodynamic model output data (*.nc)
-    :param kwargs: optional arguments
-        f_export: file name for exporting ecotope map(s) (or `True` to use default output-file), defaults to None
-            supported file-types: {'*.csv',}
-        n_cores: number of cores available for parallel computations, defaults to 1
-        return_ecotopes: return a dictionary with the ecotopes using (x,y)-coordinates as keys, defaults to True
-        wd_export: working directory for exporting ecotope map(s), defaults to None
-        optional arguments to `.__log_config()`
-        optional arguments to `.__determine_ecotopes()`
-
-    :type f_map: str
-    :type kwargs: optional
-        f_export: str, bool
-        n_cores: int
-        return_ecotopes: bool
-        wd_export: str
-
-    :return: spatial distribution of ecotopes (optional)
-    :rtype: src._globals.TypeXYLabel, None
-
-    :raise ValueError: if `substratum_1` not in {None, 'soft', 'hard'}
-    :raise NotImplementedError: if `f_export` requested an unsupported file-type
-    """
-    # start time
-    t0 = time.perf_counter()
-
-    # set logging configuration
-    __log_config(**kwargs)
-
-    # start ecotope-mapper
-    _LOG.info(f'Ecotope-map based on {f_map}')
-
-    # optional arguments
-    # > export ecotope-data
-    wd_export: str = kwargs.get('wd_export')
-    f_export: typing.Union[bool, str, None] = kwargs.get('f_export', wd_export is not None)
-    return_ecotopes: bool = kwargs.get('return_ecotopes', True)
-
-    # > parallel computing
-    n_cores: int = kwargs.get('n_cores', 1)
-    n_files = len(f_map)
-
-    # extract model data
-    if n_files == 1:
-        # single `*_map.nc`-file
-        x_coordinates, y_coordinates, ecotopes = __determine_ecotopes(f_map[0], init_log=False, **kwargs)
-
-    else:
-        # multiple `*_map.nc`-files
-        n_processes = min(n_cores, n_files)
-        _LOG.debug(f'CPUs made available: {n_cores} / {mp.cpu_count()}')
-        _LOG.debug(f'CPUs used: {n_processes} / {mp.cpu_count()}')
-        _LOG.debug(f'CPUs required: {n_files} / {n_processes}')
-
-        # parallel computation
-        if n_processes > 1:
-            with mp.Pool(processes=n_processes) as p:
-                results = p.map(functools.partial(__determine_ecotopes, _map_files=list(f_map), **kwargs), f_map)
-
-        # serial computation
-        else:
-            results = [__determine_ecotopes(f, init_log=False, **kwargs) for f in f_map]
-
-        # concatenate output data
-        x_coordinates, y_coordinates, ecotopes = [np.concatenate(arrays) for arrays in zip(*results)]
-
-    # export ecotope-data
-    if f_export:
-        # default settings
-        if isinstance(f_export, bool):
-            f_export = None
-
-        # export as *.csv-file
-        if f_export is None or f_export.endswith('.csv'):
-            exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
-
-        # unsupported file-type
-        else:
-            msg = f'Currently, only exporting to a *.csv-file is supported; {f_export} not supported'
-            raise NotImplementedError(msg)
-
-    # computation time
-    t1 = time.perf_counter()
-    _LOG.info(f'Ecotope-map generated in {t1 - t0:.1f} seconds')
-
-    # return ecotope-map
-    if return_ecotopes:
-        return {(x, y): eco for x, y, eco in zip(x_coordinates, y_coordinates, ecotopes)}
