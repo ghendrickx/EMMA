@@ -21,15 +21,20 @@ from src import \
 _LOG = logging.getLogger(__name__)
 
 
-def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
+def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[glob.TypeXYLabel, tuple, None]:
     """Map ecotopes from hydrodynamic model data.
+
+    The spatial distribution of the ecotopes can be returned in two ways (or not at all, `return_ecotopes=False`):
+     1. As dictionary (`return_ecotopes='dict'`), which is formatted as {(x, y): ecotope} (default);
+     2. As tuple of arrays (`return_ecotopes='tuple'`), which is formatted as (x, y, ecotopes).
 
     :param f_map: file name(s) of hydrodynamic model output data (*.nc)
     :param kwargs: optional arguments
         f_export: file name for exporting ecotope map(s) (or `True` to use default output-file), defaults to None
             supported file-types: {'*.csv',}
         n_cores: number of cores available for parallel computations, defaults to 1
-        return_ecotopes: return a dictionary with the ecotopes using (x,y)-coordinates as keys, defaults to True
+        return_ecotopes: return the spatial distribution of the ecotopes, defaults to True
+            options: {True, False, 'dict', 'tuple'}
         wd_export: working directory for exporting ecotope map(s), defaults to None
         optional arguments to `.__log_config()`
         optional arguments to `.__determine_ecotopes()`
@@ -38,12 +43,13 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
     :type kwargs: optional
         f_export: str, bool
         n_cores: int
-        return_ecotopes: bool
+        return_ecotopes: bool, str
         wd_export: str
 
     :return: spatial distribution of ecotopes (optional)
-    :rtype: src._globals.TypeXYLabel, None
+    :rtype: src._globals.TypeXYLabel, tuple[np.ndarray], None
 
+    :raise ValueError: if `return_ecotopes` is neither a boolean, nor in {'dict', 'tuple'}
     :raise ValueError: if `substratum_1` not in {None, 'soft', 'hard'}
     :raise NotImplementedError: if `f_export` requested an unsupported file-type
     """
@@ -60,7 +66,16 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
     # > export ecotope-data
     wd_export: str = kwargs.get('wd_export')
     f_export: typing.Union[bool, str, None] = kwargs.get('f_export', wd_export is not None)
-    return_ecotopes: bool = kwargs.get('return_ecotopes', True)
+
+    # > return ecotopes
+    return_ecotopes: typing.Union[str, bool] = kwargs.get('return_ecotopes', True)
+    if isinstance(return_ecotopes, str):
+        return_options = 'dict', 'tuple'
+        if return_ecotopes not in return_options:
+            msg = f'`return_ecotopes` must be either a `bool`, or in {return_options}; {return_ecotopes} is given.'
+            raise ValueError(msg)
+    elif return_ecotopes:
+        return_ecotopes = 'dict'
 
     # > parallel computing
     n_cores: int = kwargs.get('n_cores', 1)
@@ -110,8 +125,12 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Optional[glob.TypeXYLabel]:
     _LOG.info(f'Ecotope-map generated in {t1 - t0:.1f} seconds')
 
     # return ecotope-map
-    if return_ecotopes:
-        return {(x, y): eco for x, y, eco in zip(x_coordinates, y_coordinates, ecotopes)}
+    # > as dictionary
+    if return_ecotopes == 'dict':
+        return convert2dict(x_coordinates, y_coordinates, ecotopes)
+    # > as tuple of arrays
+    elif return_ecotopes == 'tuple':
+        return x_coordinates, y_coordinates, ecotopes
 
 
 def __log_config(part_id: int = None, **kwargs) -> None:
