@@ -307,3 +307,21 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
 
     # return (x,y)-coordinates and ecotope-labels
     return x_coordinates, y_coordinates, ecotopes
+
+
+def convert2dict(x: typing.Sequence[float], y: typing.Sequence[float], ecotope: typing.Sequence[str]) -> glob.TypeXYLabel:
+    """Convert tuple of arrays to coordinate-based dictionary:
+        `(float, float, str) -> {(float, float): str}`
+
+    :param x: x-coordinates
+    :param y: y-coordinates
+    :param ecotope: ecotope-labels
+
+    :type x: sequence[float]
+    :type y: sequence[float]
+    :type ecotope: sequence[str]
+
+    :return: dictionary-based spatial distribution of ecotopes
+    :rtype: str._globals.TypeXYLabel
+    """
+    return {(xi, yi): eco for xi, yi, eco in zip(x, y, ecotope)}
