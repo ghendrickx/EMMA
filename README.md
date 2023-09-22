@@ -52,12 +52,12 @@ The basic usage of `EMMA` requires calling the `map_ecotopes()`-function:
 ```python
 from src.processing import map_ecotopes
 
-dict_ecotopes = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/directory>')
+results = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/directory>')
 ```
-By default, `EMMA` expects the relevant variables to be named as stated by [`dfm4.json`](config/dfm4.json). In case
-these key-words differ in the provided `netCDF`-file, provide a custom (partially overwriting) `*.json`-file with the
-same key-words as in [`dfm4.json`](config/dfm4.json); see the [`config`](config)-folder for an elaborate explanation on 
-how to customise the configuration of `EMMA`.
+By default, `EMMA` expects the relevant hydrodynamic variables to be named as given by [`dfm4.json`](config/dfm4.json). 
+In case these key-words differ in the provided `netCDF`-file (dependent on the hydrodynamic modelling software used), 
+provide a custom (partially overwriting) `*.json`-file with the same key-words as in [`dfm4.json`](config/dfm4.json); 
+see the [`config`](config)-folder for an elaborate explanation on how to customise the configuration of `EMMA`.
 
 In the [`examples`](examples)-folder, a collection of examples are provided on how to use `EMMA` including some of her 
 additional features. A [dummy output-file](examples/ex_map_data) is added that can be used to test the examples. For the
