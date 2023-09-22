@@ -1,9 +1,9 @@
-# EMMA configurations
-EMMA uses two types of configuration files:
+# `EMMA` configurations
+`EMMA` uses two types of configuration files:
  1. Ecotope-configuration file;
  1. Map-configuration file.
 
-EMMA comes with some built-in configuration files (see [Built-in configurations](#built-in-configurations)), but also
+`EMMA` comes with some built-in configuration files (see [Built-in configurations](#built-in-configurations)), but also
 except custom configuration files (see [Custom configurations](#custom-configurations)).
 
 ## Built-in configurations

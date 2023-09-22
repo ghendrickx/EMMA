@@ -14,7 +14,7 @@ hydrodynamic model must contain the following three hydrodynamic parameters:
  1. flow velocity; and
  1. salinity.
  
-Some basic usage of EMMA is presented below ([Basic usage](#basic-usage)). A more complete overview of use-cases are
+Some basic usage of `EMMA` is presented below ([Basic usage](#basic-usage)). A more complete overview of use-cases are
 grouped in the [examples](examples)-folder.
 
 ## Authors
@@ -56,7 +56,8 @@ dict_ecotopes = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/
 ```
 By default, `EMMA` expects the relevant variables to be named as stated by [`dfm4.json`](config/dfm4.json). In case
 these key-words differ in the provided `netCDF`-file, provide a custom (partially overwriting) `*.json`-file with the
-same key-words as in [`dfm4.json`](config/dfm4.json); see [`config`](config) for more information how to do so.
+same key-words as in [`dfm4.json`](config/dfm4.json); see the [`config`](config)-folder for an elaborate explanation on 
+how to customise the configuration of `EMMA`.
 
 In the [`examples`](examples)-folder, a collection of examples are provided on how to use `EMMA` including some of her 
 additional features. A [dummy output-file](examples/ex_map_data) is added that can be used to test the examples. For the
