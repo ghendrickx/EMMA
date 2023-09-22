@@ -38,10 +38,9 @@ i.e., they should be correctly formatted (see [Custom configurations](#custom-co
 Any custom configuration file must comply with the key-words as in the built-in configuration files, and only the values
 should be modified.
 
-**Note** that the configuration-file is expected in the same folder as from which the code is executed. Therefore, also 
-provide the working directory of the configuration-file(s) using the optional argument `wd_config`. Keep in mind that in
-case multiple custom configuration files are used, they must be placed in the same working directory (i.e., 
-`wd_config`):
+**Note** that the configuration-file is, by default, considered in the same folder as from which the code is executed
+(i.e., `os.getcwd()`). Therefore, provide the working directory of the configuration-file(s) using the optional argument 
+`wd_config` if this is not the case:
 ```python
 from src.processing import map_ecotopes
 
@@ -52,6 +51,9 @@ results = map_ecotopes(
     wd_config='directory/to/configuration/files',  # working directory with custom configuration file(s)
 )
 ```
+
+**Note** that when multiple custom configuration files are used, they must be placed in the same working directory 
+(i.e., `wd_config`).
 
 ### Ecotope-configuration file
 The ecotope-configuration file follows the structure of the ecotope-labels and defines the thresholds between the 
