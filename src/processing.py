@@ -124,7 +124,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[glob.TypeXYLabel, tuple,
     t1 = time.perf_counter()
     _LOG.info(f'Ecotope-map generated in {t1 - t0:.1f} seconds')
 
-    # return ecotope-map
+    # return ecotope-map (optional)
     # > as dictionary
     if return_ecotopes == 'dict':
         return convert2dict(x_coordinates, y_coordinates, ecotopes)
@@ -319,7 +319,7 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     return x_coordinates, y_coordinates, ecotopes
 
 
-def convert2dict(x: typing.Sequence[float], y: typing.Sequence[float], ecotope: typing.Sequence[str]) -> glob.TypeXYLabel:
+def convert2dict(x: typing.Sequence, y: typing.Sequence, ecotope: typing.Sequence) -> glob.TypeXYLabel:
     """Convert tuple of arrays to coordinate-based dictionary:
         `(float, float, str) -> {(float, float): str}`
 
