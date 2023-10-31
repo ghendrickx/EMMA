@@ -2,7 +2,7 @@
   "salinity": {
     "variable": 4,
     "fresh": 5.4,
-    "marine": 20
+    "marine": 18
   },
   "depth-1": {
     "low-water": -2.31,
