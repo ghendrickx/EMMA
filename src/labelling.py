@@ -133,8 +133,7 @@ def hydrodynamics_code(velocity: float, code_depth_1: str) -> str:
 
 
 def depth_2_code(
-        code_substratum_1: str, code_depth_1: str, water_depth: float, inundated: float, frequency: int,
-        mlws: float = None
+        code_substratum_1: str, code_depth_1: str, water_depth: float, inundated: float, frequency: int
 ) -> str:
     """Determine ecotope-code in the category 'depth 2'.
 
@@ -143,21 +142,16 @@ def depth_2_code(
     :param water_depth: temporal mean water depth [m]
     :param inundated: temporal percentage of inundation [-]
     :param frequency: annual frequency of flooding [n/yr]
-    :param mlws: mean low water, spring tide [m] (positive upwards), defaults to None
 
     :type code_substratum_1: str
     :type code_depth_1: str
     :type water_depth: float
     :type inundated: float
     :type frequency: int
-    :type mlws: float, optional
 
     :return: depth 2 code
     :rtype: str
     """
-    # optional arguments
-    mlws = mlws or glob.LABEL_CONFIG['depth-2']['sub-littoral']['low-water']
-
     # hard substratum: no depth 2 label/code
     if code_substratum_1 == '1':
         return ''
@@ -170,7 +164,7 @@ def depth_2_code(
     elif code_depth_1 == '1':
         if water_depth >= glob.LABEL_CONFIG['depth-2']['sub-littoral']['depth-deep']:
             return '1'
-        elif water_depth < glob.LABEL_CONFIG['depth-2']['sub-littoral']['depth-shallow'] + mlws:
+        elif water_depth < glob.LABEL_CONFIG['depth-2']['sub-littoral']['depth-shallow']:
             return '3'
         return '2'
 
