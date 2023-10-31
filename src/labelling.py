@@ -59,29 +59,29 @@ def substratum_1_code(substratum_type: str) -> str:
     return '1'
 
 
-def depth_1_code(water_depth: float, lat: float = None, mhwn: float = None) -> str:
+def depth_1_code(water_depth: float, mlws: float = None, mhwn: float = None) -> str:
     """Determine ecotope-code in the category 'depth 1'.
 
     :param water_depth: temporal mean water depth [m]
-    :param lat: lowest astronomical tide [m] (positive upwards), defaults to None
+    :param mlws: mean low water, spring tide [m] (positive upwards), defaults to None
     :param mhwn: mean high water, neap tide [m] (positive upwards), defaults to None
 
     :type water_depth: float
-    :type lat: float, optional
+    :type mlws: float, optional
     :type mhwn: float, optional
 
     :return: depth 1 code
     :rtype: str
     """
-    # dynamic thresholds
-    assert (lat is None and mhwn is None) or (lat is not None and mhwn is not None)
+    # dynamic thresholds: both defined or both undefined
+    assert not ((mlws is None) ^ (mhwn is None))
 
     # depth 1 component unknown
     if water_depth is None:
         return 'x'
 
     # static determination
-    elif lat is None and mhwn is None:
+    elif mlws is None and mhwn is None:
         # always inundated: sub-littoral
         if -water_depth < glob.LABEL_CONFIG['depth-1']['low-water']:
             return '1'
@@ -91,9 +91,9 @@ def depth_1_code(water_depth: float, lat: float = None, mhwn: float = None) -> s
             return '3'
 
     # quasi-static determination
-    elif lat is not None and mhwn is not None:
+    elif mlws is not None and mhwn is not None:
         # always inundated: sub-littoral
-        if -water_depth < lat:
+        if -water_depth < mlws:
             return '1'
 
         # generally drained: supra-littoral
