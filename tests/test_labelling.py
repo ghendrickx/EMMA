@@ -98,22 +98,22 @@ class TestHydrodynamicsCode:
 
     def test_sub_littoral_high_energy(self):
         """Test the ecotope-code determination resulting in 'high energy' ('1') for 'sub-littoral' ('1') conditions."""
-        output = lab.hydrodynamics_code(.7, '1')
+        output = lab.hydrodynamics_code(.75, '1')
         assert output == '1'
 
     def test_sub_littoral_low_energy(self):
         """Test the ecotope-code determination resulting in 'low energy' ('2') for 'sub-littoral' ('1') conditions."""
-        output = lab.hydrodynamics_code(.6, '1')
+        output = lab.hydrodynamics_code(.65, '1')
         assert output == '2'
 
     def test_littoral_high_energy(self):
         """Test the ecotope-code determination resulting in 'high energy' ('1') for 'littoral' ('2') conditions."""
-        output = lab.hydrodynamics_code(.7, '2')
+        output = lab.hydrodynamics_code(.75, '2')
         assert output == '1'
 
     def test_littoral_low_energy(self):
         """Test the ecotope-code determination resulting in 'low energy' ('2') for 'littoral' ('2') conditions."""
-        output = lab.hydrodynamics_code(.6, '2')
+        output = lab.hydrodynamics_code(.65, '2')
         assert output == '2'
 
     def test_stagnant(self):

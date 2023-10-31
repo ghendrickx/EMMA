@@ -124,7 +124,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[glob.TypeXYLabel, tuple,
     t1 = time.perf_counter()
     _LOG.info(f'Ecotope-map generated in {t1 - t0:.1f} seconds')
 
-    # return ecotope-map
+    # return ecotope-map (optional)
     # > as dictionary
     if return_ecotopes == 'dict':
         return convert2dict(x_coordinates, y_coordinates, ecotopes)
@@ -181,7 +181,6 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
         f_map_config: file name of mapping configuration file, defaults to None
         friction_coefficient: proxy friction coefficient combining `shields`, `chezy`, and `relative_density`,
             defaults to None
-        lat: lowest astronomical tide, defaults to None
         log_level: level of log-statements printed/filed, defaults to 'warning'
         mhwn: mean high water, neap tide, defaults to None
         mlws: mean low water, spring tide, defaults to None
@@ -203,7 +202,6 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
         f_export: str
         f_map_config: str
         friction_coefficient: float
-        lat: float
         log_level: str
         mhwn: float
         mlws: float
@@ -265,13 +263,6 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
             f'Not all relevant tidal characteristics are provided: `mlws={mlws}` [m]; `mhwn={mhwn}` [m]; '
             f'hard-coded values in the configuration-file ({eco_config or "emma.json"}) are used'
         )
-    lat: float = kwargs.get('lat')
-    if lat is None and eco_config not in ('zes1.json',):
-        _LOG.warning(
-            f'Lowest astronomical tide (LAT) not provided (`lat={lat}` [m]); '
-            f'defaulting to mean low water, spring tide (MLWS, `mlws={mlws}` [m]) with reduced performance'
-        )
-        lat = mlws
 
     # set configurations
     # > ecotope configuration
@@ -311,9 +302,9 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     # ecotope-labelling
     char_1 = np.vectorize(lab.salinity_code)(mean_salinity, std_salinity)
     char_2 = np.full(char_1.shape, lab.substratum_1_code(substratum_1), dtype=str)
-    char_3 = np.vectorize(lab.depth_1_code)(mean_depth, lat, mhwn)
+    char_3 = np.vectorize(lab.depth_1_code)(mean_depth, mlws, mhwn)
     char_4 = np.vectorize(lab.hydrodynamics_code)(max_velocity, char_3)
-    char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, mean_depth, in_duration, in_frequency, mlws)
+    char_5 = np.vectorize(lab.depth_2_code)(char_2, char_3, mean_depth, in_duration, in_frequency)
     char_6 = np.vectorize(lab.substratum_2_code)(char_2, char_4, grain_sizes)
 
     # construct ecotope-labels
@@ -328,7 +319,7 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     return x_coordinates, y_coordinates, ecotopes
 
 
-def convert2dict(x: typing.Sequence[float], y: typing.Sequence[float], ecotope: typing.Sequence[str]) -> glob.TypeXYLabel:
+def convert2dict(x: typing.Sequence, y: typing.Sequence, ecotope: typing.Sequence) -> glob.TypeXYLabel:
     """Convert tuple of arrays to coordinate-based dictionary:
         `(float, float, str) -> {(float, float): str}`
 

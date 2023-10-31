@@ -16,8 +16,7 @@
   "depth-2": {
     "sub-littoral": {
       "depth-deep": 10,
-      "depth-shallow": 5,
-      "low-water": -2.31
+      "depth-shallow": 5
     },
     "littoral": {
       "inundation-upper": 0.75,
