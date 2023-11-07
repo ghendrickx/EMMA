@@ -1,18 +1,18 @@
 # EMMA: Examples
 Five examples have been included to aid in the usage of `EMMA`:
- 1. **Basic, single-file usage.**
+ 1. [**Basic, single-file usage.**](1_basic.py)
     The most basic usage of `EMMA` using a single map-file.
  
- 1. **Parallel, multi-file usage.**
+ 1. [**Parallel, multi-file usage.**](2_parallel.py)
     Parallel usage of `EMMA` using multiple map-files.
  
- 1. **Added physical data.**
+ 1. [**Added physical data.**](3_settings.py)
     Improved accuracy of `EMMA` by providing additional data, such as tidal characteristics.
  
- 1. **Export output data.**
+ 1. [**Export output data.**](4_export.py)
     Export the ecotope-map determined by `EMMA` to a `*.csv`-file.
  
- 1. **Customising configurations.**
+ 1. [**Customising configurations.**](5_config.py)
     Customising the configuration of the ecotope-labels and/or the keywords in the hydrodynamic output data. This means
     overwriting (part of) the configurations files (i.e., the `*.json`-files in the [`config`](../config)-folder).
     
