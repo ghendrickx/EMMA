@@ -119,30 +119,30 @@ class TestProcessTimeSeries:
 class TestPointsInFeature:
     """Tests for `points_in_feature()`."""
 
-    def test_single_point_inside(self, dummy_feature):
-        out = pre.points_in_feature(dummy_feature, [Point(2, 2)])
-        assert len(out) == 1
-
-    def test_single_point_outside(self, dummy_feature):
-        out = pre.points_in_feature(dummy_feature, [Point(7, 7)])
-        assert len(out) == 0
-
-    def test_multi_point_inside(self, dummy_feature):
-        out = pre.points_in_feature(dummy_feature, [Point(1, 1), Point(2, 2), Point(3, 3)])
-        assert len(out) == 3
-
-    def test_multi_point_mixed(self, dummy_feature):
-        out = pre.points_in_feature(dummy_feature, [Point(2, 2), Point(7, 7)])
-        assert len(out) == 1
+    @pytest.mark.parametrize(
+        'points, length',
+        [
+            ([Point(2, 2)], 1),
+            ([Point(7, 7)], 0),
+            ([Point(1, 1), Point(2, 2), Point(3, 3)], 3),
+            ([Point(2, 2), Point(7, 7)], 1)
+        ]
+    )
+    def test_point_in_feature(self, dummy_feature, points, length):
+        out = pre.points_in_feature(dummy_feature, points)
+        assert len(out) == length
 
     def test_assign_zes_code(self, dummy_feature):
         out = pre.points_in_feature(dummy_feature, [Point(1, 1), Point(2, 2), Point(3, 3)])
         assert all(v == 'Z2.222f' for v in out.values())
 
-    def test_quick_check_outside(self, dummy_feature):
-        out = pre.points_in_feature(dummy_feature, [Point(7, 7)], quick_check=True)
-        assert len(out) == 0
-
-    def test_quick_check_inside(self, dummy_feature):
-        out = pre.points_in_feature(dummy_feature, [Point(2, 2)], quick_check=True)
-        assert len(out) == 1
+    @pytest.mark.parametrize(
+        'point, length',
+        [
+            ([Point(2, 2)], 1),
+            ([Point(7, 7)], 0)
+        ]
+    )
+    def test_quick_check(self, dummy_feature, point, length):
+        out = pre.points_in_feature(dummy_feature, point, quick_check=True)
+        assert len(out) == length
