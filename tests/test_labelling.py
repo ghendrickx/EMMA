@@ -60,39 +60,21 @@ def test_depth1_label(depth, mlws, mhwn, label):
     assert out.lower() == str(label)
 
 
-class TestHydrodynamicsCode:
-    """Tests for `hydrodynamics_code()`."""
-
-    def test_unknown(self):
-        """Test the ecotope-code determination when insufficient data is available."""
-        # noinspection PyTypeChecker
-        output = lab.hydrodynamics_code(None, '')
-        assert output == 'x'
-
-    def test_sub_littoral_high_energy(self):
-        """Test the ecotope-code determination resulting in 'high energy' ('1') for 'sub-littoral' ('1') conditions."""
-        output = lab.hydrodynamics_code(.75, '1')
-        assert output == '1'
-
-    def test_sub_littoral_low_energy(self):
-        """Test the ecotope-code determination resulting in 'low energy' ('2') for 'sub-littoral' ('1') conditions."""
-        output = lab.hydrodynamics_code(.65, '1')
-        assert output == '2'
-
-    def test_littoral_high_energy(self):
-        """Test the ecotope-code determination resulting in 'high energy' ('1') for 'littoral' ('2') conditions."""
-        output = lab.hydrodynamics_code(.75, '2')
-        assert output == '1'
-
-    def test_littoral_low_energy(self):
-        """Test the ecotope-code determination resulting in 'low energy' ('2') for 'littoral' ('2') conditions."""
-        output = lab.hydrodynamics_code(.65, '2')
-        assert output == '2'
-
-    def test_stagnant(self):
-        """Test the ecotope-code determination resulting in 'stagnant' ('3')."""
-        output = lab.hydrodynamics_code(0., '')
-        assert output == '3'
+@pytest.mark.parametrize(
+    'velocity, depth1, label',
+    [
+        (None, '', 'x'),
+        (.75, 1, 1),
+        (.65, 1, 2),
+        (.75, 2, 1),
+        (.65, 2, 2),
+        (0, '', 3),
+    ]
+)
+def test_hydrodynamics_label(velocity, depth1, label):
+    """Test labelling of Hydrodynamics."""
+    out = lab.hydrodynamics_code(velocity, str(depth1))
+    assert out.lower() == str(label)
 
 
 class TestDepth2Code:
