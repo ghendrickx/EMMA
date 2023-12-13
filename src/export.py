@@ -94,6 +94,8 @@ def _default_file_name(file_name: typing.Union[str, None], default: str, extensi
 
     if extension is None:
         extension = f'.{default.split(".")[-1]}'
+    elif extension.startswith('_'):
+        pass
     elif not extension.startswith('.'):
         extension = f'.{extension}'
 
