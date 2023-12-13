@@ -28,7 +28,7 @@ def file_dir(file_name: str, wd: str = None) -> str:
         os.makedirs(wd, exist_ok=True)
 
     # file name contains (home) directory
-    start_dir = file_name.split(os.sep)[0]
+    start_dir = file_name.replace('\\', os.sep).replace('/', os.sep).split(os.sep)[0]
     if start_dir.endswith(':') or start_dir in ('', '~'):
         return file_name
 
