@@ -77,82 +77,26 @@ def test_hydrodynamics_label(velocity, depth1, label):
     assert out.lower() == str(label)
 
 
-class TestDepth2Code:
-    """Tests for `depth_2_code()`."""
-
-    def test_undefined(self):
-        """Test the ecotope-code determination when insufficient data is available."""
-        output = lab.depth_2_code('1', '', 0., 0., 0)
-        assert output == ''
-
-    def test_unknown(self):
-        """Test the ecotope-code determination when insufficient data is available."""
-        # noinspection PyTypeChecker
-        output = lab.depth_2_code('', None, 0., 0., 0)
-        assert output == 'x'
-
-    def test_unknown_x(self):
-        """Test the ecotope-code determination when insufficient data is available."""
-        output = lab.depth_2_code('', 'x', 0., 0., 0)
-        assert output == 'x'
-
-    def test_sub_littoral_very_deep(self):
-        """Test the ecotope-code determination resulting in 'very deep' ('1') for 'sub-littoral' ('1') conditions."""
-        output = lab.depth_2_code('2', '1', 35., 0., 0)
-        assert output == '1'
-
-    def test_sub_littoral_deep(self):
-        """Test the ecotope-code determination resulting in 'deep' ('2') for 'sub-littoral' ('1') conditions."""
-        output = lab.depth_2_code('2', '1', 13., 0., 0)
-        assert output == '2'
-
-    def test_sub_littoral_shallow(self):
-        """Test the ecotope-code determination resulting in 'shallow' ('3') for 'sub-littoral' ('1') conditions."""
-        output = lab.depth_2_code('2', '1', 3., 0., 0)
-        assert output == '3'
-
-    def test_littoral_low(self):
-        """Test the ecotope-code determination resulting in 'low littoral' ('1') for 'littoral' ('2') conditions."""
-        output = lab.depth_2_code('2', '2', 0., 1., 0)
-        assert output == '1'
-
-    def test_littoral_middle(self):
-        """Test the ecotope-code determination resulting in 'middle littoral' ('2') for 'littoral' ('2') conditions."""
-        output = lab.depth_2_code('2', '2', 0., .5, 0)
-        assert output == '2'
-
-    def test_littoral_high(self):
-        """Test the ecotope-code determination resulting in 'high littoral' ('3') for 'littoral' ('2') conditions."""
-        output = lab.depth_2_code('2', '2', 0., 0., 0)
-        assert output == '3'
-
-    def test_supra_littoral_pioneer(self):
-        """Test the ecotope-code determination resulting in 'potential pioneer zone' ('1') for 'supra-littoral' ('3')
-        conditions.
-        """
-        output = lab.depth_2_code('2', '3', 0., 0., 350)
-        assert output == '1'
-
-    def test_supra_littoral_low(self):
-        """Test the ecotope-code determination resulting in 'low salt marsh' ('2') for 'supra-littoral' ('3')
-        conditions.
-        """
-        output = lab.depth_2_code('2', '3', 0., 0., 300)
-        assert output == '2'
-
-    def test_supra_littoral_middle(self):
-        """Test the ecotope-code determination resulting in 'middle salt marsh' ('3') for 'supra-littoral' ('3')
-        conditions.
-        """
-        output = lab.depth_2_code('2', '3', 0., 0., 100)
-        assert output == '3'
-
-    def test_supra_littoral_high(self):
-        """Test the ecotope-code determination resulting in 'high salt marsh' ('4') for 'supra-littoral' ('3')
-        conditions.
-        """
-        output = lab.depth_2_code('2', '3', 0., 0., 20)
-        assert output == '4'
+@pytest.mark.parametrize(
+    'sub1, depth1, depth, inundated, frequency, label',
+    [
+        (1, '', 0, 0, 0, ''),
+        ('', 'x', 0, 0, 0, 'x'),
+        (2, 1, 35, 0, 0, 1),
+        (2, 1, 13, 0, 0, 2),
+        (2, 1, 3, 0, 0, 3),
+        (2, 2, 0, 1, 0, 1),
+        (2, 2, 0, .5, 0, 2),
+        (2, 2, 0, 0, 0, 3),
+        (2, 3, 0, 0, 350, 1),
+        (2, 3, 0, 0, 300, 2),
+        (2, 3, 0, 0, 100, 3),
+        (2, 3, 0, 0, 20, 4),
+    ]
+)
+def test_depth2_label(sub1, depth1, depth, inundated, frequency, label):
+    out = lab.depth_2_code(str(sub1), str(depth1), depth, inundated, frequency)
+    assert out.lower() == str(label)
 
 
 class TestSubstratum2Code:
