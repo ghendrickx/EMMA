@@ -3,6 +3,8 @@ Tests for `src/labelling.py`.
 
 Author: Gijs G. Hendrickx
 """
+import pytest
+
 from config import config_file
 from src import labelling as lab
 
@@ -12,34 +14,20 @@ lab.glob.LABEL_CONFIG = config_file.load_config('emma.json')
 """TestClasses"""
 
 
-class TestSalinityCode:
-    """Tests for `salinity_code()`."""
-
-    def test_unknown(self):
-        """Test the ecotope-code determination when insufficient data is available."""
-        # noinspection PyTypeChecker
-        output = lab.salinity_code(None, 0)
-        assert output == 'x'
-
-    def test_variable(self):
-        """Test the ecotope-code determination resulting in 'variable' ('V')."""
-        output = lab.salinity_code(10, 3)
-        assert output == 'V'
-
-    def test_fresh(self):
-        """Test the ecotope-code determination resulting in 'freshwater' ('F')."""
-        output = lab.salinity_code(2.5, 0)
-        assert output == 'F'
-
-    def test_marine(self):
-        """Test the ecotope-code determination resulting in 'marine' ('Z')."""
-        output = lab.salinity_code(28, 4)
-        assert output == 'Z'
-
-    def test_brackish(self):
-        """Test the ecoptope-code determination resulting in 'brackish' ('B')."""
-        output = lab.salinity_code(15, 3)
-        assert output == 'B'
+@pytest.mark.parametrize(
+    'mean, std, label',
+    [
+        (None, 0, 'x'),
+        (10, 3, 'v'),
+        (2.5, 0, 'f'),
+        (28, 4, 'z'),
+        (15, 3, 'b'),
+    ]
+)
+def test_salinity_label(mean, std, label):
+    """Test labelling of Salinity."""
+    out = lab.salinity_code(mean, std)
+    assert out.lower() == label
 
 
 class TestSubstratum1Code:
