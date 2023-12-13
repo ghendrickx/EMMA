@@ -169,6 +169,7 @@ def __log_config(part_id: int = None, **kwargs) -> None:
         logging.basicConfig(level=log_level.upper())
 
 
+# TODO: Split in components that can be tested
 def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Map ecotopes from hydrodynamic model data.
 
