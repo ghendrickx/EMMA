@@ -30,24 +30,18 @@ def test_salinity_label(mean, std, label):
     assert out.lower() == label
 
 
-class TestSubstratum1Code:
-    """Tests for `substratum_1_code()`."""
-
-    def test_unknown(self):
-        """Test the ecotope-code determination when insufficient data is available."""
-        # noinspection PyTypeChecker
-        output = lab.substratum_1_code(None)
-        assert output == 'x'
-
-    def test_hard(self):
-        """Test the ecotope-code determination resulting in 'hard' ('1')."""
-        output = lab.substratum_1_code('hard')
-        assert output == '1'
-
-    def test_soft(self):
-        """Test the ecotope-code determination resulting in 'soft' ('2')."""
-        output = lab.substratum_1_code('soft')
-        assert output == '2'
+@pytest.mark.parametrize(
+    'key, label',
+    [
+        (None, 'x'),
+        ('hard', 1),
+        ('soft', 2),
+    ]
+)
+def test_substratum1_label(key, label):
+    """Test labelling of Substratum 1."""
+    out = lab.substratum_1_code(key)
+    assert out.lower() == str(label)
 
 
 class TestDepth1Code:
