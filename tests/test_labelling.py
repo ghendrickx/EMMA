@@ -44,29 +44,20 @@ def test_substratum1_label(key, label):
     assert out.lower() == str(label)
 
 
-class TestDepth1Code:
-    """Tests for `depth_1_code()`."""
-
-    def test_unknown(self):
-        """Test the ecotope-code determination when insufficient data is available."""
-        # noinspection PyTypeChecker
-        output = lab.depth_1_code(None)
-        assert output == 'x'
-
-    def test_sub_littoral(self):
-        """Test the ecotope-code determination resulting in 'sub-littoral' ('1')."""
-        output = lab.depth_1_code(2.8)
-        assert output == '1'
-
-    def test_littoral(self):
-        """Test the ecotope-code determination resulting in 'littoral' ('2')."""
-        output = lab.depth_1_code(0)
-        assert output == '2'
-
-    def test_supra_littoral(self):
-        """Test the ecotope-code determination resulting in 'supra-littoral' ('3')."""
-        output = lab.depth_1_code(-2.5)
-        assert output == '3'
+# TODO: Add tests that implement `mlws` and `mhwn`.
+@pytest.mark.parametrize(
+    'depth, mlws, mhwn, label',
+    [
+        (None, None, None, 'x'),
+        (2.8, None, None, 1),
+        (0, None, None, 2),
+        (-2.5, None, None, 3),
+    ]
+)
+def test_depth1_label(depth, mlws, mhwn, label):
+    """Test labelling of Depth 1."""
+    out = lab.depth_1_code(depth, mlws, mhwn)
+    assert out.lower() == str(label)
 
 
 class TestHydrodynamicsCode:
