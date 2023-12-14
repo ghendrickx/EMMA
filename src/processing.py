@@ -354,7 +354,7 @@ def convert2tuple(xy_labels: glob.TypeXYLabel) -> typing.Tuple[np.ndarray, np.nd
     y = np.array(y, dtype=float)
 
     # extract ecotope-labels
-    ecotope = np.array(xy_labels.values(), dtype=str)
+    ecotope = np.array([*xy_labels.values()], dtype=str)
 
     # return arrays
     return x, y, ecotope
