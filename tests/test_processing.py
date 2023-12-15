@@ -53,6 +53,7 @@ def test_convert2tuple(data, expected):
         npt.assert_array_equal(x, y)
 
 
+# TODO: Determine whether it is possible to execute tests using netCDF-data (i.e., `xarray`)
 # def test_determine_ecotopes():
 #     if platform.system() == 'Linux':
 #         wd = __file__.split(os.sep)[:-2] + ['examples', 'ex_map_data']
