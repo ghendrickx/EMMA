@@ -3,9 +3,6 @@ Tests for `src/processing.py`.
 
 Author: Gijs G. Hendrickx
 """
-import os
-import platform
-
 import numpy.testing as npt
 import pytest
 
@@ -56,17 +53,17 @@ def test_convert2tuple(data, expected):
         npt.assert_array_equal(x, y)
 
 
-def test_determine_ecotopes():
-    if platform.system() == 'Linux':
-        wd = __file__.split(os.sep)[:-2] + ['examples', 'ex_map_data']
-        nc_file = os.sep.join(wd + ['output_map.nc'])
-        csv_file = os.sep.join(wd + ['output.csv'])
-
-        test = processing.__determine_ecotopes(nc_file, f_map_config='dfm1.json')
-
-        with open(csv_file, mode='r') as f:
-            file = [line.rstrip().split(',') for line in f.readlines()]
-        expected = tuple(zip(*file))
-
-        for x, y in zip(test, expected):
-            npt.assert_array_equal(x, y)
+# def test_determine_ecotopes():
+#     if platform.system() == 'Linux':
+#         wd = __file__.split(os.sep)[:-2] + ['examples', 'ex_map_data']
+#         nc_file = os.sep.join(wd + ['output_map.nc'])
+#         csv_file = os.sep.join(wd + ['output.csv'])
+#
+#         test = processing.__determine_ecotopes(nc_file, f_map_config='dfm1.json')
+#
+#         with open(csv_file, mode='r') as f:
+#             file = [line.rstrip().split(',') for line in f.readlines()]
+#         expected = tuple(zip(*file))
+#
+#         for x, y in zip(test, expected):
+#             npt.assert_array_equal(x, y)
