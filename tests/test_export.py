@@ -41,3 +41,21 @@ def test_file_dir(file_name, wd, expected):
 def test_default_file_name(file_name, default, extension, expected):
     file = exp._default_file_name(file_name, default, extension)
     assert file == expected
+
+
+@pytest.mark.parametrize(
+    'file, default, extension, expected',
+    [
+        (None, 'file.txt', None, os.path.join(os.getcwd(), 'file.txt')),
+        ('file', 'file.txt', None, os.path.join(os.getcwd(), 'file.txt')),
+        ('file.txt', 'file.csv', None, os.path.join(os.getcwd(), 'file.csv')),
+        ('file', 'file_map.nc', '_map.nc', os.path.join(os.getcwd(), 'file_map.nc'))
+    ]
+)
+def test_file_name_decorator(file, default, extension, expected):
+
+    @exp._file_name(default=default, extension=extension)
+    def fn_func(*, file_name: str = None, wd: str = None):
+        return exp.file_dir(file_name, wd)
+
+    assert fn_func(file_name=file) == expected
