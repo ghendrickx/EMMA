@@ -60,11 +60,14 @@ def _file_name(default: str, extension: str = None) -> callable:
             wd = kwargs.pop('wd', None) or os.getcwd()
 
             # function execution
-            func(*args, file_name=file_name, wd=wd, **kwargs)
+            out = func(*args, file_name=file_name, wd=wd, **kwargs)
 
             # logging
             if not file_name.endswith('.log'):
                 _LOG.info(f'Data exported: {os.path.join(wd, file_name)}')
+
+            # return function output
+            return out
 
         # return wrapper function
         return wrapper
