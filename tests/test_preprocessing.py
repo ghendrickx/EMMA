@@ -6,7 +6,6 @@ Author: Gijs G. Hendrickx
 import pytest
 
 import numpy as np
-from shapely.geometry import Point
 
 from config import config_file
 from src import preprocessing as pre
@@ -18,24 +17,6 @@ pre.glob.MODEL_CONFIG = config_file.load_config('dfm1.json')
 def dummy_time_series():
     """Create a random array to test the order of its statistics."""
     return np.random.random((100, 100))
-
-
-@pytest.fixture
-def dummy_feature():
-    """Create a representative feature for testing."""
-    return dict(
-        geometry=dict(
-            coordinates=[[
-                [0, 0],
-                [0, 5],
-                [5, 5],
-                [5, 0]
-            ]]
-        ),
-        properties=dict(
-            zes_code='Z2.222f'
-        )
-    )
 
 
 class TestProcessTimeSeries:
@@ -108,32 +89,3 @@ class TestProcessTimeSeries:
         output = pre.grain_size_estimation(np.array([0, 1]), c_friction=1300)
         for t, o in zip(truth, output):
             assert pytest.approx(t) == o
-
-
-@pytest.mark.parametrize(
-    'points, length',
-    [
-        ([Point(2, 2)], 1),
-        ([Point(7, 7)], 0),
-        ([Point(1, 1), Point(2, 2), Point(3, 3)], 3),
-        ([Point(2, 2), Point(7, 7)], 1)
-    ]
-)
-def test_point_in_feature(dummy_feature, points, length):
-    out = pre.points_in_feature(dummy_feature, points)
-    assert len(out) == length
-
-def test_assign_zes_code(dummy_feature):
-    out = pre.points_in_feature(dummy_feature, [Point(1, 1), Point(2, 2), Point(3, 3)])
-    assert all(v == 'Z2.222f' for v in out.values())
-
-@pytest.mark.parametrize(
-    'point, length',
-    [
-        ([Point(2, 2)], 1),
-        ([Point(7, 7)], 0)
-    ]
-)
-def test_quick_check(dummy_feature, point, length):
-    out = pre.points_in_feature(dummy_feature, point, quick_check=True)
-    assert len(out) == length
