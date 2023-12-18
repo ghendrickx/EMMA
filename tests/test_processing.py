@@ -70,3 +70,18 @@ def test_determine_ecotopes():
 
     for i, (x, y) in enumerate(zip(test, expected)):
         npt.assert_array_equal(x, np.array(y, dtype=(str if i == 2 else float)))
+
+
+def test_map_ecotope():
+    wd = __file__.split(os.sep)[:-2] + ['examples', 'ex_map_data']
+    nc_file = os.sep.join(wd + ['output_map.nc'])
+    csv_file = os.sep.join(wd + ['output.csv'])
+
+    test = processing.map_ecotopes(nc_file, return_ecotopes='tuple', f_export=False)
+
+    with open(csv_file, mode='r') as f:
+        file = [line.rstrip().split(',') for line in f.readlines()]
+    expected = tuple(zip(*file))
+
+    for i, (x, y) in enumerate(zip(test, expected)):
+        npt.assert_array_equal(x, np.array(y, dtype=(str if i == 2 else float)))
