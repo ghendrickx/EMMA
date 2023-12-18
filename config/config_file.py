@@ -39,7 +39,7 @@ def load_config(f_default: str, f_user: typing.Union[str, dict] = None, wd: str 
 
     # built-in configurations
     elif f_user in ('emma.json', 'zes1.json', 'dfm1.json', 'dfm4.json'):
-        with open(os.path.join(os.path.dirname(__file__), f_user)) as f:
+        with open(os.path.join(os.path.dirname(__file__), f_user), mode='r') as f:
             built_in = json.load(f)
         _LOG.info(f'Built-in configuration used: {f_user}')
         return built_in
@@ -48,14 +48,8 @@ def load_config(f_default: str, f_user: typing.Union[str, dict] = None, wd: str 
     elif isinstance(f_user, str):
         wd = wd or os.getcwd()
         file = os.path.join(wd, f_user)
-        try:
-            with open(file) as f_user:
-                user = json.load(f_user)
-        except FileNotFoundError:
-            _LOG.warning(f'Custom configuration file not found: {file}')
-            return load_config(f_default, f_user=None, wd=wd)
-        else:
-            _LOG.info(f'Custom configuration file used: {file}')
+        with open(file, mode='r') as f:
+            user = json.load(f)
 
     elif isinstance(f_user, dict):
         user = f_user.copy()
