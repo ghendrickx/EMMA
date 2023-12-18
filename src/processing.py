@@ -269,10 +269,10 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     # > ecotope configuration
     glob.LABEL_CONFIG = config_file.load_config('emma.json', eco_config, wd_config)
     # > map configuration
-    glob.MODEL_CONFIG = config_file.load_config('dfm4.json', map_config, wd_config)
+    glob.MODEL_CONFIG = config_file.load_config('dfm1.json', map_config, wd_config)
 
     # extract model data
-    map_format = (map_config or 'dfm4.json')[:-5]
+    map_format = (map_config or 'dfm1.json')[:-5]
     with pre.MapData(file_name, wd=wd, map_format=map_format) as data:
         x_coordinates = data.x_coordinates
         y_coordinates = data.y_coordinates
