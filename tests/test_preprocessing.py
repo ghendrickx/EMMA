@@ -10,13 +10,19 @@ import numpy as np
 from config import config_file
 from src import preprocessing as pre
 
+# setting configuration
 pre.glob.MODEL_CONFIG = config_file.load_config('dfm1.json')
+
+# fixture function
 
 
 @pytest.fixture
 def dummy_time_series():
     """Create a random array to test the order of its statistics."""
     return np.random.random((100, 100))
+
+
+# tests
 
 
 class TestProcessTimeSeries:

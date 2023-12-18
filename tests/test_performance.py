@@ -7,7 +7,7 @@ import pytest
 
 from src import performance as pf
 
-
+# global variables
 __XY_LABELS_1 = {
     (0, 0): 'Z2.222f',
     (0, 1): 'Z2.222f',

@@ -8,6 +8,8 @@ from shapely.geometry import Point
 
 from src import performance as pf
 
+# fixture functions
+
 
 @pytest.fixture
 def dummy_feature():
@@ -25,6 +27,9 @@ def dummy_feature():
             zes_code='Z2.222f'
         )
     )
+
+
+# tests
 
 
 @pytest.mark.parametrize(

@@ -7,7 +7,10 @@ import pytest
 
 from config.config_file import load_config
 
+# setting configuration
 TEST_CONFIG = load_config('emma.json')
+
+# tests
 
 
 @pytest.mark.parametrize(
