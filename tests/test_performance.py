@@ -1,5 +1,5 @@
 """
-Tests for `src/performance.py`.
+Tests for `src/performance.py`, `Comparison`-object.
 
 Author: Gijs G. Hendrickx
 """
@@ -27,8 +27,7 @@ __XY_LABELS_3 = {
     (1, 1): 'Z2.221s',
 }
 
-
-"""helper functions"""
+# helper functions
 
 
 def comparison_exec(*data, wild_card=True, level=None, label=False):
@@ -46,6 +45,9 @@ def n_incorrect(perf):
 
 def tuple_correct(perf):
     return n_correct(perf), n_incorrect(perf)
+
+
+# tests
 
 
 @pytest.mark.parametrize(
