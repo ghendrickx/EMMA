@@ -43,9 +43,19 @@ This repository is licensed under [`Apache License 2.0`](LICENSE).
 
 ## Requirements
 This repository has the following requirements (see also [`requirements.txt`](requirements.txt)):
+ -  `Python>=3.9.0`
+ -  `netCDF4`
  -  `numpy`
  -  `shapely`
  -  `xarray`
+
+Instead of installing `netCDF4`, the `xarray`-package can also be installed with the `I/O`-option enabled:
+```
+$ python -m pip install "xarray[io]"
+```
+For further details, see the 
+[`xarray`-documentation](https://docs.xarray.dev/en/stable/getting-started-guide/installing.html#instructions);
+also for further details on installing `xarray`.
 
 ## Basic usage
 The basic usage of `EMMA` requires calling the `map_ecotopes()`-function:
