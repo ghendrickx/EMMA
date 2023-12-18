@@ -11,6 +11,33 @@ import typing
 _LOG = logging.getLogger(__name__)
 
 
+def export_output(output: tuple, file_name: str = None, wd: str = None) -> None:
+    """Export output data as compuated by `src.processing.map_ecotopes()`.
+
+    :param output: output data (x-coordinates, y-coordinates, ecotope-labels)
+    :param file_name: file name, defaults to None
+    :param wd: working directory, defaults to None
+
+    :type output: tuple
+    :type file_name: str
+    :type wd: str
+
+    :raise NotImplementedError: if `file_name` requested an unsupported file-type
+    """
+    assert len(output) == 3, \
+        f'Output-data should contain three (3) arrays, {len(output)} given'
+
+    # export as *.csv-file
+    if file_name is None or file_name.endswith('.csv'):
+        export2csv(*output, file_name=file_name, wd=wd)
+
+    # unsupported file-type
+    else:
+        msg = f'Currently, only exporting to a *.csv-file is supported; {file_name} not supported'
+        raise NotImplementedError(msg)
+
+
+
 def file_dir(file_name: str, wd: str = None) -> str:
     """Determine file name and directory.
 
@@ -28,7 +55,7 @@ def file_dir(file_name: str, wd: str = None) -> str:
         os.makedirs(wd, exist_ok=True)
 
     # file name contains (home) directory
-    start_dir = file_name.split(os.sep)[0]
+    start_dir = file_name.replace('\\', os.sep).replace('/', os.sep).split(os.sep)[0]
     if start_dir.endswith(':') or start_dir in ('', '~'):
         return file_name
 
@@ -60,11 +87,14 @@ def _file_name(default: str, extension: str = None) -> callable:
             wd = kwargs.pop('wd', None) or os.getcwd()
 
             # function execution
-            func(*args, file_name=file_name, wd=wd, **kwargs)
+            out = func(*args, file_name=file_name, wd=wd, **kwargs)
 
             # logging
             if not file_name.endswith('.log'):
                 _LOG.info(f'Data exported: {os.path.join(wd, file_name)}')
+
+            # return function output
+            return out
 
         # return wrapper function
         return wrapper
@@ -94,6 +124,8 @@ def _default_file_name(file_name: typing.Union[str, None], default: str, extensi
 
     if extension is None:
         extension = f'.{default.split(".")[-1]}'
+    elif extension.startswith('_'):
+        pass
     elif not extension.startswith('.'):
         extension = f'.{extension}'
 

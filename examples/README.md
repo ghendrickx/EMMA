@@ -1,18 +1,18 @@
 # EMMA: Examples
 Five examples have been included to aid in the usage of `EMMA`:
- 1. [**Basic, single-file usage.**](1_basic.py)
+ 1. [**Basic, single-file usage.**](ex1_basic.py)
     The most basic usage of `EMMA` using a single map-file.
  
- 1. [**Parallel, multi-file usage.**](2_parallel.py)
+ 1. [**Parallel, multi-file usage.**](ex2_parallel.py)
     Parallel usage of `EMMA` using multiple map-files.
  
- 1. [**Added physical data.**](3_settings.py)
+ 1. [**Added physical data.**](ex3_settings.py)
     Improved accuracy of `EMMA` by providing additional data, such as tidal characteristics.
  
- 1. [**Export output data.**](4_export.py)
+ 1. [**Export output data.**](ex4_export.py)
     Export the ecotope-map determined by `EMMA` to a `*.csv`-file.
  
- 1. [**Customising configurations.**](5_config.py)
+ 1. [**Customising configurations.**](ex5_config.py)
     Customising the configuration of the ecotope-labels and/or the keywords in the hydrodynamic output data. This means
     overwriting (part of) the configurations files (i.e., the `*.json`-files in the [`config`](../config)-folder).
     
@@ -22,7 +22,7 @@ used as a starting point for visualising the ecotope-maps.
 To work with the examples, a [dummy output-file](ex_map_data) is included in this folder. **Note** that for the
 _parallel, multi-file usage_-example, there is no enhanced computation time for single-file usage due to the 
 implementation of parallel computing, which is file-based. Nevertheless, the use-case described in 
-[_parallel, multi-file usage_](2_parallel.py) also works with a single map-file.
+[_parallel, multi-file usage_](ex2_parallel.py) also works with a single map-file.
 
 **Note** that the data in the [dummy output-file](ex_map_data) is _dummy_ data, provided to aid in familiarising with
 `EMMA`. As such, it should not be used for any official analysis and alike.
