@@ -11,10 +11,7 @@ from shapely.geometry import Point
 from config import config_file
 from src import preprocessing as pre
 
-"""Set configuration file"""
 pre.glob.MODEL_CONFIG = config_file.load_config('dfm1.json')
-
-"""pytest.fixtures"""
 
 
 @pytest.fixture
@@ -39,9 +36,6 @@ def dummy_feature():
             zes_code='Z2.222f'
         )
     )
-
-
-"""TestsClasses"""
 
 
 class TestProcessTimeSeries:
@@ -114,9 +108,6 @@ class TestProcessTimeSeries:
         output = pre.grain_size_estimation(np.array([0, 1]), c_friction=1300)
         for t, o in zip(truth, output):
             assert pytest.approx(t) == o
-
-
-# Tests for `points_in_feature()`.
 
 
 @pytest.mark.parametrize(
