@@ -29,7 +29,7 @@ jobs:
         python -m pip install -r requirements.txt
     - name: Test with pytest
       run: |
-        python -m pytest tests/
+        python -m pytest --cov=src --cov=config tests/
 
     - name: Check style with PyLint
       run: |
