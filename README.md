@@ -57,10 +57,10 @@ For further details, see the
 [`xarray`-documentation](https://docs.xarray.dev/en/stable/getting-started-guide/installing.html#instructions);
 also for further details on installing `xarray`.
 
-As of now, `EMMA` is not available via `PyPI` and can only be installed/cloned/downloaded via GitHub.
+As of now, `EMMA` is not available via `PyPI` and can only be installed via GitHub.
 
-### Install with `pip`
-`EMMA` can be installed using `pip`:
+### Install directly
+`EMMA` can be installed using `pip` directly:
  1. Activate your virtual environment (create one if not done yet, e.g., see the 
  [official documentation](https://docs.python.org/3/library/venv.html))
  1. Install `EMMA`-repository using its `HTTPS`-hyperlink:
