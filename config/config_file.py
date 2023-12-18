@@ -92,10 +92,8 @@ def _update_nested_dict(d1: dict, d2: dict) -> dict:
 
     # update dictionary
     for k, v in d2.items():
-        if isinstance(v, dict):
-            d1[k] = _update_nested_dict(d1.get(k, {}), v)
-        else:
-            d1[k] = v
+        if k in d1:
+            d1[k] = _update_nested_dict(d1[k], v) if isinstance(v, dict) else v
 
     # return updated dictionary
     return d1
