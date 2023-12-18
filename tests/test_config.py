@@ -208,6 +208,21 @@ def test_custom_map_config(key, value):
     assert MAP_CUS_CONFIG[key] == value
 
 
+# tests: failing configuration
+
+
+@pytest.mark.parametrize(
+    'user, error',
+    [
+        ('non-existing-config-file.json', FileNotFoundError),
+        (['dict', 'as', 'list'], TypeError),
+    ]
+)
+def test_config_errors(user, error):
+    with pytest.raises(error):
+        cf.load_config('emma.json', user)
+
+
 # tests: nested dictionary
 
 
