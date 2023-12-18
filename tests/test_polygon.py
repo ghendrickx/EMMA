@@ -3,30 +3,26 @@ Tests for `src/performance.py`, polygon and grid handling functions.
 
 Author: Gijs G. Hendrickx
 """
+# pylint: disable=locally-disabled, missing-function-docstring, protected-access
 import pytest
 from shapely.geometry import Point
 
 from src import performance as pf
 
-# fixture functions
-
-
-@pytest.fixture
-def dummy_feature():
-    """Create a representative feature for testing."""
-    return dict(
-        geometry=dict(
-            coordinates=[[
-                [0, 0],
-                [0, 5],
-                [5, 5],
-                [5, 0]
-            ]]
-        ),
-        properties=dict(
-            zes_code='Z2.222f'
-        )
+# dummy feature
+FEATURE = dict(
+    geometry=dict(
+        coordinates=[[
+            [0, 0],
+            [0, 5],
+            [5, 5],
+            [5, 0]
+        ]]
+    ),
+    properties=dict(
+        zes_code='Z2.222f'
     )
+)
 
 
 # tests
@@ -41,13 +37,13 @@ def dummy_feature():
         ([Point(2, 2), Point(7, 7)], 1)
     ]
 )
-def test_point_in_feature(dummy_feature, points, length):
-    out = pf.points_in_feature(dummy_feature, points)
+def test_point_in_feature(points, length):
+    out = pf.points_in_feature(FEATURE, points)
     assert len(out) == length
 
 
-def test_assign_zes_code(dummy_feature):
-    out = pf.points_in_feature(dummy_feature, [Point(1, 1), Point(2, 2), Point(3, 3)])
+def test_assign_zes_code():
+    out = pf.points_in_feature(FEATURE, [Point(1, 1), Point(2, 2), Point(3, 3)])
     assert all(v == 'Z2.222f' for v in out.values())
 
 
@@ -58,6 +54,6 @@ def test_assign_zes_code(dummy_feature):
         ([Point(7, 7)], 0)
     ]
 )
-def test_quick_check(dummy_feature, point, length):
-    out = pf.points_in_feature(dummy_feature, point, quick_check=True)
+def test_quick_check(point, length):
+    out = pf.points_in_feature(FEATURE, point, quick_check=True)
     assert len(out) == length

@@ -3,6 +3,7 @@ Tests for `src/labelling.py`.
 
 Author: Gijs G. Hendrickx
 """
+# pylint: disable=locally-disabled, missing-function-docstring, protected-access
 import pytest
 
 from config import config_file

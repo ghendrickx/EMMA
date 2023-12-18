@@ -178,7 +178,7 @@ class MapData:
         """
         return None
 
-    """partition handler"""
+    # partition handler"
 
     @property
     def i_domain(self) -> typing.Union[np.ndarray, None]:
@@ -192,10 +192,10 @@ class MapData:
         :raise NotImplementedError: if `map_format` is unknown
         """
         if self._map_format is None:
-            return
-        elif self._map_format == 'dfm1':
+            return None
+        if self._map_format == 'dfm1':
             return self.data['FlowElemDomain'].to_masked_array()
-        elif self._map_format == 'dfm4':
+        if self._map_format == 'dfm4':
             return self.data['mesh2d_flowelem_domain'].to_masked_array()
         raise NotImplementedError(f'No implementation for `map_format={self._map_format}`')
 
@@ -209,6 +209,7 @@ class MapData:
         i = str(self.file.split('_')[-2])
         if i.isnumeric():
             return int(i)
+        return None
 
     def partition_handler(self, data: np.ndarray) -> np.ndarray:
         """Process data to remove ghost cells present as a result
@@ -218,7 +219,7 @@ class MapData:
         """
         if self.i_partition is not None:
             i_not_ghost = np.flatnonzero(self.i_domain == self.i_partition)
-            return data.take(i_not_ghost, axis=(len(data.shape) - 1))
+            return data.take(i_not_ghost, axis=len(data.shape) - 1)
 
         return data
 

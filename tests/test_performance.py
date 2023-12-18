@@ -3,6 +3,7 @@ Tests for `src/performance.py`, `Comparison`-object.
 
 Author: Gijs G. Hendrickx
 """
+# pylint: disable=locally-disabled, missing-function-docstring, protected-access
 import pytest
 
 from src import performance as pf

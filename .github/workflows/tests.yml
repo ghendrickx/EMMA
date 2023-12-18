@@ -33,4 +33,4 @@ jobs:
 
     - name: Check style with PyLint
       run: |
-        python -m pylint --reports=y src
+        python -m pylint --reports=y .

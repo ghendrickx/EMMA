@@ -3,6 +3,7 @@ Tests for `config/config_file.py`.
 
 Author: Gijs G. Hendrickx
 """
+# pylint: disable=locally-disabled, missing-function-docstring, protected-access
 import functools
 
 import pytest

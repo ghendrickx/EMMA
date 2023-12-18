@@ -29,7 +29,7 @@ def load_config(f_default: str, f_user: typing.Union[str, dict] = None, wd: str 
     :rtype: dict
     """
     # load default configuration
-    with open(os.path.join(os.path.dirname(__file__), f_default)) as f:
+    with open(os.path.join(os.path.dirname(__file__), f_default), mode='r') as f:
         default = json.load(f)
 
     # no user-defined configuration
@@ -38,14 +38,14 @@ def load_config(f_default: str, f_user: typing.Union[str, dict] = None, wd: str 
         return default
 
     # built-in configurations
-    elif f_user in ('emma.json', 'zes1.json', 'dfm1.json', 'dfm4.json'):
+    if f_user in ('emma.json', 'zes1.json', 'dfm1.json', 'dfm4.json'):
         with open(os.path.join(os.path.dirname(__file__), f_user), mode='r') as f:
             built_in = json.load(f)
         _LOG.info(f'Built-in configuration used: {f_user}')
         return built_in
 
     # custom (partial) configuration
-    elif isinstance(f_user, str):
+    if isinstance(f_user, str):
         wd = wd or os.getcwd()
         file = os.path.join(wd, f_user)
         with open(file, mode='r') as f:

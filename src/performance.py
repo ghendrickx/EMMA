@@ -7,9 +7,9 @@ import functools
 import json
 import logging
 import multiprocessing as mp
+import typing
 
 import numpy as np
-import typing
 
 from shapely import geometry
 
@@ -109,7 +109,7 @@ class Comparison:
             level = 6
 
         # check validity `level`-argument
-        if specific_label and not (0 <= level <= 5):
+        if specific_label and (not 0 <= level <= 5):
             msg = f'Ecotope-labels consists of six (6) items; ' \
                 f'specific label comparison at index {level} is out of range'
             raise ValueError(msg)
@@ -148,7 +148,7 @@ class Comparison:
             result = np.all((data[:, :level] == model[:, :level]) | (data[:, :level] == wild_card), axis=1)
 
         # return spatial performance
-        return {k: v for k, v in zip(xy, result)}
+        return dict(zip(xy, result))
 
 
 def csv2grid(file: str) -> glob.TypeXYLabel:
@@ -206,33 +206,9 @@ def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], 
     # initiate output
     result = dict()
 
-    # skip if none of the grid points is within the polygon
-    if quick_check:
-        # grid coordinates
-        grid_x = np.array([p.x for p in points])
-        grid_y = np.array([p.y for p in points])
-
-        # loop over polygons
-        grid_in_polygon = False
-        for polygon in polygons:
-            if len(polygon[0]) == 2:
-                # polygon definition
-                x, y = zip(*polygon)
-            else:
-                # multi-polygon definition
-                _polygon = []
-                for sub_polygon in polygon:
-                    _polygon.extend(sub_polygon)
-                x, y = zip(*_polygon)
-
-            # any grid-point in square-shaped polygon
-            if np.any(((grid_x > min(x)) & (grid_x < max(x))) & ((grid_y > min(y)) & (grid_y < max(y)))):
-                grid_in_polygon = True
-                break
-
-        # return empty dict if no grid-point in square-shaped polygon
-        if not grid_in_polygon:
-            return result
+    # skip if none of the grid points is within the squared polygon
+    if quick_check and not _quick_pif(points, polygons):
+        return result
 
     # extract ecotope-label
     label = feature['properties']['zes_code']
@@ -254,6 +230,37 @@ def points_in_feature(feature: dict, points: typing.Collection[geometry.Point], 
 
     # return labeled feature
     return result
+
+
+def _quick_pif(points: typing.Collection[geometry.Point], polygons: list) -> bool:
+    """Perform a quick check whether the grid-points are within the polygon by squaring the polygon.
+
+    :param points: grid-points from the hydrodynamic model as a collection of `shapely.geometry.Point`-objects
+    :param polygons: polygon-definitions
+
+    :type points: collection[shapely.geometry.Point]
+    :type polygons: list
+
+    :return: quick-check
+    :rtype: bool
+    """
+    # grid coordinates
+    grid_x = np.array([p.x for p in points])
+    grid_y = np.array([p.y for p in points])
+
+    # loop over polygons
+    grid_in_polygon = False
+    for polygon in polygons:
+        if len(polygon[0]) > 2:
+            polygon = sum(lst for lst in polygon)
+        x, y = zip(*polygon)
+
+        # any grid-point in square shaped polygon
+        if np.any(((grid_x > min(x)) & (grid_x < max(x))) & ((grid_y > min(y)) & (grid_y < max(y)))):
+            grid_in_polygon = True
+            break
+
+    return grid_in_polygon
 
 
 def polygons2grid(f_polygons: str, f_grid: str = None, grid: glob.TypeXY = None, **kwargs) -> glob.TypeXYLabel:
@@ -285,7 +292,7 @@ def polygons2grid(f_polygons: str, f_grid: str = None, grid: glob.TypeXY = None,
     _LOG.debug(f'Quick-check executed: {quick_check}')
 
     # either `f_grid` or `grid` must be defined
-    if not (bool(f_grid) ^ bool(grid)):
+    if not bool(f_grid) ^ bool(grid):
         msg = f'Either `f_grid` or `grid` must be defined: `f_grid={f_grid}` and `grid={grid}`'
         raise ValueError(msg)
 
@@ -318,7 +325,4 @@ def polygons2grid(f_polygons: str, f_grid: str = None, grid: glob.TypeXY = None,
             lst_results = p.map(functools.partial(points_in_feature, points=points, **kwargs), features)
 
     # compress results
-    result = {k: v for d in lst_results for k, v in d.items()}
-
-    # return results
-    return result
+    return {k: v for d in lst_results for k, v in d.items()}

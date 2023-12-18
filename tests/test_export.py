@@ -3,6 +3,7 @@ Tests for `src/export.py`.
 
 Author: Gijs G. Hendrickx
 """
+# pylint: disable=locally-disabled, missing-function-docstring, protected-access
 import os
 
 import pytest

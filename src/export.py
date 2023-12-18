@@ -11,6 +11,33 @@ import typing
 _LOG = logging.getLogger(__name__)
 
 
+def export_output(output: tuple, file_name: str = None, wd: str = None) -> None:
+    """Export output data as compuated by `src.processing.map_ecotopes()`.
+
+    :param output: output data (x-coordinates, y-coordinates, ecotope-labels)
+    :param file_name: file name, defaults to None
+    :param wd: working directory, defaults to None
+
+    :type output: tuple
+    :type file_name: str
+    :type wd: str
+
+    :raise NotImplementedError: if `file_name` requested an unsupported file-type
+    """
+    assert len(output) == 3, \
+        f'Output-data should contain three (3) arrays, {len(output)} given'
+
+    # export as *.csv-file
+    if file_name is None or file_name.endswith('.csv'):
+        export2csv(*output, file_name=file_name, wd=wd)
+
+    # unsupported file-type
+    else:
+        msg = f'Currently, only exporting to a *.csv-file is supported; {file_name} not supported'
+        raise NotImplementedError(msg)
+
+
+
 def file_dir(file_name: str, wd: str = None) -> str:
     """Determine file name and directory.
 
