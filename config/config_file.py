@@ -7,18 +7,22 @@ import json
 import logging
 import os
 
+import typing
+
 _LOG = logging.getLogger(__name__)
 
 
-def load_config(f_default: str, f_user: str = None, wd: str = None) -> dict:
+def load_config(f_default: str, f_user: typing.Union[str, dict] = None, wd: str = None) -> dict:
     """Load the default configuration file and update with values from a user-defined configuration file, if applicable.
+    The user-defined configuration can also be provided as a dictionary in which case the user must make sure to match
+    the keywords of the dictionary with the keywords of the configuration file.
 
     :param f_default: default configuration file name
-    :param f_user: user-defined configuration file name, defaults to None
+    :param f_user: user-defined configuration (file name), defaults to None
     :param wd: working directory, defaults to None
 
     :type f_default: str
-    :type f_user: str, optional
+    :type f_user: str, dict, optional
     :type wd: str, optional
 
     :return: configuration
@@ -41,7 +45,7 @@ def load_config(f_default: str, f_user: str = None, wd: str = None) -> dict:
         return built_in
 
     # custom (partial) configuration
-    else:
+    elif isinstance(f_user, str):
         wd = wd or os.getcwd()
         file = os.path.join(wd, f_user)
         try:
