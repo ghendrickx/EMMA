@@ -33,7 +33,7 @@ When using this repository, please cite accordingly:
 >   Hendrickx, G.G., and 
     Brunink, S. 
     (2023). 
-    EMMA: Ecotope-map maker based on abiotics.
+    EMMA: Ecotope-Map Maker based on Abiotics.
     4TU.ResearchData.
     Software.
     doi: [10.4121/0100fc5a-a99c-4002-9864-3faade3899e3](https://doi.org/10.4121/0100fc5a-a99c-4002-9864-3faade3899e3).
@@ -57,12 +57,16 @@ For further details, see the
 [`xarray`-documentation](https://docs.xarray.dev/en/stable/getting-started-guide/installing.html#instructions);
 also for further details on installing `xarray`.
 
-As of now, `EMMA` is not available via `PyPI` and can only be installed via GitHub.
+As of now, `EMMA` is not available via `PyPI` and can only be installed via `GitHub`. Below, there are three ways 
+presented on how to install `EMMA` via `GitHub`. All these methods require you to have your virtual environment 
+activated. If you have no virtual environment yet, consider creating one 
+([official documentation](https://docs.python.org/3/library/venv.html)):
+```
+python3 -m venv <venv>
+```
 
 ### Install directly
 `EMMA` can be installed using `pip` directly:
- 1. Activate your virtual environment (create one if not done yet, e.g., see the 
- [official documentation](https://docs.python.org/3/library/venv.html))
  1. Install `EMMA`-repository using its `HTTPS`-hyperlink:
     ```
     python3 -m pip install git+https://github.com/ghendrickx/EMMA.git
@@ -74,12 +78,16 @@ As of now, `EMMA` is not available via `PyPI` and can only be installed via GitH
 (note that you need to have `git` on your computer):
  1. Open the command-line (or `Git Bash` on Windows), and change the directory to the desired location (using `cd`)
  1. Clone the repository by typing `git clone` followed by `EMMA`'s `HTTPS`-hyperlink:
-    ```commandline
+    ```
     git clone https://github.com/ghendrickx/EMMA.git
     ```
  1. Locally install `EMMA`:
-    ```commandline
+    ```
     python3 -m pip install .
+    ```
+    Or, when storing `EMMA` at a different location from the virtual environment:
+    ```
+    python3 -m pip install /path/to/EMMA
     ```
 
 ### Download `ZIP`
@@ -87,9 +95,14 @@ As of now, `EMMA` is not available via `PyPI` and can only be installed via GitH
  1. Click on the `Code`-button on the [main page](https://github.com/ghendrickx/EMMA) and choose the 
  `Download ZIP`-option
  1. Check your `Downloads`-folder and extract the downloaded `ZIP`-file (`EMMA-master.zip`)
+ 1. Move the repository-folder to the desired location [optional]
  1. Locally install `EMMA`:
-    ```commandline
+    ```
     python3 -m pip install .
+    ```
+    Or, when storing `EMMA` at a different location from the virtual environment:
+    ```
+    python3 -m pip install /path/to/EMMA
     ```
 
 
