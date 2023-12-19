@@ -75,6 +75,7 @@ def test_hydrodynamics_label(velocity, depth1, label):
     assert out.lower() == str(label)
 
 
+# pylint: disable=too-many-arguments
 @pytest.mark.parametrize(
     'sub1, depth1, depth, inundated, frequency, label',
     [

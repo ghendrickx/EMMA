@@ -33,7 +33,7 @@ When using this repository, please cite accordingly:
 >   Hendrickx, G.G., and 
     Brunink, S. 
     (2023). 
-    EMMA: Ecotope-map maker based on abiotics.
+    EMMA: Ecotope-Map Maker based on Abiotics.
     4TU.ResearchData.
     Software.
     doi: [10.4121/0100fc5a-a99c-4002-9864-3faade3899e3](https://doi.org/10.4121/0100fc5a-a99c-4002-9864-3faade3899e3).
@@ -41,7 +41,7 @@ When using this repository, please cite accordingly:
 ## License
 This repository is licensed under [`Apache License 2.0`](LICENSE).
 
-## Requirements
+## Installation
 This repository has the following requirements (see also [`requirements.txt`](requirements.txt)):
  -  `Python>=3.9.0`
  -  `netCDF4`
@@ -57,6 +57,55 @@ For further details, see the
 [`xarray`-documentation](https://docs.xarray.dev/en/stable/getting-started-guide/installing.html#instructions);
 also for further details on installing `xarray`.
 
+As of now, `EMMA` is not available via `PyPI` and can only be installed via `GitHub`. Below, there are three ways 
+presented on how to install `EMMA` via `GitHub`. All these methods require you to have your virtual environment 
+activated. If you have no virtual environment yet, consider creating one 
+([official documentation](https://docs.python.org/3/library/venv.html)):
+```
+python3 -m venv <venv>
+```
+
+### Install directly
+`EMMA` can be installed using `pip` directly:
+ 1. Install `EMMA`-repository using its `HTTPS`-hyperlink:
+    ```
+    python3 -m pip install git+https://github.com/ghendrickx/EMMA.git
+    ```
+
+### Clone repository
+`EMMA` can be cloned according to the 
+[`GitHub`-instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+(note that you need to have `git` on your computer):
+ 1. Open the command-line (or `Git Bash` on Windows), and change the directory to the desired location (using `cd`)
+ 1. Clone the repository by typing `git clone` followed by `EMMA`'s `HTTPS`-hyperlink:
+    ```
+    git clone https://github.com/ghendrickx/EMMA.git
+    ```
+ 1. Locally install `EMMA`:
+    ```
+    python3 -m pip install .
+    ```
+    Or, when storing `EMMA` at a different location from the virtual environment:
+    ```
+    python3 -m pip install /path/to/EMMA
+    ```
+
+### Download `ZIP`
+`EMMA` can be downloaded as a `ZIP`-file and unpacked locally:
+ 1. Click on the `Code`-button on the [main page](https://github.com/ghendrickx/EMMA) and choose the 
+ `Download ZIP`-option
+ 1. Check your `Downloads`-folder and extract the downloaded `ZIP`-file (`EMMA-master.zip`)
+ 1. Move the repository-folder to the desired location [optional]
+ 1. Locally install `EMMA`:
+    ```
+    python3 -m pip install .
+    ```
+    Or, when storing `EMMA` at a different location from the virtual environment:
+    ```
+    python3 -m pip install /path/to/EMMA
+    ```
+
+
 ## Basic usage
 The basic usage of `EMMA` requires calling the `map_ecotopes()`-function:
 ```python
@@ -64,9 +113,9 @@ from src.processing import map_ecotopes
 
 results = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/directory>')
 ```
-By default, `EMMA` expects the relevant hydrodynamic variables to be named as given by [`dfm4.json`](config/dfm4.json). 
+By default, `EMMA` expects the relevant hydrodynamic variables to be named as given by [`dfm1.json`](config/dfm1.json). 
 In case these key-words differ in the provided `netCDF`-file (dependent on the hydrodynamic modelling software used), 
-provide a custom (partially overwriting) `*.json`-file with the same key-words as in [`dfm4.json`](config/dfm4.json); 
+provide a custom (partially overwriting) `*.json`-file with the same key-words as in [`dfm1.json`](config/dfm1.json); 
 see the [`config`](config)-folder for an elaborate explanation on how to customise the configuration of `EMMA`.
 
 In the [`examples`](examples)-folder, a collection of examples are provided on how to use `EMMA` including some of her 
