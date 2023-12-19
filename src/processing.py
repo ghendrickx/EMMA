@@ -7,9 +7,9 @@ import functools
 import logging
 import multiprocessing as mp
 import time
+import typing
 
 import numpy as np
-import typing
 
 from config import config_file
 from src import \
@@ -51,7 +51,6 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[glob.TypeXYLabel, tuple,
 
     :raise ValueError: if `return_ecotopes` is neither a boolean, nor in {'dict', 'tuple'}
     :raise ValueError: if `substratum_1` not in {None, 'soft', 'hard'}
-    :raise NotImplementedError: if `f_export` requested an unsupported file-type
     """
     # start time
     t0 = time.perf_counter()
@@ -84,7 +83,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[glob.TypeXYLabel, tuple,
     # extract model data
     if n_files == 1:
         # single `*_map.nc`-file
-        x_coordinates, y_coordinates, ecotopes = __determine_ecotopes(f_map[0], init_log=False, **kwargs)
+        output = __determine_ecotopes(f_map[0], init_log=False, **kwargs)
 
     else:
         # multiple `*_map.nc`-files
@@ -103,7 +102,7 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[glob.TypeXYLabel, tuple,
             results = [__determine_ecotopes(f, init_log=False, **kwargs) for f in f_map]
 
         # concatenate output data
-        x_coordinates, y_coordinates, ecotopes = [np.concatenate(arrays) for arrays in zip(*results)]
+        output = [np.concatenate(arrays) for arrays in zip(*results)]
 
     # export ecotope-data
     if f_export:
@@ -111,14 +110,8 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[glob.TypeXYLabel, tuple,
         if isinstance(f_export, bool):
             f_export = None
 
-        # export as *.csv-file
-        if f_export is None or f_export.endswith('.csv'):
-            exp.export2csv(x_coordinates, y_coordinates, ecotopes, file_name=f_export, wd=wd_export)
-
-        # unsupported file-type
-        else:
-            msg = f'Currently, only exporting to a *.csv-file is supported; {f_export} not supported'
-            raise NotImplementedError(msg)
+        # export output
+        exp.export_output(output, file_name=f_export, wd=wd_export)
 
     # computation time
     t1 = time.perf_counter()
@@ -127,10 +120,12 @@ def map_ecotopes(*f_map: str, **kwargs) -> typing.Union[glob.TypeXYLabel, tuple,
     # return ecotope-map (optional)
     # > as dictionary
     if return_ecotopes == 'dict':
-        return convert2dict(x_coordinates, y_coordinates, ecotopes)
+        return convert2dict(*output)
     # > as tuple of arrays
-    elif return_ecotopes == 'tuple':
-        return x_coordinates, y_coordinates, ecotopes
+    if return_ecotopes == 'tuple':
+        return output
+    # > empty
+    return None
 
 
 def __log_config(part_id: int = None, **kwargs) -> None:
@@ -169,6 +164,7 @@ def __log_config(part_id: int = None, **kwargs) -> None:
         logging.basicConfig(level=log_level.upper())
 
 
+# TODO: Split in components that can be tested
 def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Map ecotopes from hydrodynamic model data.
 
@@ -268,10 +264,10 @@ def __determine_ecotopes(file_name: str, **kwargs) -> typing.Tuple[np.ndarray, n
     # > ecotope configuration
     glob.LABEL_CONFIG = config_file.load_config('emma.json', eco_config, wd_config)
     # > map configuration
-    glob.MODEL_CONFIG = config_file.load_config('dfm4.json', map_config, wd_config)
+    glob.MODEL_CONFIG = config_file.load_config('dfm1.json', map_config, wd_config)
 
     # extract model data
-    map_format = (map_config or 'dfm4.json')[:-5]
+    map_format = (map_config or 'dfm1.json')[:-5]
     with pre.MapData(file_name, wd=wd, map_format=map_format) as data:
         x_coordinates = data.x_coordinates
         y_coordinates = data.y_coordinates
@@ -353,7 +349,7 @@ def convert2tuple(xy_labels: glob.TypeXYLabel) -> typing.Tuple[np.ndarray, np.nd
     y = np.array(y, dtype=float)
 
     # extract ecotope-labels
-    ecotope = np.array(xy_labels.values(), dtype=str)
+    ecotope = np.array([*xy_labels.values()], dtype=str)
 
     # return arrays
     return x, y, ecotope

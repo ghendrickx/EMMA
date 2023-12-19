@@ -3,36 +3,35 @@ EMMA: Ecotope map maker based on abiotic characteristics
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.md', mode='r') as f:
     long_description = f.read()
 
 setup(
     name='EMMA',
-    version='1.0',
+    version='1.1',
     authors=[
-        'Soesja Brunink',
         'Gijs G. Hendrickx',
+        'Soesja Brunink',
     ],
     author_email='G.G.Hendrickx@tudelft.nl',
-    description='Ecotope map maker based on abiotic characteristics',
+    description='Ecotope-Map Maker based on Abiotics',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    packages=[
-        'config', 'examples', 'src'
-    ],
+    packages=find_packages(),
     license='Apache-2.0',
-    keywords=[],
+    keywords=['ecology', 'ecotope', 'estuary', 'hydrodynamics'],
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
     ],
     install_requires=[
-        'numpy',
         'netCDF4',
+        'numpy',
         'shapely',
+        'xarray',
     ],
-    python_requires='>=3.7'
+    python_requires='>=3.9'
 )
