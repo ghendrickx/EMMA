@@ -51,7 +51,7 @@ This repository has the following requirements (see also [`requirements.txt`](re
 
 Instead of installing `netCDF4`, the `xarray`-package can also be installed with the `I/O`-option enabled:
 ```
-$ python -m pip install "xarray[io]"
+python3 -m pip install "xarray[io]"
 ```
 For further details, see the 
 [`xarray`-documentation](https://docs.xarray.dev/en/stable/getting-started-guide/installing.html#instructions);
