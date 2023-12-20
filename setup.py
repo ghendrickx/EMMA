@@ -19,7 +19,8 @@ setup(
     description='Ecotope-Map Maker based on Abiotics',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    packages=find_packages(),
+    download_url='https://github.com/ghendrickx/EMMA',
+    packages=find_packages(exclude='tests'),
     license='Apache-2.0',
     keywords=['ecology', 'ecotope', 'estuary', 'hydrodynamics'],
     classifiers=[
@@ -33,5 +34,5 @@ setup(
         'shapely',
         'xarray',
     ],
-    python_requires='>=3.9'
+    python_requires='>=3.9',
 )
