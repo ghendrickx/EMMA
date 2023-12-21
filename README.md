@@ -1,15 +1,15 @@
 ![Tests](https://github.com/ghendrickx/EMMA/actions/workflows/tests.yml/badge.svg)
 
 # EMMA
-The _Ecotope Map Maker based on Abiotics_ (EMMA) facilitates the translation from hydrodynamic model output data to 
+The _Ecotope-Map Maker based on Abiotics_ (EMMA) facilitates the translation from hydrodynamic model output data to 
 ecotope maps. _Ecotopes_ are ecological units that are defined by abiotic, biotic, and anthropogenic local conditions.
 An _ecotope_ is a more-or-less homogeneous natural unit. In many instances, the word _habitat_ is used where here the 
 word _ecotope_ is used, as _habitat_ originally refers to the living environment of a single species, while _ecotope_ 
 refers to an ecosystem as it can be mapped.
 
-This simple `python`-interface allows to map ecotopes (or habitats) based on the abiotic output from an hydrodynamic 
-model. It does so by a modified version of the [ZES.1](https://edepot.wur.nl/174540) classification system. The
-hydrodynamic model must contain the following three hydrodynamic parameters:
+This simple `python`-interface allows to map aquatic ecotopes (or habitats) based on the abiotic output from an 
+hydrodynamic model. It does so by a modified version of the [ZES.1](https://edepot.wur.nl/174540) classification system. 
+The hydrodynamic model must contain the following three hydrodynamic parameters:
  1. water depth (or, bottom and water level);
  1. flow velocity; and
  1. salinity.
