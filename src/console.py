@@ -116,13 +116,6 @@ def compare(
     sys.exit(1)
 
 
-@app_emma.command(name='license', help='print license of EMMA')
-def license() -> None:
-    """Print the full license of EMMA to the screen (Apache-2.0)."""
-    with open(os.path.join(os.path.dirname(__file__)[:-3], 'LICENSE'), mode='r') as f:
-        print(f.read())
-
-
 if __name__ == '__main__':
     # Execute the EMMA-application.
     app_emma()
