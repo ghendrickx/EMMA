@@ -114,6 +114,14 @@ from src.processing import map_ecotopes
 
 results = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/directory>')
 ```
+There is also the option to use `EMMA` from the command line directly:
+```commandline
+emma run hydrodynamic_output_data_file.nc --wd working/directory
+```
+**Note** that the latter usage provides limited customisation. Call for the included features:
+```commandline
+emma run --help
+```
 By default, `EMMA` expects the relevant hydrodynamic variables to be named as given by [`dfm1.json`](config/dfm1.json). 
 In case these key-words differ in the provided `netCDF`-file (dependent on the hydrodynamic modelling software used), 
 provide a custom (partially overwriting) `*.json`-file with the same key-words as in [`dfm1.json`](config/dfm1.json); 
@@ -123,3 +131,4 @@ In the [`examples`](examples)-folder, a collection of examples are provided on h
 additional features. A [dummy output-file](examples/ex_map_data) is added that can be used to test the examples. For the
 examples, there is also an additional [`README`](examples/README.md) in the [`examples`](examples)-folder to provide
 some background to the examples, where needed.
+**Note** that these examples all make use of the `Python`-based execution of `EMMA`.
