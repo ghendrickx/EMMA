@@ -47,6 +47,7 @@ This repository has the following requirements (see also [`requirements.txt`](re
  -  `netCDF4`
  -  `numpy`
  -  `shapely`
+ -  `typer`
  -  `xarray`
 
 Instead of installing `netCDF4`, the `xarray`-package can also be installed with the `I/O`-option enabled:

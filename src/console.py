@@ -3,7 +3,6 @@ Run EMMA from the command-line.
 
 Author: Gijs G. Hendrickx
 """
-import os
 import sys
 import typing
 

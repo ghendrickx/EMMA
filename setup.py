@@ -32,6 +32,7 @@ setup(
         'netCDF4',
         'numpy',
         'shapely',
+        'typer',
         'xarray',
     ],
     entry_points={
