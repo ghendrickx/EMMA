@@ -47,14 +47,19 @@ def __print_statements() -> None:
     )
 
 
+# noinspection PyUnresolvedReferences
 @app_emma.command(name='run', help='execution of EMMA with customisation of the basic optional arguments')
 def run(
         map_files: te.Annotated[typing.List[str], typer.Argument(help='hydrodynamic output map-file(s)')],
         export: te.Annotated[bool, typer.Option(help='export model data to [wd]')] = True,
         f_eco_config: te.Annotated[str, typer.Option(help='ecotope configuration file')] = 'emma.json',
         f_map_config: te.Annotated[str, typer.Option(help='map configuration file')] = 'dfm1.json',
-        log: te.Annotated[str, typer.Option(callback=__log_levels, help='level of log statements')] = 'WARNING',
-        n_cores: te.Annotated[int, typer.Option(min=1, help='number of cores for parallel computations')] = 1,
+        log: te.Annotated[str, typer.Option(
+            '--log', '-l', autocompletion=__log_levels, callback=__log_levels, help='level of log statements'
+        )] = 'WARNING',
+        n_cores: te.Annotated[int, typer.Option(
+            '--cores', '-n', min=1, help='number of cores for parallel computation'
+        )] = 1,
         wd: te.Annotated[str, typer.Option(help='working directory')] = None,
 ) -> None:
     """Run EMMA with limited modifications from the command-line. For the full spectrum of customisation, EMMA should be
