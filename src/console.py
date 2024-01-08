@@ -120,7 +120,7 @@ def compare(
 def license() -> None:
     """Print the full license of EMMA to the screen (Apache-2.0)."""
     with open(os.path.join(os.path.dirname(__file__)[:-3], 'LICENSE'), mode='r') as f:
-        print(''.join(f.readlines()))
+        print(f.read())
 
 
 if __name__ == '__main__':
