@@ -19,11 +19,11 @@ grouped in the [examples](examples)-folder.
 
 ## Authors
 Gijs G. Hendrickx 
-[![alt text](https://camo.githubusercontent.com/e1ec0e2167b22db46b0a5d60525c3e4a4f879590a04c370fef77e6a7e00eb234/68747470733a2f2f696e666f2e6f726369642e6f72672f77702d636f6e74656e742f75706c6f6164732f323031392f31312f6f726369645f31367831362e706e67) 0000-0001-9523-7657](https://orcid.org/0000-0001-9523-7657)
+[<img src=https://info.orcid.org/wp-content/uploads/2020/12/orcid_16x16.gif alt="ORCiD" width="16" height="16">](https://orcid.org/0000-0001-9523-7657)
 (Delft University of Technology).
 
 Soesja Brunink
-[![alt text](https://camo.githubusercontent.com/e1ec0e2167b22db46b0a5d60525c3e4a4f879590a04c370fef77e6a7e00eb234/68747470733a2f2f696e666f2e6f726369642e6f72672f77702d636f6e74656e742f75706c6f6164732f323031392f31312f6f726369645f31367831362e706e67) 0009-0007-4626-8909](https://orcid.org/0009-0007-4626-8909) 
+[<img src=https://info.orcid.org/wp-content/uploads/2020/12/orcid_16x16.gif alt="ORCiD" width="16" height="16">](https://orcid.org/0009-0007-4626-8909) 
 (Arcadis).
 
 Contact: [G.G.Hendrickx@tudelft.nl](mailto:G.G.Hendrickx@tudelft.nl?subject=[GitHub]%20EMMA:%20).
@@ -47,6 +47,7 @@ This repository has the following requirements (see also [`requirements.txt`](re
  -  `netCDF4`
  -  `numpy`
  -  `shapely`
+ -  `typer`
  -  `xarray`
 
 Instead of installing `netCDF4`, the `xarray`-package can also be installed with the `I/O`-option enabled:
@@ -113,6 +114,14 @@ from src.processing import map_ecotopes
 
 results = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/directory>')
 ```
+There is also the option to use `EMMA` from the command line directly:
+```commandline
+emma run hydrodynamic_output_data_file.nc --wd working/directory
+```
+**Note** that the latter usage provides limited customisation. Call for the included features:
+```commandline
+emma run --help
+```
 By default, `EMMA` expects the relevant hydrodynamic variables to be named as given by [`dfm1.json`](config/dfm1.json). 
 In case these key-words differ in the provided `netCDF`-file (dependent on the hydrodynamic modelling software used), 
 provide a custom (partially overwriting) `*.json`-file with the same key-words as in [`dfm1.json`](config/dfm1.json); 
@@ -122,3 +131,4 @@ In the [`examples`](examples)-folder, a collection of examples are provided on h
 additional features. A [dummy output-file](examples/ex_map_data) is added that can be used to test the examples. For the
 examples, there is also an additional [`README`](examples/README.md) in the [`examples`](examples)-folder to provide
 some background to the examples, where needed.
+**Note** that these examples all make use of the `Python`-based execution of `EMMA`.

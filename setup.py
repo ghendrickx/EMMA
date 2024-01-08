@@ -32,7 +32,13 @@ setup(
         'netCDF4',
         'numpy',
         'shapely',
+        'typer',
         'xarray',
     ],
+    entry_points={
+        'console_scripts': [
+            'emma = src.console:app_emma',
+        ]
+    },
     python_requires='>=3.9',
 )
