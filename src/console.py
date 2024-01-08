@@ -10,7 +10,7 @@ import typing_extensions as te
 
 from src import processing
 
-APP = typer.Typer()
+app_emma = typer.Typer()
 
 
 def __log_levels(log: str) -> str:
@@ -35,7 +35,7 @@ def __log_levels(log: str) -> str:
     return log
 
 
-@APP.command(name='run', help='execution of EMMA with customisation of the basic optional arguments')
+@app_emma.command(name='run', help='execution of EMMA with customisation of the basic optional arguments')
 def run(
         map_files: te.Annotated[typing.List[str], typer.Argument(help='hydrodynamic output map-file(s)')],
         export: te.Annotated[bool, typer.Option(help='export model data to [wd]')] = True,
@@ -79,7 +79,7 @@ def run(
     )
 
 
-@APP.command(name='compare', help='compare EMMA predictions to existing ecotope-maps')
+@app_emma.command(name='compare', help='compare EMMA predictions to existing ecotope-maps')
 def compare(
         map_files: te.Annotated[typing.List[str], typer.Argument(help='hydrodynamic output map-file(s)')],
         f_ecotopes: te.Annotated[str, typer.Argument(help='file with ecotope polygon data')],
@@ -102,4 +102,4 @@ def compare(
 
 
 if __name__ == '__main__':
-    APP()
+    app_emma()
