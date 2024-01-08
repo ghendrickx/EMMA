@@ -4,6 +4,7 @@ Run EMMA from the command-line.
 Author: Gijs G. Hendrickx
 """
 import os
+import sys
 import typing
 
 import typer
@@ -11,6 +12,7 @@ import typing_extensions as te
 
 from src import processing
 
+# EMMA-application
 app_emma = typer.Typer()
 
 
@@ -106,20 +108,21 @@ def compare(
     :type map_files: list[str]
     :type f_ecotopes: str
     :type wd: str, optional
-
-    :raise NotImplementedError: function not yet implemented as console-accessible call
     """
     __print_statements()
-    msg = f'The compare function is not yet implemented (map_files={map_files}, f_ecotopes={f_ecotopes}, wd={wd})'
-    raise NotImplementedError(msg)
+    print(
+        f'The compare function is not yet implemented.\n'
+    )
+    sys.exit(1)
 
 
 @app_emma.command(name='license', help='print license of EMMA')
 def license() -> None:
-    """Print the full license of EMMA to the screen."""
+    """Print the full license of EMMA to the screen (Apache-2.0)."""
     with open(os.path.join(os.path.dirname(__file__)[:-3], 'LICENSE'), mode='r') as f:
         print(''.join(f.readlines()))
 
 
 if __name__ == '__main__':
+    # Execute the EMMA-application.
     app_emma()
