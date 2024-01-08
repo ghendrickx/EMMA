@@ -3,6 +3,7 @@ Run EMMA from the command-line.
 
 Author: Gijs G. Hendrickx
 """
+import os
 import typing
 
 import typer
@@ -35,6 +36,16 @@ def __log_levels(log: str) -> str:
     return log
 
 
+def __print_statements() -> None:
+    """Print copyright-statements."""
+    print(
+        'EMMA  Copyright (c)  EMMA development team\n'
+        'This program comes with NO WARRANTY.\n'
+        'This is free software, and you are welcome to use and redistribute it\n'
+        'under the conditions as specified in the license; see LICENSE\n'
+    )
+
+
 @app_emma.command(name='run', help='execution of EMMA with customisation of the basic optional arguments')
 def run(
         map_files: te.Annotated[typing.List[str], typer.Argument(help='hydrodynamic output map-file(s)')],
@@ -64,6 +75,7 @@ def run(
     :type n_cores: int, optional
     :type wd: str, optional
     """
+    __print_statements()
     # noinspection PyArgumentList
     processing.map_ecotopes(
         *map_files,
@@ -79,7 +91,7 @@ def run(
     )
 
 
-@app_emma.command(name='compare', help='compare EMMA predictions to existing ecotope-maps')
+@app_emma.command(name='compare', help='[NOT YET IMPLEMENTED] compare EMMA predictions to existing ecotope-maps')
 def compare(
         map_files: te.Annotated[typing.List[str], typer.Argument(help='hydrodynamic output map-file(s)')],
         f_ecotopes: te.Annotated[str, typer.Argument(help='file with ecotope polygon data')],
@@ -97,8 +109,16 @@ def compare(
 
     :raise NotImplementedError: function not yet implemented as console-accessible call
     """
+    __print_statements()
     msg = f'The compare function is not yet implemented (map_files={map_files}, f_ecotopes={f_ecotopes}, wd={wd})'
     raise NotImplementedError(msg)
+
+
+@app_emma.command(name='license', help='print license of EMMA')
+def license() -> None:
+    """Print the full license of EMMA to the screen."""
+    with open(os.path.join(os.path.dirname(__file__)[:-3], 'LICENSE'), mode='r') as f:
+        print(''.join(f.readlines()))
 
 
 if __name__ == '__main__':
