@@ -1,3 +1,4 @@
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 ![Tests](https://github.com/ghendrickx/EMMA/actions/workflows/tests.yml/badge.svg)
 
 # EMMA
