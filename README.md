@@ -8,9 +8,9 @@ An _ecotope_ is a more-or-less homogeneous natural unit. In many instances, the 
 word _ecotope_ is used, as _habitat_ originally refers to the living environment of a single species, while _ecotope_ 
 refers to an ecosystem as it can be mapped.
 
-This simple `python`-interface allows to map aquatic ecotopes (or habitats) based on the abiotic output from an 
+This simple `python`-interface allows to map aquatic _ecotopes_ (or _habitats_) based on the abiotic output from an 
 hydrodynamic model. It does so by a modified version of the [ZES.1](https://edepot.wur.nl/174540) classification system. 
-The hydrodynamic model must contain the following three hydrodynamic parameters:
+The hydrodynamic model must contain the following three hydrodynamic parameters to do so:
  1. water depth (or, bottom and water level);
  1. flow velocity; and
  1. salinity.
@@ -44,7 +44,7 @@ This repository is licensed under [`Apache License 2.0`](LICENSE).
 
 ## Installation
 This repository has the following requirements (see also [`requirements.txt`](requirements.txt)):
- -  `Python>=3.9.0`
+ -  `Python>=3.9`
  -  `netCDF4`
  -  `numpy`
  -  `shapely`
