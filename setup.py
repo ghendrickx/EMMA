@@ -22,7 +22,12 @@ setup(
     download_url='https://github.com/ghendrickx/EMMA',
     packages=find_packages(exclude='tests'),
     license='Apache-2.0',
-    keywords=['ecology', 'ecotope', 'estuary', 'hydrodynamics'],
+    keywords=[
+        'Building with Nature',
+        'Ecotope mapping',
+        'Estuarine ecosystems',
+        'Hydrodynamic model'
+    ],
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: Apache Software License',
