@@ -100,7 +100,9 @@ def run(
 # noinspection PyUnresolvedReferences
 @app_emma.command(name='compare', help='[NOT YET IMPLEMENTED] compare EMMA predictions to existing ecotope-maps')
 def compare(
-        f_polygon: te.Annotated[str, typer.Argument(help='file with ecotope polygon data (*.json/*.csv-file)')],
+        f_data: te.Annotated[str, typer.Argument(
+            help='file with ecotope polygon (validation) data (*.json/*.csv-file)'
+        )],
         f_emma: te.Annotated[str, typer.Argument(help='file with ecotope grid data from EMMA (*.csv-file)')],
         level: te.Annotated[int, typer.Option(min=0, max=6, help='level of detail of comparison')] = None,
         n_cores: te.Annotated[int, typer.Option(
@@ -112,16 +114,20 @@ def compare(
 
     :param map_files: file name(s) of hydrodynamic model output data (*.nc)
     :param f_ecotopes: file name of ecotope-polygon data
+    :param level: level of detail of comparison, defaults to None
+    :param n_cores: number of cores for parallel computation, defaults to 1
     :param wd: working directory, defaults to None
 
-    :type map_files: list[str]
-    :type f_ecotopes: str
+    :type f_data: str
+    :type f_emma: str
+    :type level: int, optional
+    :type n_cores: int, optional
     :type wd: str, optional
     """
     __print_statements()
     # noinspection PyTypeChecker
     performance.execute(
-        f_polygon,
+        f_data,
         f_emma,
         level=level,
         n_cores=n_cores,
