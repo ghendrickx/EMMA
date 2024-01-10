@@ -4,12 +4,13 @@ Run EMMA from the command-line.
 Author: Gijs G. Hendrickx
 """
 import sys
+import time
 import typing
 
 import typer
 import typing_extensions as te
 
-from src import processing
+from src import processing, performance
 
 # EMMA-application
 app_emma = typer.Typer()
@@ -40,10 +41,11 @@ def __log_levels(log: str) -> str:
 def __print_statements() -> None:
     """Print copyright-statements."""
     print(
-        'EMMA  Copyright (c)  EMMA Development Team\n'
+        '\nEMMA  Copyright (c)  EMMA Development Team\n'
         'This program comes with NO WARRANTY.\n'
         'This is free software, and you are welcome to use and redistribute it\n'
-        'under the conditions as specified in the license; see LICENSE (Apache 2.0)\n'
+        'under the conditions as specified in the license; see LICENSE (Apache 2.0)\n',
+        file=sys.stderr
     )
 
 
@@ -97,27 +99,42 @@ def run(
     )
 
 
+# noinspection PyUnresolvedReferences
 @app_emma.command(name='compare', help='[NOT YET IMPLEMENTED] compare EMMA predictions to existing ecotope-maps')
 def compare(
-        map_files: te.Annotated[typing.List[str], typer.Argument(help='hydrodynamic output map-file(s)')],
-        f_ecotopes: te.Annotated[str, typer.Argument(help='file with ecotope polygon data')],
+        f_data: te.Annotated[str, typer.Argument(
+            help='file with ecotope polygon (validation) data (*.json/*.csv-file)'
+        )],
+        f_emma: te.Annotated[str, typer.Argument(help='file with ecotope grid data from EMMA (*.csv-file)')],
+        level: te.Annotated[int, typer.Option(min=0, max=6, help='level of detail of comparison')] = None,
+        n_cores: te.Annotated[int, typer.Option(
+            '--cores', '-n', min=1, help='number of cores for parallel computation'
+        )] = 1,
         wd: te.Annotated[str, typer.Option(help='working directory')] = None,
 ) -> None:
     """Compare predictions of ecotopes based on EMMA with existing polygon-data of ecotopes.
 
-    :param map_files: file name(s) of hydrodynamic model output data (*.nc)
-    :param f_ecotopes: file name of ecotope-polygon data
+    :param f_data: file name(s) of hydrodynamic model output data (*.nc)
+    :param f_emma: file name of ecotope-polygon data
+    :param level: level of detail of comparison, defaults to None
+    :param n_cores: number of cores for parallel computation, defaults to 1
     :param wd: working directory, defaults to None
 
-    :type map_files: list[str]
-    :type f_ecotopes: str
+    :type f_data: str
+    :type f_emma: str
+    :type level: int, optional
+    :type n_cores: int, optional
     :type wd: str, optional
     """
     __print_statements()
-    print(
-        f'The compare function is not yet implemented.\n'
+    # noinspection PyTypeChecker
+    performance.execute(
+        f_data,
+        f_emma,
+        level=level,
+        n_cores=n_cores,
+        wd=wd
     )
-    sys.exit(1)
 
 
 @app_emma.command(name='test', help='test if EMMA and her dependencies are installed properly')
