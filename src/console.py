@@ -131,7 +131,6 @@ def test() -> None:
         sys.exit(1)
     else:
         print('\nEMMA and her dependencies are installed properly.\n')
-        sys.exit(0)
 
 
 if __name__ == '__main__':
