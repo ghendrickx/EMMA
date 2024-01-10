@@ -66,6 +66,14 @@ activated. If you have no virtual environment yet, consider creating one
 ```
 python3 -m venv <venv>
 ```
+**After** installation, run the following command to test if `EMMA` and her dependencies are installed properly:
+```
+emma test
+```
+This should return the following message:
+```
+EMMA and her dependencies are installed properly.
+```
 
 ### Install directly
 `EMMA` can be installed using `pip` directly:
