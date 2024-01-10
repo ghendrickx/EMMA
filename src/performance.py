@@ -328,14 +328,34 @@ def polygons2grid(f_polygons: str, f_grid: str = None, grid: glob.TypeXY = None,
     return {k: v for d in lst_results for k, v in d.items()}
 
 
-def execute(f_polygon: str, f_emma: str, **kwargs) -> None:
+def execute(f_data: str, f_emma: str, **kwargs) -> None:
+    """Execute data-model comparison, printing the performance of the model (i.e., EMMA) output data to validation data.
+    The validation data should be provided as polygon data (*.json), or as grid data (*.csv). The model data should be
+    provided as grid data (*.csv). Note that if the validation data is provided as grid data, the grid should correspond
+    to that of the model data. (Consider using `polygons2grid()` from this module.)
+
+    :param f_data: validation data (*.json/*.csv)
+    :param f_emma: model (EMMA) output data (*.csv)
+    :param kwargs: optional arguments
+        level: level of detail of comparison, defaults to 6 (max. level)
+        n_cores: number of cores for parallel computation, defaults to 1
+        wd: working directory, dfeaults to None
+        optional arguments to `.Comparison.exec()`
+
+    :type f_data: str
+    :type f_emma: str
+    :type kwargs: optional
+        level: int
+        n_cores: int
+        wd: str
+    """
     # optional arguments
     level: int = kwargs.pop('level', 6)
     n_cores: int = kwargs.get('n_cores', 1)
     wd: str = kwargs.get('wd')
 
     # file directories
-    f_polygon = export.file_dir(f_polygon, wd=wd)
+    f_data = export.file_dir(f_data, wd=wd)
     f_emma = export.file_dir(f_emma, wd=wd)
 
     # read files
@@ -345,12 +365,12 @@ def execute(f_polygon: str, f_emma: str, **kwargs) -> None:
         msg = f'EMMA output data must be read from a *.csv-file; {f_emma.split(".")[-1]} given'
         raise ValueError(msg)
 
-    if f_polygon.endswith('.json'):
-        data = polygons2grid(f_polygon, grid=model, n_cores=n_cores)
-    elif f_polygon.endswith('.csv'):
-        data = csv2grid(f_polygon)
+    if f_data.endswith('.json'):
+        data = polygons2grid(f_data, grid=model, n_cores=n_cores)
+    elif f_data.endswith('.csv'):
+        data = csv2grid(f_data)
     else:
-        msg = f'Comparison data must be read from either a *.json- or a *.csv-file; {f_polygon.split(".")[-1]} given'
+        msg = f'Comparison data must be read from either a *.json- or a *.csv-file; {f_data.split(".")[-1]} given'
         raise ValueError(msg)
 
     # execute comparison
