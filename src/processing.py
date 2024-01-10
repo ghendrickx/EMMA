@@ -12,11 +12,12 @@ import typing
 import numpy as np
 
 from config import config_file
-from src import \
-    _globals as glob, \
-    export as exp, \
-    labelling as lab, \
+from src import (
+    _globals as glob,
+    export as exp,
+    labelling as lab,
     preprocessing as pre
+)
 
 _LOG = logging.getLogger(__name__)
 

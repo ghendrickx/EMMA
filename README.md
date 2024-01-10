@@ -1,15 +1,16 @@
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 ![Tests](https://github.com/ghendrickx/EMMA/actions/workflows/tests.yml/badge.svg)
 
 # EMMA
-The _Ecotope Map Maker based on Abiotics_ (EMMA) facilitates the translation from hydrodynamic model output data to 
+The _Ecotope-Map Maker based on Abiotics_ (EMMA) facilitates the translation from hydrodynamic model output data to 
 ecotope maps. _Ecotopes_ are ecological units that are defined by abiotic, biotic, and anthropogenic local conditions.
 An _ecotope_ is a more-or-less homogeneous natural unit. In many instances, the word _habitat_ is used where here the 
 word _ecotope_ is used, as _habitat_ originally refers to the living environment of a single species, while _ecotope_ 
 refers to an ecosystem as it can be mapped.
 
-This simple `python`-interface allows to map ecotopes (or habitats) based on the abiotic output from an hydrodynamic 
-model. It does so by a modified version of the [ZES.1](https://edepot.wur.nl/174540) classification system. The
-hydrodynamic model must contain the following three hydrodynamic parameters:
+This simple `python`-interface allows to map aquatic _ecotopes_ (or _habitats_) based on the abiotic output from an 
+hydrodynamic model. It does so by a modified version of the [ZES.1](https://edepot.wur.nl/174540) classification system. 
+The hydrodynamic model must contain the following three hydrodynamic parameters to do so:
  1. water depth (or, bottom and water level);
  1. flow velocity; and
  1. salinity.
@@ -43,15 +44,17 @@ This repository is licensed under [`Apache License 2.0`](LICENSE).
 
 ## Installation
 This repository has the following requirements (see also [`requirements.txt`](requirements.txt)):
- -  `Python>=3.9.0`
+ -  `Python>=3.9`
  -  `netCDF4`
  -  `numpy`
  -  `shapely`
+ -  `typer`
  -  `xarray`
+ -  `matplotlib` [examples, optional]
 
 Instead of installing `netCDF4`, the `xarray`-package can also be installed with the `I/O`-option enabled:
 ```
-python3 -m pip install "xarray[io]"
+python3 -m pip install xarray[io]
 ```
 For further details, see the 
 [`xarray`-documentation](https://docs.xarray.dev/en/stable/getting-started-guide/installing.html#instructions);
@@ -63,6 +66,14 @@ activated. If you have no virtual environment yet, consider creating one
 ([official documentation](https://docs.python.org/3/library/venv.html)):
 ```
 python3 -m venv <venv>
+```
+**After** installation, run the following command to test if `EMMA` and her dependencies are installed properly:
+```
+emma test
+```
+This should return the following message:
+```
+EMMA and her dependencies are installed properly.
 ```
 
 ### Install directly
@@ -113,6 +124,14 @@ from src.processing import map_ecotopes
 
 results = map_ecotopes('<hydrodynamic_output_data_file>.nc', wd='<working/directory>')
 ```
+There is also the option to use `EMMA` from the command line directly:
+```commandline
+emma run hydrodynamic_output_data_file.nc --wd working/directory
+```
+**Note** that the latter usage provides limited customisation. Call for the included features:
+```commandline
+emma run --help
+```
 By default, `EMMA` expects the relevant hydrodynamic variables to be named as given by [`dfm1.json`](config/dfm1.json). 
 In case these key-words differ in the provided `netCDF`-file (dependent on the hydrodynamic modelling software used), 
 provide a custom (partially overwriting) `*.json`-file with the same key-words as in [`dfm1.json`](config/dfm1.json); 
@@ -122,3 +141,4 @@ In the [`examples`](examples)-folder, a collection of examples are provided on h
 additional features. A [dummy output-file](examples/ex_map_data) is added that can be used to test the examples. For the
 examples, there is also an additional [`README`](examples/README.md) in the [`examples`](examples)-folder to provide
 some background to the examples, where needed.
+**Note** that these examples all make use of the `Python`-based execution of `EMMA`.

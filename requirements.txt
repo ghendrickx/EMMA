@@ -1,4 +1,7 @@
+matplotlib
 netCDF4
 numpy
+pytest
 shapely
+typer
 xarray
