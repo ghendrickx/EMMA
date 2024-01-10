@@ -42,7 +42,8 @@ setup(
     ],
     extras_require={
         'examples': ['matplotlib'],
-        'develop': ['matplotlib', 'pytest', 'pytest-cov', 'pylint']
+        'develop': ['matplotlib', 'pytest', 'pytest-cov', 'pylint'],
+        'testing': ['pytest', 'pytest-cov', 'pylint'],
     },
     entry_points={
         'console_scripts': [
