@@ -1,4 +1,14 @@
 # EMMA: Examples
+The examples include a simple visualisation function that uses `matplotlib`. If not installed, please do so:
+```
+python3 -m pip install matplotlib
+```
+Instead of installing separately, `EMMA` could also be installed with the option `examples` automatically installing
+`matplotlib` as well:
+```
+python3 -m pip install .[examples]
+```
+
 Five examples have been included to aid in the usage of `EMMA`:
  1. [**Basic, single-file usage.**](ex1_basic.py)
     The most basic usage of `EMMA` using a single map-file.
