@@ -13,7 +13,7 @@ import numpy as np
 
 from shapely import geometry
 
-from src import _globals as glob
+from src import _globals as glob, export
 
 _LOG = logging.getLogger(__name__)
 
@@ -326,3 +326,38 @@ def polygons2grid(f_polygons: str, f_grid: str = None, grid: glob.TypeXY = None,
 
     # compress results
     return {k: v for d in lst_results for k, v in d.items()}
+
+
+def execute(f_polygon: str, f_emma: str, **kwargs) -> None:
+    # optional arguments
+    level: int = kwargs.pop('level', 6)
+    n_cores: int = kwargs.get('n_cores', 1)
+    wd: str = kwargs.get('wd')
+
+    # file directories
+    f_polygon = export.file_dir(f_polygon, wd=wd)
+    f_emma = export.file_dir(f_emma, wd=wd)
+
+    # read files
+    if f_emma.endswith('.csv'):
+        model = csv2grid(f_emma)
+    else:
+        msg = f'EMMA output data must be read from a *.csv-file; {f_emma.split(".")[-1]} given'
+        raise ValueError(msg)
+
+    if f_polygon.endswith('.json'):
+        data = polygons2grid(f_polygon, grid=model, n_cores=n_cores)
+    elif f_polygon.endswith('.csv'):
+        data = csv2grid(f_polygon)
+    else:
+        msg = f'Comparison data must be read from either a *.json- or a *.csv-file; {f_polygon.split(".")[-1]} given'
+        raise ValueError(msg)
+
+    # execute comparison
+    result = Comparison(data, model).exec(level, **kwargs)
+
+    # print results
+    print(f'Comparison report (level={level})')
+    print(f'  Invalid cells: {sum(0 if v else 1 for v in result.values())}')
+    print(f'  Correct cells: {sum(1 if v else 0 for v in result.values())}')
+    print(f'  Performance:   {sum(1 if v else 0 for v in result.values()) / len(result) * 100:.2f}%')
