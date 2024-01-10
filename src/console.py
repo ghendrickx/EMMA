@@ -4,6 +4,7 @@ Run EMMA from the command-line.
 Author: Gijs G. Hendrickx
 """
 import sys
+import time
 import typing
 
 import typer
@@ -40,10 +41,11 @@ def __log_levels(log: str) -> str:
 def __print_statements() -> None:
     """Print copyright-statements."""
     print(
-        'EMMA  Copyright (c)  EMMA Development Team\n'
+        '\nEMMA  Copyright (c)  EMMA Development Team\n'
         'This program comes with NO WARRANTY.\n'
         'This is free software, and you are welcome to use and redistribute it\n'
-        'under the conditions as specified in the license; see LICENSE (Apache 2.0)\n'
+        'under the conditions as specified in the license; see LICENSE (Apache 2.0)\n',
+        file=sys.stderr
     )
 
 
