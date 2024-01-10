@@ -127,10 +127,10 @@ def test() -> None:
         from src import _globals, export, labelling, performance, preprocessing, processing
         from config import config_file
     except ImportError:
-        print('\nOne (or more) of EMMA\'s dependencies are not installed properly\n')
+        print('\nEMMA and her dependencies are NOT installed properly.\n')
         sys.exit(1)
     else:
-        print('\nAll EMMA\'s dependencies are installed properly\n')
+        print('\nEMMA and her dependencies are installed properly.\n')
         sys.exit(0)
 
 
