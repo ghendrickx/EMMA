@@ -114,8 +114,8 @@ def compare(
 ) -> None:
     """Compare predictions of ecotopes based on EMMA with existing polygon-data of ecotopes.
 
-    :param map_files: file name(s) of hydrodynamic model output data (*.nc)
-    :param f_ecotopes: file name of ecotope-polygon data
+    :param f_data: file name(s) of hydrodynamic model output data (*.nc)
+    :param f_emma: file name of ecotope-polygon data
     :param level: level of detail of comparison, defaults to None
     :param n_cores: number of cores for parallel computation, defaults to 1
     :param wd: working directory, defaults to None
