@@ -120,6 +120,20 @@ def compare(
     sys.exit(1)
 
 
+@app_emma.command(name='test', help='test if EMMA and her dependencies are installed properly')
+def test() -> None:
+    """EMMA-call testing the installation of all dependencies."""
+    try:
+        from src import _globals, export, labelling, performance, preprocessing, processing
+        from config import config_file
+    except ImportError:
+        print('\nOne (or more) of EMMA\'s dependencies are not installed properly\n')
+        sys.exit(1)
+    else:
+        print('\nAll EMMA\'s dependencies are installed properly\n')
+        sys.exit(0)
+
+
 if __name__ == '__main__':
     # Execute the EMMA-application.
     app_emma()
