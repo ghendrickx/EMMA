@@ -9,7 +9,7 @@ with open('README.md', mode='r') as f:
     long_description = f.read()
 
 setup(
-    name='EMMA',
+    name='emma',
     version='1.1',
     authors=[
         'Gijs G. Hendrickx',
@@ -40,6 +40,10 @@ setup(
         'typer',
         'xarray',
     ],
+    extras_require={
+        'examples': ['matplotlib'],
+        'develop': ['matplotlib', 'pytest', 'pytest-cov', 'pylint']
+    },
     entry_points={
         'console_scripts': [
             'emma = src.console:app_emma',
