@@ -4,7 +4,12 @@ ecotopes, i.e., an ecotope-map.
 
 Authors: Soesja Brunink & Gijs G. Hendrickx
 """
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    msg = 'The examples make use of `matplotlib` to visualise the output. ' \
+          'Install `matplotlib`, or comment the `create_figure()`-function.'
+    raise ImportError(msg)
 
 from src import _globals as glob
 
