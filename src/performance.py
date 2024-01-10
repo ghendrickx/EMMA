@@ -377,7 +377,9 @@ def execute(f_data: str, f_emma: str, **kwargs) -> None:
     result = Comparison(data, model).exec(level, **kwargs)
 
     # print results
-    print(f'Comparison report (level={level})')
-    print(f'  Invalid cells: {sum(0 if v else 1 for v in result.values())}')
-    print(f'  Correct cells: {sum(1 if v else 0 for v in result.values())}')
-    print(f'  Performance:   {sum(1 if v else 0 for v in result.values()) / len(result) * 100:.2f}%')
+    print(
+        f'\nComparison report (level={level})'
+        f'\n  Invalid cells: {sum(0 if v else 1 for v in result.values())}'
+        f'\n  Correct cells: {sum(1 if v else 0 for v in result.values())}'
+        f'\n  Performance:   {sum(1 if v else 0 for v in result.values()) / len(result) * 100:.2f}%\n'
+    )
