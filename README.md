@@ -1,5 +1,6 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 ![Tests](https://github.com/ghendrickx/EMMA/actions/workflows/tests.yml/badge.svg)
+[![DOI](https://data.4tu.nl/v3/datasets/0100fc5a-a99c-4002-9864-3faade3899e3/doi-badge.svg)](https://doi.org/10.4121/0100fc5a-a99c-4002-9864-3faade3899e3)
 
 # EMMA
 The _Ecotope-Map Maker based on Abiotics_ (EMMA) facilitates the translation from hydrodynamic model output data to 
